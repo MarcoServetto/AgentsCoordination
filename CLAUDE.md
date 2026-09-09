@@ -14,6 +14,24 @@ present-tense constraint ("jars aren't byte-reproducible"), never a story.
 
 The code should read as if the current version was the only version it ever existed.
 
+# Repositories:
+While working with the user, you are going to fork and branch all of those repositories and suggest changes by opening PRs.
+
+https://github.com/MarcoServetto/AgentsCoordination
+We keep all the agents configurations and instructions.
+
+https://github.com/FearlessLang/Frontend
+https://github.com/FearlessLang/Coordinator
+https://github.com/FearlessLang/Commons
+https://github.com/FearlessLang/StandardLibrary
+The four main Fearless repositories.
+
+https://github.com/FearlessLang/EclipsePlugin
+Eclipse plugin for fearless.
+
+https://github.com/MarcoServetto/FearlessTour
+https://github.com/MarcoServetto/ZeroToHero
+Fearless guide and game to teach fearless.
 
 # Scripts
 
