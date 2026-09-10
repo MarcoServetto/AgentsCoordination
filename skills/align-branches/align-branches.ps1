@@ -1,4 +1,3 @@
-```powershell
 $ErrorActionPreference = "Stop"
 
 $lines = Get-Content C:\data\accounts.txt
