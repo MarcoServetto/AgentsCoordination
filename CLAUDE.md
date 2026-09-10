@@ -67,6 +67,9 @@ When asked to make a PR, it means on the upstream parent org (FearlessLang, Marc
 When considering making a new PR: look if we can just amend the existing PR instead.
 When considering amending a PR: look if it has already been merged,
 Before closing any PR, comment why.
+Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
+(both the --repo and the marcoautomation2: prefix are required)
+`gh pr view <n> --json state`
 
 # Managing Disk:
 
@@ -348,3 +351,11 @@ tool: rely on its formal semantics, not on its recommended usage.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
 We are keeping a 'C:\data\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
+
+
+## Automated tests.
+
+Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java
+Depending on the estimate risk of regression.
+
+Only run `C:/data/fearlessManagerAutomatedGuiTests/allTests.txt` when asked, since it takes one hour.
