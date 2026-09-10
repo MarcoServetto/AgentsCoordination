@@ -1,15 +1,16 @@
 $ErrorActionPreference = 'Stop'
 
 $log = 'C:\data\winCoordinator\logs\diagnostic.log'
-$whitelistFile = 'C:\data\winCoordinator\scripts\process-whitelist.txt'
+$whitelistFile = Join-Path $PSScriptRoot 'process-whitelist.txt'
 $leftovers = 'C:\Users\sonta\Desktop\MarcoLeftovers'
+New-Item -ItemType Directory -Force -Path (Split-Path $log) | Out-Null
 $lines = New-Object System.Collections.Generic.List[string]
 function Log($msg) { $lines.Add("[$((Get-Date).ToString('yyyy-MM-dd HH:mm:ss'))] $msg") }
 
 $whitelist = Get-Content $whitelistFile | Where-Object { $_.Trim() -and -not $_.Trim().StartsWith('#') } | ForEach-Object { $_.Trim().ToLowerInvariant() }
 $killed = 0
 foreach ($p in Get-CimInstance Win32_Process) {
-  if ($p.ProcessId -le 4 -or -not $p.CreationDate) { continue }
+  if ($p.ProcessId -le 4 -or $p.ProcessId -eq $PID -or -not $p.CreationDate) { continue }
   if ($whitelist -contains [IO.Path]::GetFileNameWithoutExtension($p.Name).ToLowerInvariant()) { continue }
   if (((Get-Date) - $p.CreationDate).TotalHours -lt 1) { continue }
   Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue
@@ -18,17 +19,16 @@ foreach ($p in Get-CimInstance Win32_Process) {
 }
 if ($killed -eq 0) { Log "process sweep: clean" }
 
-# A file the OS still has open simply fails to delete, so the running claude.exe
-# and any live build output need no special case here.
+# A file the OS still has open simply fails to delete, so live build output
+# needs no special case here.
 $cutoff = (Get-Date).AddDays(-7)
 $freed = 0
-foreach ($dir in $env:TEMP, 'C:\Windows\Temp', "$HOME\.local\bin", "$HOME\.local\share\claude\versions") {
-  foreach ($item in Get-ChildItem $dir -Force -ErrorAction SilentlyContinue) {
-    if ($item.LastWriteTime -ge $cutoff) { continue }
-    $size = if ($item.PSIsContainer) { (Get-ChildItem $item.FullName -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum } else { $item.Length }
-    Remove-Item $item.FullName -Recurse -Force -ErrorAction SilentlyContinue
-    if (-not (Test-Path $item.FullName)) { $freed += $size }
-  }
+$stale = @(Get-ChildItem "$HOME\.local\bin" -Filter 'claude.exe.old.*' -ErrorAction SilentlyContinue) + @(Get-ChildItem $env:TEMP, 'C:\Windows\Temp', "$HOME\.local\share\claude\versions" -Force -ErrorAction SilentlyContinue)
+foreach ($item in $stale) {
+  if ($item.LastWriteTime -ge $cutoff) { continue }
+  $size = if ($item.PSIsContainer) { (Get-ChildItem $item.FullName -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum } else { $item.Length }
+  Remove-Item $item.FullName -Recurse -Force -ErrorAction SilentlyContinue
+  if (-not (Test-Path $item.FullName)) { $freed += $size }
 }
 Clear-RecycleBin -DriveLetter C -Force -ErrorAction SilentlyContinue
 Log "freed $([math]::Round($freed/1MB,1)) MB"

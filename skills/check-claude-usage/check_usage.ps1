@@ -6,7 +6,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$cacheFile = "$HOME\.claude\skills\check-claude-usage\state\last-check.json"
+$cacheFile = Join-Path $OutDir "last-check.json"
 if (Test-Path $cacheFile) {
   try {
     $cache = Get-Content $cacheFile -Raw | ConvertFrom-Json
@@ -128,7 +128,7 @@ $cropped.Dispose()
 $scaled.Dispose()
 
 $ocrBase = Join-Path $OutDir "usage_${stamp}_ocr"
-& $tesseractExe $cropPath $ocrBase --psm 6 2>$null | Out-Null
+& $tesseractExe $cropPath $ocrBase --psm 6 | Out-Null
 $ocrText = Get-Content "$ocrBase.txt" -Raw
 
 $deadline = (Get-Date).AddSeconds(45)
@@ -162,7 +162,6 @@ if ($pctMatches.Count -lt 2 -or $resetMatches.Count -lt 2) {
 $sessionLine = "Current session: $($pctMatches[0].Groups[1].Value)% used, resets $($resetMatches[0].Groups[1].Value.Trim())"
 $weeklyLine = "Weekly limits: $($pctMatches[1].Groups[1].Value)% used, resets $($resetMatches[1].Groups[1].Value.Trim())"
 
-New-Item -ItemType Directory -Force -Path (Split-Path $cacheFile) | Out-Null
 [pscustomobject]@{
   timestamp   = (Get-Date).ToString('o')
   sessionLine = $sessionLine

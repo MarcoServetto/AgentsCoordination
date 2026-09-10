@@ -1,7 +1,10 @@
 This Windows machine is dedicated to Claude: remote-controlled, nobody at the keyboard. Four agents run here,
 each in its own folder: win1 in `C:\data\fearlessBranch1`, win2 in
 `fearlessBranch2`, win3 in `fearlessBranch3`, winCoordinator in
-`C:\data\winCoordinator` .
+`C:\data\winCoordinator`.
+Every instruction, skill and script on this machine comes from the checkout of
+https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination`
+(its `installation.txt` says how the machine is built from it); changing any of them means a PR there.
 
 # Never include history of events in skills and CLAUDE.md files
 
@@ -39,12 +42,10 @@ Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/test/mainCoordinator/` (see "Fearless" below). 
 Whitelisted scripts:
 - the java scripts in `Coordinator/test/mainCoordinator/` (you can run them)
-- `check_usage.ps1` (you can run it as part of the skill)
-- `C:\data\autoScripts\agent-supervisor.ps1` (runs automatically, you can inspect it and fix it when asked)
-- `C:\data\autoScripts\agent-supervisor.ps1` (runs automatically, you can inspect it and fix it when asked)
-- `C:\data\autoScripts\cleanup-watchdog.ps1` (called by the above)
-- align-branches.ps1 (you can run it as part of the skill)
-- `cleanup-watchdog.ps1` (runs automatically, you can inspect it and fix it when asked)
+- `C:\data\AgentsCoordination\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
+- `C:\data\AgentsCoordination\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -53,8 +54,8 @@ Of course you can make short lived scripts to run them during your normal tasks,
 When possible only use those characters
 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/=<>,.;:()[]{}`'"!?@#$%^&_|~\
 space and new line (\n only)
-This includes any text you write anywhere, any file name et.
-This is a soft rule and there are plenty of reasons a task may require to use other characters; one obvious exception is "you are reporting verbatim something that already exists" or "you are update a part of a document and you should leave the rest alone"
+This includes any text you write anywhere, any file name etc.
+This is a soft rule and there are plenty of reasons a task may require to use other characters; one obvious exception is "you are reporting verbatim something that already exists" or "you are updating a part of a document and you should leave the rest alone"
 
 
 # Accounts
@@ -91,7 +92,8 @@ tasks; directly, without asking. Anything writing to an agent's
 
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
-"Do not use this local memory, all the data is in 'C:\data\global_memory.txt'; add and remove from there when/if needed"
+"Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\global_memory.txt'; add and remove from there when/if needed"
+Changes to `global_memory.txt` are PRs to AgentsCoordination like any other change; a reset of the machine keeps only what is merged.
 
 
 # Inter agent messaging
@@ -100,7 +102,8 @@ win1,win2,win3 and winCoordinator should not talk with each other.
 win1,win2,win3 and winCoordinator can talk with their sub agents and those can of course reply back.
 (The startup script is not an agent: the messages it delivers at their
 scheduled time are normal user input, and answering one is not talking to
-another agent.)
+another agent. `C:\data\AgentsCoordination\autoScripts\scheduledTasks.txt` lists them,
+one `HH:MM, agentName, message` line per daily message.)
 Occasionally the user will explicitly ask to message another win1,win2,win3 and winCoordinator agent to delegate a specific task.
 This is ok when asked but:
 - provide full context on the task in one shot
@@ -111,14 +114,14 @@ This is ok when asked but:
 # Overnight tasks
 
 win3 takes care of overnight tasks.
-When waked up with run_overnight_tasks:
+When woken up with run_overnight_tasks:
 - The user is asleep, asking anything to the user will block the whole overnight process.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasks/LongHorizonTasks.txt
 Repeat the following:
 (1)- check the time
   if it is after 8am, stop.
 (2)- Use the check-claude-usage skill
-If the "Current session" is less then 70%, start a task;
+If the "Current session" is less than 70%, start a task;
 else sleep until the "Current session" is over, then go to (1).
 
 Starting a task:
@@ -131,9 +134,10 @@ If a task needs discussion in the morning, the user should ask to delegate it to
 
 # Machine-health review (winCoordinator)
 
-When you receive run_dayly_check_up
+When you receive run_daily_check_up
 check the general machine health.
-Check for the activities of `cleanup-watchdog.ps1`, check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
+Check for the activities of `cleanup-watchdog.ps1` in `C:\data\winCoordinator\logs\diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
+A bare `scheduler_failed` message means the polling loop of `agent-supervisor.ps1` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Report it the same way.
 
 # Remote
 
@@ -150,7 +154,7 @@ for Commons, Frontend, Coordinator, StandardLibrary, EclipsePlugin;
 `MarcoServetto/<name>` for ZeroToHero, FearlessTour. Never commit a
 CLAUDE.md or any Claude-local config into them.
 
-At the start of new work in a `fearlessBranch*` folder, run the align brances skill
+At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
 Note the file `Coordinator\test\mainCoordinator\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` with `prefix` set to the branch folder) must exist in each working copy.
 Details:
@@ -175,7 +179,7 @@ From `Coordinator/test` you can run the following (note, no arguments)
 
 `Commons.jar` is committed to the Commons repository itself specifically so
 it is present and ready immediately after cloning or updating.
-If a PR changes the logical content of common, an new Commons.jar need to be added to the PR. Copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
+If a PR changes the logical content of Commons, a new Commons.jar needs to be added to the PR. Copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
 
   TestAllFrontend.java
     Builds Commons and Frontend and runs Frontend's test suite. Fast -
@@ -185,7 +189,7 @@ If a PR changes the logical content of common, an new Commons.jar need to be add
     Builds Commons, Frontend, and Coordinator, and runs Coordinator's test
     suite EXCLUDING its slow `integrationTests` package (which would compile
     and actually runs whole example Fearless programs, one JVM launch per
-    project). Fast. Test `testBuildBase.TestBuildBase` do build the standard library 'base' but does not save it in the cache for integration tests.
+    project). Fast. Test `testBuildBase.TestBuildBase` builds the standard library 'base' but does not save it in the cache for integration tests.
 
   TestAllFrontendCoordinatorIntegration.java
     Builds and runs everything the previous two programs do, PLUS
@@ -344,9 +348,9 @@ tool: rely on its formal semantics, not on its recommended usage.
   or commit messages; Try to avoid examples requiring person names.
 - When reasonable, avoid naming tools that just so happens to be used, like 'eclipse', 'windows', 'firefox' etc. For example `junit_xml` is good, `eclipse_junit_xml` is bad.
 
-- Frontend does a lot of carefully work to generate good errors.
+- Frontend does a lot of careful work to generate good errors.
   Try to copy that style when possible.
-  Many errors in coordinator has been generated by agents and are not as good.
+  Many errors in coordinator have been generated by agents and are not as good.
   Overall, accept the fact that you, as an agent, are still pretty bad at generating good error messages and rely on the guidance from the user and the examples in Frontend. Feel free to add <HELP ME WITH WORDING> when you struggle to make a good error.
   Two crucial guidelines: (1)avoid being vague:
   `this type is ill formed` is pointless.
@@ -359,7 +363,7 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a 'C:\data\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
+We are keeping a 'C:\data\AgentsCoordination\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
 
 
 ## Automated tests.
@@ -367,4 +371,4 @@ We are keeping a 'C:\data\gui_gym.txt' where we write all the findings on how to
 Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java
 Depending on the estimate risk of regression.
 
-Only run `C:/data/fearlessManagerAutomatedGuiTests/allTests.txt` when asked, since it takes one hour.
+Only run `C:\data\AgentsCoordination\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
