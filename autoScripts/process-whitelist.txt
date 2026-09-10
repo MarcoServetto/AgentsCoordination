@@ -9,6 +9,10 @@ claude
 cmd
 conhost
 
+# --- a session started by hand from the default terminal ---
+OpenConsole
+WindowsTerminal
+
 # --- Windows core / kernel / session ---
 System Idle Process
 System
