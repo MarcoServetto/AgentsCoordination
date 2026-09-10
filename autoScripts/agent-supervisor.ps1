@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
-$scheduleFile = 'C:\data\winCoordinator\config\scheduledTasks.txt'
-$cleanup = 'C:\data\winCoordinator\scripts\cleanup-watchdog.ps1'
+$scheduleFile = Join-Path $PSScriptRoot 'scheduledTasks.txt'
+$cleanup = Join-Path $PSScriptRoot 'cleanup-watchdog.ps1'
 $sessDir = Join-Path $env:USERPROFILE '.claude\sessions'
 
 function send($agentName, $msg) {

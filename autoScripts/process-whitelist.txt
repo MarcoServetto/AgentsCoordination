@@ -1,1 +1,79 @@
-fill up
+# Process whitelist for cleanup-watchdog.ps1: one process name per line, no
+# .exe, case-insensitive, # for comments. Any process NOT listed that has
+# been alive for more than 1 hour is killed by the hourly sweep. Build tools
+# (git, java, ...) are deliberately absent: add one here before a run that
+# may exceed an hour. Takes effect on the next sweep.
+
+# --- the 4 always-on agents (winCoordinator, win1, win2, win3) ---
+claude
+cmd
+conhost
+
+# --- Windows core / kernel / session ---
+System Idle Process
+System
+Registry
+smss
+csrss
+wininit
+winlogon
+services
+lsass
+svchost
+Memory Compression
+dwm
+fontdrvhost
+spoolsv
+sihost
+ShellHost
+ctfmon
+dasHost
+dllhost
+WmiPrvSE
+RuntimeBroker
+ApplicationFrameHost
+taskhostw
+AggregatorHost
+explorer
+
+# --- Windows Update (never safe to kill mid-write) ---
+TrustedInstaller
+TiWorker
+MoUsoCoreWorker
+wuauclt
+UsoClient
+
+# --- Windows shell / Search / Security ---
+StartMenuExperienceHost
+WidgetService
+WidgetBoard
+SystemSettings
+CrossDeviceService
+CrossDeviceResume
+MicrosoftStartFeedProvider
+Video.UI
+UserOOBEBroker
+SearchIndexer
+SearchProtocolHost
+SearchHost
+SearchFilterHost
+MsMpEng
+NisSrv
+MpDefenderCoreService
+SecurityHealthService
+SecurityHealthSystray
+
+# --- hardware / driver vendor (NVIDIA, AMD/ATI, Realtek, DTS) ---
+NVDisplay.Container
+nvcontainer
+atiesrxx
+atieclxx
+RtkAudUService64
+RtkBtManServ
+DTSAPO3Service
+
+# --- Claude desktop app background service ---
+cowork-svc
+
+# --- Eclipse (Fearless plugin testing) ---
+eclipse
