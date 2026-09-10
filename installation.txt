@@ -1,8 +1,12 @@
-How this machine is built from this repository.
+How this machine is built from this repository, and how an agent running on
+it resets it to that state. Every action is idempotent: run all of them, in
+order, for a full reset. Whatever this file does not name is deleted by the
+reset; the list of what would go is the drift review.
 
 Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1080 at 150% scaling.
+Windows logs sonta in at boot; Brave is logged in to claude.ai.
 
 Needed Tools, each at its default install path; only install if not present.
   winget install Git.Git
@@ -13,63 +17,89 @@ Needed Tools, each at its default install path; only install if not present.
   JDK 26 at C:\Program Files\Java\jdk-26.0.2, no JAVA_HOME
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
+  git config --global core.autocrlf false
   Eclipse at C:\data\tools\eclipse, for EclipsePlugin work (not installed, just the portable version)
 
 Actions:
-  git clone https://github.com/marcoautomation2/AgentsCoordination C:\data\AgentsCoordination
-  git -C C:\data\AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
-  Reset it with
+  The checkout, cloned once and then reset to upstream:
+    git clone https://github.com/marcoautomation2/AgentsCoordination C:\data\AgentsCoordination
+    git -C C:\data\AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
     git -C C:\data\AgentsCoordination fetch upstream main
     git -C C:\data\AgentsCoordination reset --hard upstream/main
-//Here
-5. Claude Code reads its instructions and skills from %USERPROFILE%\.claude.
-   Both point into the checkout, so resetting the checkout resets them:
-     New-Item -ItemType SymbolicLink -Path $HOME\.claude\CLAUDE.md -Target C:\data\AgentsCoordination\CLAUDE.md -Force
-     New-Item -ItemType Junction -Path $HOME\.claude\skills -Target C:\data\AgentsCoordination\skills -Force
-   $HOME\.claude\settings.json is a plain file (Claude Code rewrites it):
-     {
-       "env": { "EDITOR": "notepad" },
-       "permissions": { "defaultMode": "bypassPermissions" },
-       "model": "sonnet",
-       "autoUpdatesChannel": "latest",
-       "skipDangerousModePermissionPrompt": true,
-       "theme": "light",
-       "agentPushNotifEnabled": true,
-       "crossSessionInbound": "accept"
-     }
-   crossSessionInbound is what lets agent-supervisor.ps1 deliver the
-   scheduled messages into a running agent.
+    git -C C:\data\AgentsCoordination clean -x -d --force
 
-6. Agent folders. C:\data\fearlessBranch1, C:\data\fearlessBranch2 and
-   C:\data\fearlessBranch3 each hold the seven repositories, cloned from
-   the marcoautomation2 fork (origin) with upstream set to the parent:
-     foreach ($r in 'Commons','Frontend','Coordinator','StandardLibrary','EclipsePlugin'){ git clone https://github.com/marcoautomation2/$r; git -C $r remote add upstream https://github.com/FearlessLang/$r }
-     foreach ($r in 'ZeroToHero','FearlessTour'){ git clone https://github.com/marcoautomation2/$r; git -C $r remote add upstream https://github.com/MarcoServetto/$r }
-   plus Coordinator\test\mainCoordinator\LocalResources.java: a copy of
-   LocalResourcesTemplate.java from the same folder with the class renamed
-   to LocalResources and
-     private static Path prefix= Path.of("C:\\").resolve("data","fearlessBranchN");
-   Then run the align-branches skill in each folder.
-   C:\data\winCoordinator holds only logs\diagnostic.log, written by
-   cleanup-watchdog.ps1.
-   Each of the four folders has a CLAUDE.md holding the single line given in
-   the "Shared memory and shared CLAUDE.md" section of CLAUDE.md, and
-   $HOME\.claude\projects\<slug>\memory\MEMORY.md holds that section's
-   single memory line, where <slug> is the folder path with every \ and :
-   replaced by - (C--data-fearlessBranch1, C--data-fearlessBranch2,
-   C--data-fearlessBranch3, C--data-winCoordinator).
+  %USERPROFILE%\.claude. Claude Code reads CLAUDE.md, settings.json and
+  skills\ from there; they are copies of the checkout. Delete the old skills\
+  and the other places Claude Code reads configuration from (commands\,
+  agents\, settings.local.json, keybindings.json, CLAUDE.local.md), then copy:
+    foreach ($d in 'skills','commands','agents'){ if (Test-Path "$HOME\.claude\$d") { [IO.Directory]::Delete("$HOME\.claude\$d", $true) } }
+    foreach ($f in 'settings.local.json','keybindings.json','CLAUDE.local.md'){ [IO.File]::Delete("$HOME\.claude\$f") }
+    Copy-Item -Recurse C:\data\AgentsCoordination\skills $HOME\.claude\skills
+    Copy-Item C:\data\AgentsCoordination\CLAUDE.md $HOME\.claude\CLAUDE.md
+  settings.json is written back to:
+    {
+      "env": { "EDITOR": "notepad" },
+      "permissions": { "defaultMode": "bypassPermissions" },
+      "model": "sonnet",
+      "autoUpdatesChannel": "latest",
+      "skipDangerousModePermissionPrompt": true,
+      "theme": "light",
+      "agentPushNotifEnabled": true,
+      "crossSessionInbound": "accept"
+    }
+  crossSessionInbound is what lets agent-supervisor.ps1 deliver the
+  scheduled messages into a running agent.
 
-7. Startup. One scheduled task, at logon, no time limit, highest run level,
-   runs autoScripts\agent-supervisor.ps1: it starts the four agents and
-   then, for the rest of the boot, delivers each line of
-   autoScripts\scheduledTasks.txt at its time and runs
-   autoScripts\cleanup-watchdog.ps1 hourly. There is no other task.
-     Register-ScheduledTask -TaskName ClaudeAgentSupervisor -Force `
-       -Action (New-ScheduledTaskAction -Execute powershell.exe -Argument '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\data\AgentsCoordination\autoScripts\agent-supervisor.ps1') `
-       -Trigger (New-ScheduledTaskTrigger -AtLogOn -User sonta) `
-       -Principal (New-ScheduledTaskPrincipal -UserId sonta -LogonType Interactive -RunLevel Highest) `
-       -Settings (New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan) -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries)
+  Memory. $HOME\.claude\projects\<slug>\memory\ is emptied for every
+  project, then the four agent folders get a MEMORY.md holding the single
+  memory line from the "Shared memory and shared CLAUDE.md" section of
+  CLAUDE.md; <slug> is the folder path with every \ and : replaced by -:
+    foreach ($p in Get-ChildItem $HOME\.claude\projects -Directory){ if (Test-Path "$($p.FullName)\memory") { [IO.Directory]::Delete("$($p.FullName)\memory", $true) } }
+    foreach ($slug in 'C--data-fearlessBranch1','C--data-fearlessBranch2','C--data-fearlessBranch3','C--data-winCoordinator'){ New-Item -ItemType Directory -Force "$HOME\.claude\projects\$slug\memory" | Out-Null; Set-Content "$HOME\.claude\projects\$slug\memory\MEMORY.md" -Value '<the memory line>' }
 
-8. Check: reboot. Within a few minutes four claude.exe processes run, one
-   per agent folder, and Get-ScheduledTask ClaudeAgentSupervisor reports
-   Running.
+  C:\data holds exactly AgentsCoordination, fearlessBranch1, fearlessBranch2,
+  fearlessBranch3, winCoordinator, tools and accounts.txt; delete everything
+  else in it. C:\data\winCoordinator holds exactly CLAUDE.md and logs\
+  (diagnostic.log, written by cleanup-watchdog.ps1); delete everything else
+  in it. Each fearlessBranchN holds exactly CLAUDE.md and the seven
+  repositories; delete everything else in it (.claude\, out\, .out\, ...).
+  The four CLAUDE.md files hold the single line from the "Shared memory and
+  shared CLAUDE.md" section of CLAUDE.md.
+  The seven repositories are cloned from the marcoautomation2 fork (origin)
+  with upstream set to the parent:
+    foreach ($r in 'Commons','Frontend','Coordinator','StandardLibrary','EclipsePlugin'){ git clone https://github.com/marcoautomation2/$r; git -C $r remote add upstream https://github.com/FearlessLang/$r }
+    foreach ($r in 'ZeroToHero','FearlessTour'){ git clone https://github.com/marcoautomation2/$r; git -C $r remote add upstream https://github.com/MarcoServetto/$r }
+  plus Coordinator\test\mainCoordinator\LocalResources.java: a copy of
+  LocalResourcesTemplate.java from the same folder with the class renamed to
+  LocalResources and
+    private static Path prefix= Path.of("C:\\").resolve("data","fearlessBranchN");
+  Then run the align-branches skill in each fearlessBranchN: it is the reset
+  for the seven repositories, and all a folder that already exists needs.
+
+  Startup. One scheduled task, at logon, no time limit, highest run level,
+  runs autoScripts\agent-supervisor.ps1: it starts the four agents and then,
+  for the rest of the boot, delivers each line of
+  autoScripts\scheduledTasks.txt at its time and runs
+  autoScripts\cleanup-watchdog.ps1 hourly. There is no other task; delete
+  every other Claude* task, then register it:
+    Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' -and $_.TaskName -ne 'ClaudeAgentSupervisor' } | Unregister-ScheduledTask -Confirm:$false
+    Register-ScheduledTask -TaskName ClaudeAgentSupervisor -Force `
+      -Action (New-ScheduledTaskAction -Execute powershell.exe -Argument '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\data\AgentsCoordination\autoScripts\agent-supervisor.ps1') `
+      -Trigger (New-ScheduledTaskTrigger -AtLogOn -User sonta) `
+      -Principal (New-ScheduledTaskPrincipal -UserId sonta -LogonType Interactive -RunLevel Highest) `
+      -Settings (New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan) -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries)
+
+  Reboot (Restart-Computer -Force). Within a few minutes four claude.exe
+  processes run, one per agent folder, and Get-ScheduledTask
+  ClaudeAgentSupervisor reports Running.
+
+Drift:
+  Between resets the machine deviates from this file on purpose; the user
+  reviews the deviations, case by case, and decides what is kept, what is
+  reverted and what is added here through a PR. What shows them:
+    git diff --no-index C:\data\AgentsCoordination\CLAUDE.md $HOME\.claude\CLAUDE.md
+    git diff --no-index --stat C:\data\AgentsCoordination\skills $HOME\.claude\skills
+    Get-ChildItem C:\data, C:\data\winCoordinator, C:\data\fearlessBranch* -Force   (against the lists above)
+    Get-ChildItem $HOME\.claude\commands, $HOME\.claude\agents, $HOME\.claude\projects\*\memory -ErrorAction SilentlyContinue
+    Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' }
+    Get-Content $HOME\.claude\settings.json
