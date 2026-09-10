@@ -43,10 +43,11 @@ Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/test/mainCoordinator/` (see "Fearless" below). 
 Whitelisted scripts:
 - the java scripts in `Coordinator/test/mainCoordinator/` (you can run them)
-- `C:\data\AgentsCoordination\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
 - `C:\data\AgentsCoordination\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
 - `C:\data\AgentsCoordination\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
+- `C:\data\AgentsCoordination\reset.ps1` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -94,6 +95,7 @@ tasks; directly, without asking. Anything writing to an agent's
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
 "Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\global_memory.txt'; add and remove from there when/if needed"
+Those files are the ones under `data\` and `home\` of AgentsCoordination; reset.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 
 
