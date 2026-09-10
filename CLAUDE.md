@@ -2,9 +2,10 @@ This Windows machine is dedicated to Claude: remote-controlled, nobody at the ke
 each in its own folder: win1 in `C:\data\fearlessBranch1`, win2 in
 `fearlessBranch2`, win3 in `fearlessBranch3`, winCoordinator in
 `C:\data\winCoordinator`.
-Every instruction, skill and script on this machine comes from the checkout of
+Every instruction, skill and script on this machine originally comes from the checkout of
 https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination`
-(its `installation.txt` says how the machine is built from it); changing any of them means a PR there.
+
+The current local copy can deviate from it, at regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
 
 # Never include history of events in skills and CLAUDE.md files
 
@@ -93,7 +94,7 @@ tasks; directly, without asking. Anything writing to an agent's
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
 "Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\global_memory.txt'; add and remove from there when/if needed"
-Changes to `global_memory.txt` are PRs to AgentsCoordination like any other change; a reset of the machine keeps only what is merged.
+Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 
 
 # Inter agent messaging
@@ -102,8 +103,7 @@ win1,win2,win3 and winCoordinator should not talk with each other.
 win1,win2,win3 and winCoordinator can talk with their sub agents and those can of course reply back.
 (The startup script is not an agent: the messages it delivers at their
 scheduled time are normal user input, and answering one is not talking to
-another agent. `C:\data\AgentsCoordination\autoScripts\scheduledTasks.txt` lists them,
-one `HH:MM, agentName, message` line per daily message.)
+another agent)
 Occasionally the user will explicitly ask to message another win1,win2,win3 and winCoordinator agent to delegate a specific task.
 This is ok when asked but:
 - provide full context on the task in one shot

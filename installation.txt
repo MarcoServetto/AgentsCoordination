@@ -1,53 +1,27 @@
-How this machine is built from this repository. Every step can be re-run
-to reset a drifted machine; only steps 1 and 2 need a person. The Windows
-user is sonta and every path below assumes it.
+How this machine is built from this repository.
 
-1. Accounts: C:\data\accounts.txt, written by hand, never committed. Every
-   entry is a label line followed by the value on the next line; the
-   recovery codes are the one block entry and come last. Labels, in order:
-     Email:
-     Email password:
-     GitHub user:
-     GitHub password:
-     GitHub token:
-     GitHub token scopes:
-     GitHub SSH key:
-     GitHub TOTP secret:
-     GitHub TOTP parameters:
-     GitHub recovery codes:
-   The token needs the scopes repo, workflow and read:org. Scripts read a
-   value with
-     $lines = Get-Content C:\data\accounts.txt
-     $i = [array]::IndexOf($lines, "GitHub token:")
-     $value = $lines[$i + 1].Trim()
+Preconditions:
+C:\data\accounts.txt is present.
+Display 1920x1080 at 150% scaling.
 
-2. Done once, interactively: Windows autologon (Sysinternals Autologon:
-   Autologon64.exe /accepteula sonta LAPTOP-UNAIQSPV <Windows password>),
-   Claude Code login (run claude once and log in), Brave logged in to
-   claude.ai (check_usage.ps1 reads the usage page from the default Brave
-   profile). Display 1920x1080 at 150% scaling (check_usage.ps1 crops a
-   fixed rectangle of the screenshot).
+Needed Tools, each at its default install path; only install if not present.
+  winget install Git.Git
+  winget install GitHub.cli
+  winget install Brave.Brave
+  winget install Notepad++.Notepad++
+  winget install UB-Mannheim.TesseractOCR
+  JDK 26 at C:\Program Files\Java\jdk-26.0.2, no JAVA_HOME
+  git config --global user.name marcoautomation2
+  git config --global user.email marcoautomation2@outlook.com
+  Eclipse at C:\data\tools\eclipse, for EclipsePlugin work (not installed, just the portable version)
 
-3. Tools, each at its default install path:
-     winget install Git.Git
-     winget install GitHub.cli
-     winget install Brave.Brave
-     winget install Notepad++.Notepad++
-     winget install UB-Mannheim.TesseractOCR
-     JDK 26 at C:\Program Files\Java\jdk-26.0.2, no JAVA_HOME
-     irm https://claude.ai/install.ps1 | iex
-       (claude.exe lands in %USERPROFILE%\.local\bin, which is on PATH)
-     git config --global user.name marcoautomation2
-     git config --global user.email marcoautomation2@outlook.com
-   Eclipse at C:\data\tools\eclipse, for EclipsePlugin work.
-
-4. This repository:
-     git clone https://github.com/marcoautomation2/AgentsCoordination C:\data\AgentsCoordination
-     git -C C:\data\AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
-   Reset it with
-     git -C C:\data\AgentsCoordination fetch upstream main
-     git -C C:\data\AgentsCoordination reset --hard upstream/main
-
+Actions:
+  git clone https://github.com/marcoautomation2/AgentsCoordination C:\data\AgentsCoordination
+  git -C C:\data\AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
+  Reset it with
+    git -C C:\data\AgentsCoordination fetch upstream main
+    git -C C:\data\AgentsCoordination reset --hard upstream/main
+//Here
 5. Claude Code reads its instructions and skills from %USERPROFILE%\.claude.
    Both point into the checkout, so resetting the checkout resets them:
      New-Item -ItemType SymbolicLink -Path $HOME\.claude\CLAUDE.md -Target C:\data\AgentsCoordination\CLAUDE.md -Force
