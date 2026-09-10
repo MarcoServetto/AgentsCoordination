@@ -1,0 +1,14 @@
+{
+  "env": {
+    "EDITOR": "notepad"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
+  "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "agentPushNotifEnabled": true,
+  "crossSessionInbound": "accept"
+}
