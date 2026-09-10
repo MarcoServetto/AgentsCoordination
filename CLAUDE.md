@@ -40,7 +40,9 @@ in `Coordinator/test/mainCoordinator/` (see "Fearless" below).
 Whitelisted scripts:
 - the java scripts in `Coordinator/test/mainCoordinator/` (you can run them)
 - `check_usage.ps1` (you can run it as part of the skill)
-- `startup_script.ps1` (runs automatically, you can inspect it and fix it when asked)
+- `C:\data\autoScripts\agent-supervisor.ps1` (runs automatically, you can inspect it and fix it when asked)
+- `C:\data\autoScripts\agent-supervisor.ps1` (runs automatically, you can inspect it and fix it when asked)
+- `C:\data\autoScripts\cleanup-watchdog.ps1` (called by the above)
 - align-branches.ps1 (you can run it as part of the skill)
 - `cleanup-watchdog.ps1` (runs automatically, you can inspect it and fix it when asked)
 
@@ -82,7 +84,7 @@ Everything on this machine is disposable, all the important data is kept on the 
 
 Every agent session runs elevated (the logon tasks are RunLevel Highest).
 Install, uninstall, write HKLM and Program Files, manage services, register
-tasks — directly, without asking. Anything writing to an agent's
+tasks; directly, without asking. Anything writing to an agent's
 `\\.\pipe\LOCAL\cc-msg-*` pipe must itself run at high integrity.
 
 # Shared memory and shared CLAUDE.md
@@ -200,7 +202,7 @@ built application image)
 
 ## Java
 
-JDK 26 at `C:\Program Files\Java\jdk-26.0.2` — quote the path and use the
+JDK 26 at `C:\Program Files\Java\jdk-26.0.2`; quote the path and use the
 call operator: `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea ...`.
 `JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
 
@@ -229,7 +231,7 @@ one unconditional guard; the rest compose inside `assert`),
 
 ## Offensive programming
 
-Offensive programming is good, defensive programming is bad — including
+Offensive programming is good, defensive programming is bad; including
 implicit offensive programming (letting a bad input fail loudly on its own
 rather than guarding against it).
 
@@ -267,7 +269,7 @@ public static final String allowed=
   " \n";
 ```
 (mirrored in `Fs.allowed`). Modern Java: streams, lambdas, optionals; no
-long inline lambdas — declare a method (`this::foo`, or
+long inline lambdas; declare a method (`this::foo`, or
 `(a,b)->foo(a,b,c,d)`); a lambda needing several statements or returns is
 too big.
 Switch expressions are good, but factor out a sub-method instead of using `yield`.
@@ -285,7 +287,7 @@ The user will be responsible for adding and removing comments, often to flag som
 ## Minimality
 
 Code must be as small as possible; readability is not a concern. Small code
-means the whole codebase can be read — when reasonable, read all of it
+means the whole codebase can be read; when reasonable, read all of it
 before a task. 
 
 Don't pass extracted/generated data across chains of method calls: pass one unit of information and
@@ -325,13 +327,13 @@ code, stop and ask, stating the tradeoff plainly. If it cannot be done without b
 ## Conventions
 
 Most code out there is bad code; conventions are only sometimes right. In
-those projects going against convention is deliberate — embrace the
+those projects going against convention is deliberate; embrace the
 unconventional setup rather than drifting toward "normal" code. Java is a
 tool: rely on its formal semantics, not on its recommended usage.
 
 ## Names, messages, tests
 
-- Never put Marco's name — or any real person's — in code, tests, mock data
+- Never put Marco's name or any real person's in code, tests, mock data
   or commit messages; Try to avoid examples requiring person names.
 - When reasonable, avoid naming tools that just so happens to be used, like 'eclipse', 'windows', 'firefox' etc. For example `junit_xml` is good, `eclipse_junit_xml` is bad.
 
