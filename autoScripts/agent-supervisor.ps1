@@ -55,7 +55,7 @@ function check_action() {
 
 while ($true) {
   try {
-    Invoke-WebRequest -Uri 'https://api.anthropic.com/' -TimeoutSec 10 -UseBasicParsing | Out-Null
+    (New-Object Net.Sockets.TcpClient('api.anthropic.com', 443)).Dispose()
     break
   } catch {
     Start-Sleep -Seconds 5
