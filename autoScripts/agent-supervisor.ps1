@@ -76,7 +76,7 @@ try {
     if ($res -eq -1) { break }
     if (((Get-Date) - $lastCleanup).TotalHours -ge 1) {
       $lastCleanup = Get-Date
-      $cleanup
+      & $cleanup
     }
     Start-Sleep -Seconds ($res * 60)
   }

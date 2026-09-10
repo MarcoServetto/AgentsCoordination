@@ -1,5 +1,7 @@
 Each test is independent: its Setup line alone reaches its starting
 state, regardless of which other tests ran.
+TODO: Names: The example fearless projects should instead point to the
+StandardLibrary/integrationTests/{helloWorld, mainInMethod, testGui1} code, that in turn should be adapted if needed to run in this set up.
 
 FIXTURES
 clean = fearlessManaged0_001w.exe not running; manager data folder

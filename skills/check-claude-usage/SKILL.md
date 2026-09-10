@@ -1,6 +1,6 @@
 ---
 name: check-claude-usage
-description: Read Marco's current Anthropic usage limits — the rolling ~5-hour "Current session" by opening the page in the logged-in browser on this machine, screenshotting it and OCRing the numbers.
+description: Read the current Anthropic usage limits, both the rolling ~5-hour "Current session" and the "Weekly limits", by opening the page in the logged-in browser on this machine, screenshotting it and OCRing the numbers.
 ---
 # Checking claude.ai usage limits
 

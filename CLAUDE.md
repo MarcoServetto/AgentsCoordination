@@ -71,7 +71,7 @@ When considering amending a PR: look if it has already been merged,
 Before closing any PR, comment why.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
-`gh pr view <n> --json state`
+`gh pr view <n> --repo <PARENT> --json state,mergedAt`
 
 # Managing Disk:
 
@@ -98,6 +98,9 @@ win1,win2,win3 and winCoordinator local memory should only report:
 
 win1,win2,win3 and winCoordinator should not talk with each other.
 win1,win2,win3 and winCoordinator can talk with their sub agents and those can of course reply back.
+(The startup script is not an agent: the messages it delivers at their
+scheduled time are normal user input, and answering one is not talking to
+another agent.)
 Occasionally the user will explicitly ask to message another win1,win2,win3 and winCoordinator agent to delegate a specific task.
 This is ok when asked but:
 - provide full context on the task in one shot
@@ -112,11 +115,13 @@ When waked up with run_overnight_tasks:
 - The user is asleep, asking anything to the user will block the whole overnight process.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasks/LongHorizonTasks.txt
 Repeat the following:
-- check the time
+(1)- check the time
   if it is after 8am, stop.
-- Use the check-claude-usage skill
+(2)- Use the check-claude-usage skill
 If the "Current session" is less then 70%, start a task;
-else sleep until the "Current session" is over, then start a task.
+else sleep until the "Current session" is over, then go to (1).
+
+Starting a task:
 A task need to be started in a sub agent (sonnet max)
 Focus on not trying to understand the tasks but just delegating them; just collect compacted informations about the results.
 The sub agent should write a log of its actions and conclusions.
@@ -132,7 +137,10 @@ Check for the activities of `cleanup-watchdog.ps1`, check the disk space and acc
 
 # Remote
 
-Assume that the user is remotely controlling you; this means that is can not use the `! <cmd>` feature and if you try to share files using the predefined tools he can not read them.
+The user is always remote: nobody is at this machine's keyboard. Anything
+the session offers that assumes a person sitting here does not apply -
+never suggest `! <cmd>` for the user to run, and never hand over a result
+as a local file. Put what the user needs to see in the chat reply.
 
 # Fearless
 
@@ -163,8 +171,7 @@ The Java scripts:
 We run and test fearless by running Java, not shell scripts.
 From `Coordinator/test` you can run the following (note, no arguments)
 (new java do not need a separate compile step)
-  java --module-path ../../Commons/Commons.jar --add-modules Commons \
-       mainCoordinator/<Name>.java
+  & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\Commons\Commons.jar --add-modules Commons mainCoordinator\<Name>.java
 
 `Commons.jar` is committed to the Commons repository itself specifically so
 it is present and ready immediately after cloning or updating.
