@@ -109,9 +109,9 @@ Changes to `global_memory.txt` are local and are unlikely to cause a PRs to Agen
 
 win1,win2,win3 and winCoordinator should not talk with each other.
 win1,win2,win3 and winCoordinator can talk with their sub agents and those can of course reply back.
-(The startup script is not an agent: it delivers `scheduledTasks.txt`
-messages as an unidentified session at their scheduled time, those are
-normal user input, and answering one is not talking to another agent)
+(The startup script is not an agent: the messages it delivers at their
+scheduled time are normal user input, and answering one is not talking to
+another agent)
 Occasionally the user will explicitly ask to message another win1,win2,win3 and winCoordinator agent to delegate a specific task.
 This is ok when asked but:
 - provide full context on the task in one shot
@@ -167,7 +167,7 @@ CLAUDE.md or any Claude-local config into them.
 
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
-Note the file `Coordinator\Build\src\resources\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy; it is the only place local paths are ever filled in, and it also locates Controllers.
+Note the file `Coordinator\Build\src\resources\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy.
 Details:
 
 Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.
