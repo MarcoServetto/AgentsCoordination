@@ -291,6 +291,8 @@ Instead we should assert equal length first.
 Offensive assertions need no message: `return Objects.requireNonNull(image);`
 or just `return image;`, not `assert image != null: "load() runs first"`. 
 
+`assert x!=null;`, `Objects.requireNonNull(x)` and `Require.nonNull(x)` are all correct offensive checks; good to use in different roles (requireNonNull returns the value, Require.nonNull allows for multiple checks all together).
+
 Graceful degradation is the enemy: immediate hard failures, via assertions when reasonable.
 
 ## Style
