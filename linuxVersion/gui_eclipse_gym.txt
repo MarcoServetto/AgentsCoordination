@@ -1,0 +1,8 @@
+Findings on operating Eclipse like a human would. General GUI findings are in gui_gym.txt.
+
+= Checking a clean start without a screenshot =
+
+Eclipse writes a workspace .metadata/.log the moment a plugin throws during
+startup: a live process, an absent or unchanged .log after several minutes,
+and no ERROR lines in its -consolelog stdout are partial evidence it started
+clean even without a screenshot.

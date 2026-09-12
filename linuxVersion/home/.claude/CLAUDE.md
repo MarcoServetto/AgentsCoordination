@@ -1,9 +1,9 @@
-This Windows machine is dedicated to Claude: remote-controlled, nobody at the keyboard. Four agents run here,
-each in its own folder: win1 in `C:\data\fearlessBranch1`, win2 in
-`fearlessBranch2`, win3 in `fearlessBranch3`, winCoordinator in
-`C:\data\winCoordinator`.
-Every instruction, skill and script on this machine originally comes from the `windowsVersion\` folder of the checkout of
-https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination` (`linuxVersion\` describes the Linux machine).
+This Ubuntu machine is dedicated to Claude: remote-controlled, nobody at the keyboard. Four agents run here,
+each in its own folder: linux1 in `/data/fearlessBranch1`, linux2 in
+`fearlessBranch2`, linux3 in `fearlessBranch3`, linuxCoordinator in
+`/data/linuxCoordinator`.
+Every instruction, skill and script on this machine originally comes from the `linuxVersion/` folder of the checkout of
+https://github.com/MarcoServetto/AgentsCoordination at `/data/AgentsCoordination` (`windowsVersion/` describes the Windows machine).
 
 The current local copy can deviate from it, at regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
 
@@ -37,24 +37,19 @@ https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
 Fearless guide and game to teach fearless.
 
-# Fearless paper
-
-`C:\data\fearlessPaper\Fearless_TOPLAS\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
-Its type system and `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
-
 # Scripts
 
 Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/Build/src/scripts/` (see "Fearless" below).
 Whitelisted scripts:
 - the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
-- `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\windowsVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
-- `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
-- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/home/.claude/skills/check-claude-usage/check_usage.sh` (you can run it as part of the skill)
+- `/data/AgentsCoordination/linuxVersion/home/.claude/skills/align-branches/align-branches.sh` (you can run it as part of the skill)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
+- `/data/AgentsCoordination/linuxVersion/reset.sh` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 
-Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
+Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
 
 # Character set:
@@ -67,10 +62,11 @@ This is a soft rule and there are plenty of reasons a task may require to use ot
 
 # Accounts
 
-We keep the description of your email and github accounts in 'C:\data\accounts.txt'
+We keep the description of your email and github accounts in '/data/accounts.txt'
 
 These are yours: commit, push, open issues and PRs as this identity without
-asking. Password, token and 2FA all live in 'C:\data\accounts.txt'
+asking. Password, token and 2FA all live in '/data/accounts.txt'. `gh` is
+logged in with the token and git pushes over HTTPS through it.
 
 # PRs:
 When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto).
@@ -84,35 +80,35 @@ Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomati
 
 # Managing Disk:
 
-`C:\Users\sonta\Desktop\MarcoLeftovers` holds Marco's own files. Never move, modify or delete anything in it.
-Everything else on the machine is fair game; prefer `C:\data` (short paths, no spaces).
+`~/Desktop/MarcoLeftovers` holds Marco's own files. Never move, modify or delete anything in it.
+Everything else on the machine is fair game; prefer `/data` (short paths, no spaces).
 
 Everything on this machine is disposable, all the important data is kept on the original repositories.
 
 # Elevation
 
-Every agent session runs elevated (the logon tasks are RunLevel Highest).
-Install, uninstall, write HKLM and Program Files, manage services, register
-tasks; directly, without asking. Anything writing to an agent's
-`\\.\pipe\LOCAL\cc-msg-*` pipe must itself run at high integrity.
+agentubuntu has passwordless sudo. Install, uninstall, write /etc and
+/opt, manage services, register autostart entries; directly, without
+asking. Anything writing to an agent's `/run/user/1000/cc-socks/<pid>.sock`
+socket must run as agentubuntu.
 
 # Shared memory and shared CLAUDE.md
 
-win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
-win1,win2,win3 and winCoordinator local memory should only report:
-"Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\windowsVersion\global_memory.txt'; add and remove from there when/if needed"
-Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset.ps1 writes them.
+linux1,linux2,linux3 and linuxCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
+linux1,linux2,linux3 and linuxCoordinator local memory should only report:
+"Do not use this local memory, all the data is in '/data/AgentsCoordination/linuxVersion/global_memory.txt'; add and remove from there when/if needed"
+Those files are the ones under `linuxVersion/data/` and `linuxVersion/home/` of AgentsCoordination; reset.sh writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 
 
 # Inter agent messaging
 
-win1,win2,win3 and winCoordinator should not talk with each other.
-win1,win2,win3 and winCoordinator can talk with their sub agents and those can of course reply back.
+linux1,linux2,linux3 and linuxCoordinator should not talk with each other.
+linux1,linux2,linux3 and linuxCoordinator can talk with their sub agents and those can of course reply back.
 (The startup script is not an agent: it delivers `scheduledTasks.txt`
 messages as an unidentified session at their scheduled time, those are
 normal user input, and answering one is not talking to another agent)
-Occasionally the user will explicitly ask to message another win1,win2,win3 and winCoordinator agent to delegate a specific task.
+Occasionally the user will explicitly ask to message another linux1,linux2,linux3 and linuxCoordinator agent to delegate a specific task.
 This is ok when asked but:
 - provide full context on the task in one shot
 - do not ask anything back
@@ -121,10 +117,10 @@ This is ok when asked but:
 
 # Overnight tasks
 
-win3 takes care of overnight tasks.
+linux3 takes care of overnight tasks.
 When woken up with run_overnight_tasks:
 - The user is asleep, asking anything to the user will block the whole overnight process.
-- read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasks/LongHorizonTasks.txt
+- read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksLinux/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
 Repeat the following:
 (1)- check the time
@@ -138,17 +134,17 @@ A task need to be started in a sub agent (sonnet max)
 Focus on not trying to understand the tasks but just delegating them; just collect compacted informations about the results.
 The sub agent should write a log of its actions and conclusions.
 The task will contain info on how to communicate the results to the user.
-If a task needs discussion in the morning, the user should ask to delegate it to win1/win2; give full context by pointing to the logs of the sub agent.
+If a task needs discussion in the morning, the user should ask to delegate it to linux1/linux2; give full context by pointing to the logs of the sub agent.
 
 After stopping because no more tasks, no more time or some other reason, do a PR to ZeroToHero moving the done tasks into the done file, and the text of the PR should be a report on what happened in the night.
 
 
-# Machine-health review (winCoordinator)
+# Machine-health review (linuxCoordinator)
 
 When you receive run_daily_check_up
 check the general machine health.
-Check for the activities of `cleanup-watchdog.ps1` in `C:\data\winCoordinator\logs\diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
-A bare `scheduler_failed` message means the polling loop of `agent-supervisor.ps1` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Report it the same way.
+Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
+A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Report it the same way.
 
 # Remote
 
@@ -167,7 +163,7 @@ CLAUDE.md or any Claude-local config into them.
 
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
-Note the file `Coordinator\Build\src\resources\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy; it is the only place local paths are ever filled in, and it also locates Controllers.
+Note the file `Coordinator/Build/src/resources/LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy; it is the only place local paths are ever filled in, and it also locates Controllers.
 Details:
 
 Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.
@@ -186,7 +182,7 @@ The Java scripts:
 We run and test fearless by running Java, not shell scripts.
 From `Coordinator/Build/src` you can run the following (note, no arguments)
 (new java do not need a separate compile step)
-  & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\<Name>.java
+  java -ea --module-path ../../../Commons/Commons.jar --add-modules Commons scripts/<Name>.java
 `Coordinator/Build` is the build tool for all the repos, written in Java and
 compiled by nothing but this source launcher; `Build/src/resources` is also
 compiled into Coordinator's tests, which read paths from it.
@@ -241,23 +237,22 @@ built application image)
 
 ## Java
 
-JDK 26 at `C:\Program Files\Java\jdk-26.0.2`; quote the path and use the
-call operator: `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea ...`.
-`JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
+JDK 26 at `/usr/lib/jvm/java-26-openjdk-amd64`, and `java` on the PATH is
+that one. `JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
 
 
 ## StandardLibrary API docs
 
 Compiling a Fearless package writes `<pkg>.txt`: a plain-text rendering of types, signatures and doc comments meant for agents.
 Example locations:
-C:\data\fearlessBranch1\StandardLibrary\dbgOut\baseCache\base.txt
-C:\data\fearlessBranch2\StandardLibrary\fearlessArtefact\fearlessBin0_001\app\stdLib\baseCache\base.txt
-C:\data\fearlessBranch2\StandardLibrary\integrationTests\helloWorld\.fearless_out\gen_java\hello.txt
+/data/fearlessBranch1/StandardLibrary/dbgOut/baseCache/base.txt
+/data/fearlessBranch2/StandardLibrary/fearlessArtefact/fearlessBin0_001/app/stdLib/baseCache/base.txt
+/data/fearlessBranch2/StandardLibrary/integrationTests/helloWorld/.fearless_out/gen_java/hello.txt
 
 
 ## Commons
 
-Prefer `Commons\src\{utils,offensiveUtils,tools}` over rolling your own;
+Prefer `Commons/src/{utils,offensiveUtils,tools}` over rolling your own;
 `Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element; use it instead of `findFirst` whenever one result is assumed), `Join`, `Push`, `Pop`, `Range`, `Box`, `GetO`, `Mapper`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
 `Err` (test matcher with `[###]` holes), `Pos`, `ThrowingConsumer`/
 `ThrowingFunction`, `UriSort`. `offensiveUtils`: `Require` (`check` is the
@@ -391,8 +386,8 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a 'C:\data\AgentsCoordination\windowsVersion\gui_gym.txt' where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
-`Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does, through java.awt.Robot here; prefer it over ad hoc input injection when a test needs real pointer or keyboard input.
+We are keeping a '/data/AgentsCoordination/linuxVersion/gui_gym.txt' where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
+`Controllers/src/agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does, through mutter's RemoteDesktop and ScreenCast session-bus API here; prefer it over ad hoc input injection when a test needs real pointer or keyboard input.
 
 
 ## Automated tests.
@@ -400,16 +395,16 @@ We are keeping a 'C:\data\AgentsCoordination\windowsVersion\gui_gym.txt' where w
 Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
-Only run `C:\data\AgentsCoordination\windowsVersion\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
+Only run `/data/AgentsCoordination/linuxVersion/fearlessManagerAutomatedGuiTests/allTests.txt` when asked, since it takes one hour.
 
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
 # Running commands
 
-The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
-- Under `$ErrorActionPreference = 'Stop'`, every stderr line of a native command whose stderr is redirected (`2>$null`, `2>file`) is a terminating error; leave a native command's stderr alone.
-- An argument to a native executable holding both spaces and double quotes is split at the quotes: ask `gh` for `--json` and parse with `ConvertFrom-Json` rather than passing a `--jq` expression with quotes in it.
-- Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
-- The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
+The Bash tool is bash, with no stdin, and each call starts in the session's working directory:
+- Shell state (variables, functions, `cd`) does not persist between calls; use absolute paths.
+- Multi-line text for a command goes through a file or a heredoc (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
+- Ask `gh` for `--json` and parse with `jq` or `python3 -c`.
+- The desktop session is GNOME on Wayland: `DISPLAY`, `WAYLAND_DISPLAY` and `XDG_RUNTIME_DIR` are set in every agent session, so GUI programs started from Bash open on the display.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.

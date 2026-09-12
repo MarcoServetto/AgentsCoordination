@@ -1,0 +1,37 @@
+How an agent running on this machine resets it to the state the
+linuxVersion/ folder of this repository describes. reset.sh deletes what
+the folder does not describe, copies the folder's home/ tree over
+$HOME and its data/ tree over /data, aligns the seven Fearless repositories in each
+fearlessBranchN, registers the one autostart entry, and reboots.
+
+Preconditions:
+/data/accounts.txt is present.
+Display 1920x1080, GNOME on Wayland.
+GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
+screen blanking, locking and suspend are off; agentubuntu has passwordless sudo.
+The machine is on WiFi (Intel AX211, iwlwifi); its firmware crashes under load
+with power saving on, so it is off: /etc/NetworkManager/conf.d/wifi-powersave-off.conf
+([connection] wifi.powersave = 2), /etc/modprobe.d/iwlwifi-stability.conf
+(options iwlwifi power_save=0; options iwlmvm power_scheme=1) and
+/etc/sysctl.d/90-tcp-mtu-probing.conf (net.ipv4.tcp_mtu_probing = 1, the uplink is PPPoE with path MTU 1492).
+Claude Code is installed at ~/.local/bin/claude and logged in to claude.ai.
+
+Needed Tools, each at its default install path; only install if not present.
+  sudo apt-get install git gh jq curl tmux fakeroot
+  sudo apt-get install poppler-utils (pdftoppm: lets the Read tool render PDF pages)
+  sudo apt-get install openjdk-26-jdk  (JDK 26 at /usr/lib/jvm/java-26-openjdk-amd64, no JAVA_HOME)
+  git config --global user.name marcoautomation2
+  git config --global user.email marcoautomation2@outlook.com
+  git config --global core.autocrlf false
+  git config --global http.version HTTP/1.1
+  gh auth login --with-token < (the GitHub token line of /data/accounts.txt); gh auth setup-git
+  Eclipse at /data/tools/eclipse, for Controllers work (not installed, just the portable version)
+
+Actions:
+  Once:
+    git clone https://github.com/marcoautomation2/AgentsCoordination /data/AgentsCoordination
+    git -C /data/AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
+  Every reset:
+    git -C /data/AgentsCoordination fetch upstream main
+    git -C /data/AgentsCoordination reset --hard upstream/main
+    /data/AgentsCoordination/linuxVersion/reset.sh
