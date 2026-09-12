@@ -12,7 +12,7 @@ function Run([string]$exe, [string[]]$cmdArgs) {
 
 $parents = [ordered]@{
   Commons = "FearlessLang"; Frontend = "FearlessLang"; Coordinator = "FearlessLang"
-  StandardLibrary = "FearlessLang"; EclipsePlugin = "FearlessLang"
+  StandardLibrary = "FearlessLang"; Controllers = "FearlessLang"
   ZeroToHero = "MarcoServetto"; FearlessTour = "MarcoServetto"
 }
 foreach ($repo in $parents.Keys) {
@@ -21,7 +21,7 @@ foreach ($repo in $parents.Keys) {
   Run git @("-C", $repo, "config", "core.autocrlf", "false")
   Run git @("-C", $repo, "fetch", "origin", "main")
   Run git @("-C", $repo, "checkout", "--force", "-B", "main", "origin/main")
-  Run git @("-C", $repo, "clean", "-x", "-d", "--force", "-e", "test/mainCoordinator/LocalResources.java")
+  Run git @("-C", $repo, "clean", "-x", "-d", "--force", "-e", "Build/src/resources/LocalResources.java")
 }
 
 if (Test-Path out) { Remove-Item -Recurse -Force out }

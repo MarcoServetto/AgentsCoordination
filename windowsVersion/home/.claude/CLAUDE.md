@@ -2,8 +2,8 @@ This Windows machine is dedicated to Claude: remote-controlled, nobody at the ke
 each in its own folder: win1 in `C:\data\fearlessBranch1`, win2 in
 `fearlessBranch2`, win3 in `fearlessBranch3`, winCoordinator in
 `C:\data\winCoordinator`.
-Every instruction, skill and script on this machine originally comes from the checkout of
-https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination`
+Every instruction, skill and script on this machine originally comes from the `windowsVersion\` folder of the checkout of
+https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination` (`linuxVersion\` describes the Linux machine).
 
 The current local copy can deviate from it, at regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
 
@@ -30,24 +30,34 @@ https://github.com/FearlessLang/Commons
 https://github.com/FearlessLang/StandardLibrary
 The four main Fearless repositories.
 
-https://github.com/FearlessLang/EclipsePlugin
-Eclipse plugin for fearless.
+https://github.com/FearlessLang/Controllers
+Eclipse plugin for fearless, and the Controller module (depends on
+Coordinator) that the Managed Fearless GUI is built from.
 
 https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
 Fearless guide and game to teach fearless.
 
+# Fearless paper
+
+`C:\data\fearlessPaper` holds the TOPLAS paper formalizing Fearless, copied from the USB stick:
+`Fearless_TOPLAS.zip` (the Overleaf project export), `Fearless_TOPLAS.pdf` (its expected output) and
+`Fearless_TOPLAS\` (the export extracted into a local git repository whose first commit is the pristine export, so `git diff` shows every local change).
+Any agent can work on it. Build from inside `Fearless_TOPLAS\` with
+`latexmk -pdf --shell-escape -interaction=nonstopmode main.tex` (MiKTeX fetches missing packages on demand).
+The type system in `appendix_formalism_bounds_hyg.tex` and the one in `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
+
 # Scripts
 
 Building, testing and packaging Fearless is done only by the Java programs
-in `Coordinator/test/mainCoordinator/` (see "Fearless" below). 
+in `Coordinator/Build/src/scripts/` (see "Fearless" below).
 Whitelisted scripts:
-- the java scripts in `Coordinator/test/mainCoordinator/` (you can run them)
-- `C:\data\AgentsCoordination\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
-- `C:\data\AgentsCoordination\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
-- `C:\data\AgentsCoordination\reset.ps1` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
+- `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\windowsVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
+- `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
+- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -72,6 +82,7 @@ When asked to make a PR, it means on the upstream parent org (FearlessLang, Marc
 When considering making a new PR: look if we can just amend the existing PR instead.
 When considering amending a PR: look if it has already been merged,
 Before closing any PR, comment why.
+There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
 `gh pr view <n> --repo <PARENT> --json state,mergedAt`
@@ -94,8 +105,8 @@ tasks; directly, without asking. Anything writing to an agent's
 
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
-"Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\global_memory.txt'; add and remove from there when/if needed"
-Those files are the ones under `data\` and `home\` of AgentsCoordination; reset.ps1 writes them.
+"Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\windowsVersion\global_memory.txt'; add and remove from there when/if needed"
+Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 
 
@@ -133,6 +144,8 @@ The sub agent should write a log of its actions and conclusions.
 The task will contain info on how to communicate the results to the user.
 If a task needs discussion in the morning, the user should ask to delegate it to win1/win2; give full context by pointing to the logs of the sub agent.
 
+After stopping because no more tasks, no more time or some other reason, do a PR to ZeroToHero moving the done tasks into the done file, and the text of the PR should be a report on what happened in the night.
+
 
 # Machine-health review (winCoordinator)
 
@@ -152,20 +165,20 @@ as a local file. Put what the user needs to see in the chat reply.
 
 Seven sibling repos per working copy, each with `origin` = the
 marcoautomation2 fork and `upstream` = the parent org: `FearlessLang/<name>`
-for Commons, Frontend, Coordinator, StandardLibrary, EclipsePlugin;
+for Commons, Frontend, Coordinator, StandardLibrary, Controllers;
 `MarcoServetto/<name>` for ZeroToHero, FearlessTour. Never commit a
 CLAUDE.md or any Claude-local config into them.
 
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
-Note the file `Coordinator\test\mainCoordinator\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` with `prefix` set to the branch folder) must exist in each working copy.
+Note the file `Coordinator\Build\src\resources\LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy.
 Details:
 
 Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.
 Frontend         the Fearless language frontend (parser, name resolution, type inference). Depends on Commons.
 Coordinator      the compiler backend, CLI, and the desktop project manager GUI. Depends on Commons and Frontend.
 StandardLibrary  Fearless SOURCE code, not Java: the language's own base library ("base"), its runtime ("rt"), and a folder of integration-test Fearless projects. This is compiled and run BY Coordinator, not built with javac.
-EclipsePlugin    an eclipse plugin for fearless
+Controllers      an eclipse plugin for fearless; also the Controller module (depends on Coordinator) that DeployManagedFearless builds into the Managed Fearless GUI
 ZeroToHero       Game to teach fearless and overall scratch pad for a lot of stuff.
 FearlessTour     a guide to teach fearless (including tests to run to check consistency with the current state of the language)
 
@@ -175,9 +188,9 @@ tests compare generated output against expected text byte for byte. All the repo
 
 The Java scripts:
 We run and test fearless by running Java, not shell scripts.
-From `Coordinator/test` you can run the following (note, no arguments)
+From `Coordinator/Build/src` you can run the following (note, no arguments)
 (new java do not need a separate compile step)
-  & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\Commons\Commons.jar --add-modules Commons mainCoordinator\<Name>.java
+  & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\<Name>.java
 
 `Commons.jar` is committed to the Commons repository itself specifically so
 it is present and ready immediately after cloning or updating.
@@ -197,6 +210,18 @@ If a PR changes the logical content of Commons, a new Commons.jar needs to be ad
     Builds and runs everything the previous two programs do, PLUS
     Coordinator's `integrationTests` package. Slow - minutes, not seconds.
 
+  TestAllController.java
+    Builds Commons, Frontend, Coordinator, and Controllers (the `Controller`
+    module, which depends on Coordinator), and runs Controllers' JUnit test
+    suite except its `agentTools` package. Fast.
+
+  TestAgentTools.java
+    Same build, then only Controllers' `agentTools` tests: `DesktopDragTest`
+    drives the real desktop through `agentTools.Pilot` (pointer, keys,
+    screenshots), opening two folder windows on the Desktop and dragging a
+    file between them. It takes the pointer and keyboard away from every
+    agent on this shared desktop: run it only when asked.
+
   DeployPortableFearless.java
     Builds a self-contained, runnable application image of the Fearless
     compiler/runner (the "portable" build). It also invokes jlink and
@@ -204,8 +229,10 @@ If a PR changes the logical content of Commons, a new Commons.jar needs to be ad
   (When testing, note that the portable binary needs a project folder as its argument; with none it opens a welcome GUI and never exits)
 
   DeployManagedFearless.java
-    Builds a self-contained, runnable application image of the Fearless
-    manager GUI. It also invokes jlink and jpackage.
+    Builds Commons, Frontend, Coordinator and Controllers, then packages
+    them into a self-contained, runnable application image of the Managed
+    Fearless GUI (entry point `Controller/controller.Main`). It also invokes
+    jlink and jpackage.
 
 Every dependency jar they need is already checked in, nothing needs a separate download - but from two different folders, kept deliberately separate:
 `Coordinator/externalJars/` (what a *running* Fearless program needs, ends up bundled inside DeployPortableFearless/DeployManagedFearless's
@@ -365,15 +392,19 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a 'C:\data\AgentsCoordination\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
+We are keeping a 'C:\data\AgentsCoordination\windowsVersion\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
+`Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does, through java.awt.Robot here; prefer it over ad hoc input injection when a test needs real pointer or keyboard input.
 
 
 ## Automated tests.
 
-Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java
+Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
-Only run `C:\data\AgentsCoordination\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
+Only run `C:\data\AgentsCoordination\windowsVersion\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
+
+# Think, do not jump to probing
+You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
 # Running commands
 

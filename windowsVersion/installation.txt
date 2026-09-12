@@ -1,11 +1,12 @@
-How an agent running on this machine resets it to the state this
-repository describes. reset.ps1 deletes what the repository does not
-describe, copies the repository's home\ tree over %USERPROFILE% and its
-data\ tree over C:\data, aligns the seven Fearless repositories in each
+How an agent running on this machine resets it to the state the
+windowsVersion\ folder of this repository describes. reset.ps1 deletes what
+the folder does not describe, copies the folder's home\ tree over
+%USERPROFILE% and its data\ tree over C:\data, aligns the seven Fearless repositories in each
 fearlessBranchN, registers the one scheduled task, and reboots.
 
 Preconditions:
 C:\data\accounts.txt is present.
+C:\data\fearlessPaper\Fearless_TOPLAS.zip and Fearless_TOPLAS.pdf are present (copied from the USB stick; see CLAUDE.md "Fearless paper").
 Display 1920x1080 at 150% scaling.
 Windows logs sonta in at boot; Brave is logged in to claude.ai.
 
@@ -15,11 +16,14 @@ Needed Tools, each at its default install path; only install if not present.
   winget install Brave.Brave
   winget install Notepad++.Notepad++
   winget install UB-Mannheim.TesseractOCR
+  winget install MiKTeX.MiKTeX (scope machine, then initexmf --admin --set-config-value="[MPM]AutoInstall=1")
+  winget install StrawberryPerl.StrawberryPerl (latexmk needs perl)
+  winget install oschwartz10612.Poppler (pdftoppm: lets the Read tool render PDF pages)
   JDK 26 at C:\Program Files\Java\jdk-26.0.2, no JAVA_HOME
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false
-  Eclipse at C:\data\tools\eclipse, for EclipsePlugin work (not installed, just the portable version)
+  Eclipse at C:\data\tools\eclipse, for Controllers work (not installed, just the portable version)
 
 Actions:
   Once:
@@ -28,4 +32,4 @@ Actions:
   Every reset:
     git -C C:\data\AgentsCoordination fetch upstream main
     git -C C:\data\AgentsCoordination reset --hard upstream/main
-    & C:\data\AgentsCoordination\reset.ps1
+    & C:\data\AgentsCoordination\windowsVersion\reset.ps1

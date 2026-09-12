@@ -16,11 +16,11 @@ function Run([string]$exe, [string[]]$cmdArgs) {
 
 $parents = [ordered]@{
   Commons = "FearlessLang"; Frontend = "FearlessLang"; Coordinator = "FearlessLang"
-  StandardLibrary = "FearlessLang"; EclipsePlugin = "FearlessLang"
+  StandardLibrary = "FearlessLang"; Controllers = "FearlessLang"
   ZeroToHero = "MarcoServetto"; FearlessTour = "MarcoServetto"
 }
 $branches = 'fearlessBranch1', 'fearlessBranch2', 'fearlessBranch3'
-$keep = @('AgentsCoordination', 'winCoordinator', 'tools', 'accounts.txt') + $branches
+$keep = @('AgentsCoordination', 'winCoordinator', 'tools', 'fearlessPaper', 'accounts.txt') + $branches
 
 foreach ($item in Get-ChildItem $data -Force) { if ($keep -notcontains $item.Name) { Nuke $item.FullName } }
 New-Item -ItemType Directory -Force -Path "$data\winCoordinator" | Out-Null
