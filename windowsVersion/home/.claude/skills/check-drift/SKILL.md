@@ -1,17 +1,17 @@
 ---
 name: check-drift
-description: List how this machine deviates from the state described by C:\data\AgentsCoordination, which is what reset.ps1 would delete or overwrite, so the user can decide what to keep, what to revert and what to add to the repository. Read-only.
+description: List how this machine deviates from the state described by C:\data\AgentsCoordination\windowsVersion, which is what reset.ps1 would delete or overwrite, so the user can decide what to keep, what to revert and what to add to the repository. Read-only.
 ---
 
 # Checking the drift
 
-The drift is what `C:\data\AgentsCoordination\reset.ps1` would delete or
+The drift is what `C:\data\AgentsCoordination\windowsVersion\reset.ps1` would delete or
 overwrite. Collect it with the commands below, then report a numbered list,
 one line per deviation (the path and what differs); change nothing.
 
 ```powershell
-$repo = 'C:\data\AgentsCoordination'
-git -C $repo status --short
+$repo = 'C:\data\AgentsCoordination\windowsVersion'
+git -C C:\data\AgentsCoordination status --short
 git diff --no-index --stat "$repo\home\.claude\skills" "$HOME\.claude\skills"
 git diff --no-index "$repo\home\.claude\CLAUDE.md" "$HOME\.claude\CLAUDE.md"
 git diff --no-index "$repo\home\.claude\settings.json" "$HOME\.claude\settings.json"
@@ -22,7 +22,7 @@ Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' }
 ```
 
 reset.ps1 keeps, in `C:\data`, only `AgentsCoordination`, `fearlessBranch1`,
-`fearlessBranch2`, `fearlessBranch3`, `winCoordinator`, `tools` and
+`fearlessBranch2`, `fearlessBranch3`, `winCoordinator`, `tools`, `fearlessPaper` and
 `accounts.txt`; in `winCoordinator` nothing; in each `fearlessBranchN` only
 the seven repositories; under `$HOME\.claude` none of the five entries
 listed above and, in each `projects\<slug>\memory`, only the `MEMORY.md`

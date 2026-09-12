@@ -1,0 +1,96 @@
+Findings on operating this machine's GUI like a human would: only what holds across
+GUIs in general (screen, pointer, windows, the OS menus). What is about one application
+goes in gui_<app>_gym.txt next to this file.
+
+= Screen resolution and coordinates =
+
+The real screen is 1920x1080. PowerShell's [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+is unreliable on this box: depending on process/DPI-awareness timing it sometimes reports a
+virtualized 1280x720 instead. Never use it for screenshot sizing or click math.
+
+Use raw Win32 GetSystemMetrics(SM_CXSCREEN=0)/(SM_CYSCREEN=1) via P/Invoke instead; it always
+returns the true 1920x1080, matches SetCursorPos/mouse_event coordinates, matches GetWindowRect,
+and matches the pixel dimensions of a Graphics.CopyFromScreen screenshot saved as PNG. Once you
+screenshot at that resolution, screen pixel coordinates in the PNG map 1:1 to SetCursorPos targets.
+
+Overall, only use genuine simulated mouse click (SetCursorPos + mouse_event).
+Do not attempt any other way to 'click', they would simply not work the same for the user and thus you would not be doing good testing.
+Do not directly set the cursor to the intended position. Slowly move it to that position to simulate the cursor moving.
+//TODO: add here more details on how to make this work reliably, test and exercise slow paced drag and drop and report on results.
+Overall, when choice is possible, always use what emulate real user inputs the closest.
+
+= DPI: make the PowerShell process DPI aware first =
+
+The desktop runs at 150% scaling. A PowerShell process that is not DPI aware sees a
+virtualized 1280x720 (GetSystemMetrics, screenshots) while SetCursorPos takes physical
+1920x1080 coordinates: every click lands at 2/3 of where the screenshot says. Call
+user32 SetProcessDPIAware() (P/Invoke) before anything else; then metrics, screenshots
+and clicks all agree on 1920x1080.
+
+= Activating a window =
+
+Do not click a taskbar button to bring a window up: buttons shift as windows come and
+go, and clicking the button of the window that is already active minimizes it.
+Use ShowWindow(handle, SW_MAXIMIZE=3) then SetForegroundWindow(handle), found via
+EnumWindows by title. SW_RESTORE (9) un-maximizes a maximized window and moves every
+widget, so never use it for that purpose. SetForegroundWindow alone can be refused; it
+works once the process has injected real input (mouse_event) at least once.
+
+= Multiple agent windows on this shared desktop =
+
+win1, win2, win3 and winCoordinator each keep a terminal window open at all times, plus
+whatever app windows they are testing. A blind "inject input" click (e.g. screen center,
+or a window's top-left system-menu corner at (10,10)) can land on another agent's window
+instead of empty desktop - it opened another agent's system menu once in this session.
+Prefer clicking a taskbar icon for the exact window you want (it also raises and focuses
+it in one action) over a blind click elsewhere on screen. Only click coordinates you have
+just confirmed by screenshot belong to the window you intend to affect.
+
+EnumWindows + ShowWindow(SW_MAXIMIZE) + SetForegroundWindow on a handle found by title
+substring was unreliable on this box even after a prior mouse_event: it sometimes left an
+unrelated window focused. Clicking the target window's taskbar icon directly (found by
+screenshotting the taskbar first) was the reliable way to raise and focus a window here.
+
+= Confirming a taskbar-icon click actually raised the window =
+
+Since clicking the taskbar icon of an already-active window minimizes it (see above), a
+click that was meant to raise a window can instead minimize it, and a screenshot taken
+right after still shows whatever window happened to be on top - easy to misread as
+success. Check with EnumWindows/GetWindowRect after the click: a minimized window's rect
+is (-32000,-32000)-(-32000+237,-32000+61) (small fixed junk size, not the real one). If
+you see that, click the same taskbar icon again to restore it, then screenshot again.
+Do not trust a screenshot alone to confirm which window is now focused.
+
+= System tray icon in the Windows 11 "show hidden icons" flyout =
+
+Clicking the taskbar corner chevron ("^" near the clock) opens a flyout
+hosted in a window with class TopLevelWindowForOverflowXamlIsland. Find it
+with UI Automation (root.FindFirst by that ClassName), then FindAll
+descendants: each icon's accessible Name has a leading space (" Fearless
+Manager", not "Fearless Manager") - match with .Trim() or -like, not an
+exact PropertyCondition, or FindFirst-by-name silently returns null.
+Even with the correct BoundingRectangle center, a synthetic SetCursorPos
++ mouse_event single or double click on that point was repeatedly
+swallowed (verified with tasklist/EnumWindows: no window ever
+appeared) despite the same click mechanism working reliably on ordinary
+windows and taskbar buttons; likely a hit-testing quirk of the
+XAML-hosted overflow flyout rather than a UIPI elevation issue (taskbar
+buttons, same explorer.exe integrity level, click fine). Also: any UI
+Automation FindFirst/FindAll query issued against the flyout after the
+first successful read sometimes appears to close it (a later screenshot
+shows it collapsed) - re-open with a fresh chevron click before every
+attempt. Unresolved: no reliable genuine-click recipe found yet for this
+specific flyout.
+
+= ShowWindow(SW_MAXIMIZE) on a just-launched window before its first paint =
+
+Calling ShowWindow(hwnd, SW_MAXIMIZE=3) via P/Invoke immediately after finding a
+freshly-launched window's handle (before it has painted once at its normal size) can
+leave the window rendering mostly blank/black at the maximized size, even though
+GetWindowRect reports correct full-screen bounds and the window is genuinely
+foreground/focused. This is specific to maximizing before the first natural paint, not
+a real product bug: clicking the window's own title-bar maximize button by hand (or
+letting the window paint once at its normal size first) renders correctly every time.
+Prefer a plain taskbar-icon click (which activates at natural size) over
+ShowWindow+SetForegroundWindow for a window you have not seen render yet; only reach
+for SW_MAXIMIZE afterward, if at all.
