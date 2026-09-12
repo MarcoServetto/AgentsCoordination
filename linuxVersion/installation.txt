@@ -19,7 +19,8 @@ Claude Code is installed at ~/.local/bin/claude and logged in to claude.ai.
 Needed Tools, each at its default install path; only install if not present.
   sudo apt-get install git gh jq curl tmux fakeroot
   sudo apt-get install poppler-utils (pdftoppm: lets the Read tool render PDF pages)
-  sudo apt-get install openjdk-26-jdk  (JDK 26 at /usr/lib/jvm/java-26-openjdk-amd64, no JAVA_HOME)
+  sudo apt-get install latexmk texlive-latex-extra texlive-fonts-extra texlive-science texlive-publishers texlive-bibtex-extra biber python3-pygments (builds the Fearless paper)
+  JDK 26 unpacked by hand at /opt/jdk-26.0.2 from https://download.oracle.com/java/26/archive/jdk-26.0.2_linux-x64_bin.tar.gz (never installed: no apt), no JAVA_HOME
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false

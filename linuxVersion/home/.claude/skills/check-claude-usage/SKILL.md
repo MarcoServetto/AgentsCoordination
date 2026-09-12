@@ -10,7 +10,7 @@ Call
 ```
 Result:
 ```
-Current session: NN% used, resets in Xh Ym
+Current session: NN% used, started HH:MM, resets in Xh Ym
 Weekly limits: NN% used, resets <day> <time>
 ```
 Report those two lines verbatim. Readings are cached for 15 minutes in

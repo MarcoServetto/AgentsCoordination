@@ -241,8 +241,10 @@ built application image)
 
 ## Java
 
-JDK 26 at `C:\Program Files\Java\jdk-26.0.2`; quote the path and use the
-call operator: `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea ...`.
+JDK 26 is the folder `C:\Program Files\Java\jdk-26.0.2`, unpacked by hand;
+never install a JDK (no winget, no installer) and never rely on `java` from
+the PATH: call this one by its full path, quoting it and using the call
+operator: `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea ...`.
 `JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
 
 

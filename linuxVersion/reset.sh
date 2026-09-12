@@ -10,20 +10,6 @@ nuke() {
   rm -rf -- "$1"
 }
 
-github_clone() {
-  git init -q "$2"
-  git -C "$2" remote add origin "$1"
-  local shallow=true started=false
-  for attempt in $(seq 1 60); do
-    if [ "$started" = false ]; then git -C "$2" fetch -q --depth=1 origin main && started=true || { sleep 30; continue; }; fi
-    git -C "$2" fetch -q --deepen=200 origin main || { sleep 30; continue; }
-    shallow=$(git -C "$2" rev-parse --is-shallow-repository)
-    [ "$shallow" = true ] || break
-  done
-  [ "$shallow" = false ] || exit 1
-  git -C "$2" checkout -q -B main origin/main
-}
-
 declare -A parents=(
   [Commons]=FearlessLang [Frontend]=FearlessLang [Coordinator]=FearlessLang
   [StandardLibrary]=FearlessLang [Controllers]=FearlessLang
@@ -31,7 +17,7 @@ declare -A parents=(
 )
 repos="Commons Frontend Coordinator StandardLibrary Controllers ZeroToHero FearlessTour"
 branches="fearlessBranch1 fearlessBranch2 fearlessBranch3"
-keep=" AgentsCoordination linuxCoordinator tools accounts.txt $branches "
+keep=" AgentsCoordination linuxCoordinator tools fearlessPaper accounts.txt $branches "
 
 for item in "$data"/* "$data"/.[!.]*; do
   [ -e "$item" ] || continue
@@ -47,13 +33,7 @@ for b in $branches; do
   done
   for r in $repos; do
     [ -e "$data/$b/$r" ] && continue
-    local_copy=$(ls -d "$data"/fearlessBranch*/"$r" 2>/dev/null | head -1 || true)
-    if [ -n "$local_copy" ]; then
-      git clone --quiet "$local_copy" "$data/$b/$r"
-      git -C "$data/$b/$r" remote set-url origin "https://github.com/marcoautomation2/$r.git"
-    else
-      github_clone "https://github.com/marcoautomation2/$r.git" "$data/$b/$r"
-    fi
+    git clone --quiet "https://github.com/marcoautomation2/$r.git" "$data/$b/$r"
     git -C "$data/$b/$r" remote add upstream "https://github.com/${parents[$r]}/$r.git"
   done
 done

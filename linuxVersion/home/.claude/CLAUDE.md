@@ -37,6 +37,11 @@ https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
 Fearless guide and game to teach fearless.
 
+# Fearless paper
+
+`/data/fearlessPaper/Fearless_TOPLAS/` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
+Its type system and `Frontend/FearlessFrontend/src/typeSystem` describe the same language: a bug found in one is checked in the other.
+
 # Scripts
 
 Building, testing and packaging Fearless is done only by the Java programs
@@ -65,8 +70,7 @@ This is a soft rule and there are plenty of reasons a task may require to use ot
 We keep the description of your email and github accounts in '/data/accounts.txt'
 
 These are yours: commit, push, open issues and PRs as this identity without
-asking. Password, token and 2FA all live in '/data/accounts.txt'. `gh` is
-logged in with the token and git pushes over HTTPS through it.
+asking. Password, token and 2FA all live in '/data/accounts.txt'
 
 # PRs:
 When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto).
@@ -182,7 +186,7 @@ The Java scripts:
 We run and test fearless by running Java, not shell scripts.
 From `Coordinator/Build/src` you can run the following (note, no arguments)
 (new java do not need a separate compile step)
-  java -ea --module-path ../../../Commons/Commons.jar --add-modules Commons scripts/<Name>.java
+  /opt/jdk-26.0.2/bin/java -ea --module-path ../../../Commons/Commons.jar --add-modules Commons scripts/<Name>.java
 `Coordinator/Build` is the build tool for all the repos, written in Java and
 compiled by nothing but this source launcher; `Build/src/resources` is also
 compiled into Coordinator's tests, which read paths from it.
@@ -237,8 +241,10 @@ built application image)
 
 ## Java
 
-JDK 26 at `/usr/lib/jvm/java-26-openjdk-amd64`, and `java` on the PATH is
-that one. `JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
+JDK 26 is the folder `/opt/jdk-26.0.2`, unpacked by hand;
+never install a JDK (no apt) and never rely on `java` from
+the PATH: call this one by its full path: `/opt/jdk-26.0.2/bin/java -ea ...`.
+`JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
 
 
 ## StandardLibrary API docs
