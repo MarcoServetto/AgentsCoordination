@@ -8,17 +8,17 @@ Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1080 at 150% scaling.
 Windows logs sonta in at boot; Brave is logged in to claude.ai.
+Claude Code is installed at %USERPROFILE%\.local\bin\claude.exe and logged in to claude.ai.
 
 Needed Tools, each at its default install path; only install if not present.
   winget install Git.Git
   winget install GitHub.cli
   winget install Brave.Brave
   winget install Notepad++.Notepad++
-  winget install UB-Mannheim.TesseractOCR
   winget install MiKTeX.MiKTeX (scope machine, then initexmf --admin --set-config-value="[MPM]AutoInstall=1")
   winget install StrawberryPerl.StrawberryPerl (latexmk needs perl)
   winget install oschwartz10612.Poppler (pdftoppm: lets the Read tool render PDF pages)
-  JDK 26 at C:\Program Files\Java\jdk-26.0.2, no JAVA_HOME
+  JDK 26 unpacked by hand at C:\Program Files\Java\jdk-26.0.2 (never installed: no winget, no installer), no JAVA_HOME
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false

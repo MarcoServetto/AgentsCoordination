@@ -1,0 +1,122 @@
+# Process whitelist for cleanup-watchdog.sh: one process name per line as
+# the kernel reports it (/proc/<pid>/comm, at most 15 characters) or as the
+# basename of the first or second command line word (so an interpreter's
+# script name counts), case-insensitive, # for comments. Any process of this user NOT listed
+# that has been alive for more than 1 hour is killed by the hourly sweep.
+# Build tools (git, java, ...) are deliberately absent: add one here before
+# a run that may exceed an hour. Takes effect on the next sweep.
+
+# --- the 4 always-on agents (linuxCoordinator, linux1, linux2, linux3) ---
+claude
+bash
+sh
+ptyxis
+ptyxis-agent
+agent-superviso
+sleep
+
+# --- a session started by hand from a terminal or ssh ---
+tmux: server
+tmux: client
+sshd
+sshd-session
+gnome-remote-de
+systemd
+(sd-pam)
+
+# --- GNOME session core ---
+gdm-wayland-ses
+gnome-session-b
+gnome-session-c
+gnome-session-i
+gnome-session-s
+gnome-shell
+gnome-shell-cal
+mutter-x11-fram
+Xwayland
+dbus-daemon
+dbus-broker
+dbus-broker-lau
+dconf-service
+gjs
+gnome-keyring-d
+gcr-ssh-agent
+ssh-agent
+at-spi-bus-laun
+at-spi2-registr
+xdg-desktop-por
+xdg-document-po
+xdg-permission-
+xdg-dbus-proxy
+ibus-daemon
+ibus-dconf
+ibus-engine-sim
+ibus-extension-
+ibus-portal
+ibus-x11
+pipewire
+pipewire-pulse
+wireplumber
+mpris-proxy
+speech-dispatch
+sd_dummy
+sd_espeak-ng
+sd_espeak-ng-mb
+bwrap
+glycin-svg
+
+# --- gnome-settings-daemon plugins ---
+gsd-a11y-settin
+gsd-color
+gsd-datetime
+gsd-disk-utilit
+gsd-housekeepin
+gsd-keyboard
+gsd-media-keys
+gsd-power
+gsd-printer
+gsd-print-notif
+gsd-rfkill
+gsd-screensaver
+gsd-sharing
+gsd-smartcard
+gsd-sound
+gsd-usb-protect
+gsd-wwan
+gsd-xsettings
+
+# --- gvfs / online accounts / evolution data ---
+gvfsd
+gvfsd-fuse
+gvfsd-trash
+gvfsd-metadata
+gvfsd-recent
+gvfsd-network
+gvfsd-dnssd
+gvfsd-http
+gvfsd-wsdd
+wsdd
+gvfs-udisks2-vo
+gvfs-mtp-volume
+gvfs-gphoto2-vo
+gvfs-afc-volume
+gvfs-goa-volume
+goa-daemon
+goa-identity-se
+evolution-addre
+evolution-alarm
+evolution-calen
+evolution-sourc
+localsearch-3
+
+# --- Ubuntu desktop helpers ---
+snapd-desktop-i
+snap
+update-notifier
+update-manager
+user-session-he
+spice-vdagent
+gnome-text-edit
+
+# --- Eclipse (Fearless plugin testing) ---
+eclipse

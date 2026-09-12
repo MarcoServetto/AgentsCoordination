@@ -1,0 +1,68 @@
+Findings on operating this machine's GUI like a human would: only what holds across
+GUIs in general (screen, pointer, windows, the OS menus). What is about one application
+goes in gui_<app>_gym.txt next to this file.
+
+= Driving and watching the screen =
+
+The desktop is GNOME 50 on wayland, with DISPLAY and WAYLAND_DISPLAY set in
+every agent session.
+The one mechanism that works for both input and screenshots, including
+native wayland apps (nautilus, the file dialogs, the portal dialogs,
+eclipse, firefox), is mutter's private session-bus API, which any process
+of the logged-in user may call and which never asks for permission:
+  org.gnome.Mutter.RemoteDesktop  CreateSession -> a Session object with
+    NotifyPointerMotionAbsolute(stream,x,y), NotifyPointerMotionRelative,
+    NotifyPointerButton(evdev code, down), NotifyKeyboardKeysym(keysym, down)
+  org.gnome.Mutter.ScreenCast     CreateSession({remote-desktop-session-id})
+    then RecordMonitor(connector,{cursor-mode}) -> a Stream; after Start the
+    Stream signals PipeWireStreamAdded(node); absolute pointer motion is in
+    that stream's pixels, and one frame of the pipewire node is a full
+    screenshot: gst-launch-1.0 pipewiresrc path=<node> num-buffers=1 !
+    videoconvert ! video/x-raw,format=RGB ! pngenc ! filesink location=x.png
+The sessions live as long as the D-Bus connection that created them, so
+they must be held by one long-lived process (not one busctl/gdbus call
+each). Controllers/src/agentTools does exactly this: Pilot (glide the pointer
+with a set of buttons held, click, drag, chords, screenshots, and
+Pilot.changed to find what a shot changed) over Desk.open(), which is
+Mutter (a python3 -c helper over stdin, needs python3-gi and
+gstreamer1.0-pipewire, both part of the desktop install) on wayland and
+java.awt.Robot elsewhere. Coordinator/Build/src/scripts/
+TestAgentTools.java runs the agentTools tests that drive it.
+
+= What does not work, so do not retry it =
+
+- X_TEST fake input (xdotool, java.awt.Robot) blocks: Xwayland runs with
+  -enable-ei-portal, so the first fake event makes the RemoteDesktop portal
+  pop a permission dialog and the X request hangs until it is answered.
+  xdotool getmouselocation then reports Xwayland's own fake pointer, not
+  the real one.
+- ydotool (uinput) delivers keys, but its pointer motion goes through
+  libinput acceleration and cannot be positioned reliably.
+- org.gnome.Shell.Screenshot and gnome-screenshot: AccessDenied for an
+  agent process, even when owning the org.gnome.Screenshot bus name.
+- pkill -f <pattern> from the Bash tool matches the tool's own shell when
+  the pattern appears in the command line, killing the call with exit 144.
+
+= Screenshots of a single X11 window =
+
+Screenshots of a single X11 window (Swing/AWT apps, xmessage) also work
+with plain X11 tools against Xwayland, without any session:
+  DISPLAY=:0 xwininfo -root -tree   lists windows with their hex ids
+  DISPLAY=:0 xwd -id <winid> -silent -out shot.xwd; convert shot.xwd shot.png
+xwd -root always fails with BadMatch; target a window id. A per-window
+capture can fail the same way while the window is unmapped or obscured;
+that is transient, raise it and retry. GTK apps run as native wayland
+clients and never appear in xwininfo unless launched with GDK_BACKEND=x11
+(MOZ_ENABLE_WAYLAND=0 for firefox); the screencast above sees them anyway.
+
+= Multiple agent windows on this shared desktop =
+
+The screen is shared with the other agents' terminals, usually a maximized
+one: whatever a test opens lands on top of it and steals focus, and a drop
+that misses its window pastes the file path into that terminal. Keep
+pointer paths inside the windows the test opened.
+
+= A GUI app that never exits on its own =
+
+Launch it with nohup ... & in the background, wait a few seconds for the
+window to render, capture, then pkill by the binary name before finishing.
