@@ -1,0 +1,35 @@
+Findings on operating Eclipse like a human would. General GUI findings are in gui_gym.txt.
+
+= Commands =
+
+Menu bar positions depend on the active part and selection (Source and Refactor appear
+when a project is selected in the Package Explorer), and a JUnit import brings the JUnit
+view to the front of its stack. Invoke commands through Quick Access instead: Ctrl+3,
+type the command name, Enter; it is position independent and still a genuine user path.
+Start Eclipse with -data <workspace> to skip the workspace prompt; SendKeys "%{F4}" closes it.
+
+= Folder pickers =
+
+The Windows folder picker (SWT DirectoryDialog) accepts a full path typed into its
+Folder field followed by the Select Folder button.
+
+This machine's Eclipse (4.40.0.20260604-0652) shows the modern native Windows
+folder-picker dialog (navigation pane plus a "Folder:" field) for both the
+Manager's "Select the Eclipse executable" chooser and the Fearless plugin's
+"New Fearless Project..." command - not the classic SWT DirectoryDialog. The
+same recipe works unchanged: click the path field, type the full path, click
+the accept button (labelled "Select Folder" here).
+
+= Views already present but minimized =
+
+A fresh workbench window can have views (Package Explorer, Project Explorer, JUnit)
+already opened but minimized to a thin icon-only rail at the far left edge of the window
+(distinct from the taskbar). Window > Show View > X does not always bring the view to the
+front if a same-named or stacked view tab exists; check that rail (click each small icon)
+before assuming a view must be added from Show View. Show View can also add a view as a
+new background tab in an existing stack rather than switching to it - click the newly
+added tab explicitly.
+
+Window > Perspective > Open Perspective lists only a few recently used perspectives plus
+"Other..."; use Other... to reach the full list (with each perspective's icon) when the
+one you need was not recently used.

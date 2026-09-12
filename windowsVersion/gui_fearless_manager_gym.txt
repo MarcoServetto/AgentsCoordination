@@ -1,0 +1,18 @@
+Findings on operating the Fearless manager (the managed app built by DeployManagedFearless) like a human would. General GUI findings are in gui_gym.txt, Swing ones in gui_swing_gym.txt.
+
+= Bringing the hidden window back =
+
+Its tray icon sits in the Windows 11 "show hidden icons" flyout, where a synthetic click
+is swallowed (see gui_gym.txt). When a test needs "the window reappears from being
+hidden", relaunching the already-running app's exe is a working substitute that
+exercises the identical code path: it leaves a message for the existing owner process,
+which drains it and calls the same showManager() path.
+
+= Rebuilding while the app is running =
+
+DeployPortableFearless/DeployManagedFearless clean-deletes the whole output app-image
+folder (including runtime/lib/modules) before rebuilding it. If the app built from that
+folder is still running (even just its tray icon, not just a visible window), the delete
+throws FileSystemException (file in use) and the whole build aborts. Quit the app first
+(its Quit menu item / tray Quit, not just closing the window, which only hides it) and
+confirm the process is gone (tasklist) before rebuilding.

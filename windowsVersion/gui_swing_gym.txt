@@ -1,0 +1,10 @@
+Findings on operating Swing applications like a human would. General GUI findings are in gui_gym.txt.
+
+= DPI =
+
+Swing windows render unscaled under the desktop's 150% scaling, so their widgets sit
+exactly where the physical 1920x1080 screenshot shows them.
+
+= File chooser =
+
+Click into the File Name field, type the full path, click Open.

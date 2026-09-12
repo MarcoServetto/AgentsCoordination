@@ -1,4 +1,6 @@
-Findings on operating this machine's GUI like a human would.
+Findings on operating this machine's GUI like a human would: only what holds across
+GUIs in general (screen, pointer, windows, the OS menus). What is about one application
+goes in gui_<app>_gym.txt next to this file.
 
 = Screen resolution and coordinates =
 
@@ -23,8 +25,7 @@ The desktop runs at 150% scaling. A PowerShell process that is not DPI aware see
 virtualized 1280x720 (GetSystemMetrics, screenshots) while SetCursorPos takes physical
 1920x1080 coordinates: every click lands at 2/3 of where the screenshot says. Call
 user32 SetProcessDPIAware() (P/Invoke) before anything else; then metrics, screenshots
-and clicks all agree on 1920x1080. Swing windows (the manager) render unscaled, so their
-widgets sit exactly where the physical screenshot shows them.
+and clicks all agree on 1920x1080.
 
 = Activating a window =
 
@@ -34,20 +35,6 @@ Use ShowWindow(handle, SW_MAXIMIZE=3) then SetForegroundWindow(handle), found vi
 EnumWindows by title. SW_RESTORE (9) un-maximizes a maximized window and moves every
 widget, so never use it for that purpose. SetForegroundWindow alone can be refused; it
 works once the process has injected real input (mouse_event) at least once.
-
-= Eclipse =
-
-Menu bar positions depend on the active part and selection (Source and Refactor appear
-when a project is selected in the Package Explorer), and a JUnit import brings the JUnit
-view to the front of its stack. Invoke commands through Quick Access instead: Ctrl+3,
-type the command name, Enter; it is position independent and still a genuine user path.
-Start Eclipse with -data <workspace> to skip the workspace prompt; SendKeys "%{F4}" closes it.
-The Windows folder picker (SWT DirectoryDialog) accepts a full path typed into its
-Folder field followed by the Select Folder button.
-
-= Swing file chooser =
-
-Click into the File Name field, type the full path, click Open.
 
 = Multiple agent windows on this shared desktop =
 
@@ -63,20 +50,6 @@ EnumWindows + ShowWindow(SW_MAXIMIZE) + SetForegroundWindow on a handle found by
 substring was unreliable on this box even after a prior mouse_event: it sometimes left an
 unrelated window focused. Clicking the target window's taskbar icon directly (found by
 screenshotting the taskbar first) was the reliable way to raise and focus a window here.
-
-= Eclipse: views already present but minimized =
-
-A fresh workbench window can have views (Package Explorer, Project Explorer, JUnit)
-already opened but minimized to a thin icon-only rail at the far left edge of the window
-(distinct from the taskbar). Window > Show View > X does not always bring the view to the
-front if a same-named or stacked view tab exists; check that rail (click each small icon)
-before assuming a view must be added from Show View. Show View can also add a view as a
-new background tab in an existing stack rather than switching to it - click the newly
-added tab explicitly.
-
-Window > Perspective > Open Perspective lists only a few recently used perspectives plus
-"Other..."; use Other... to reach the full list (with each perspective's icon) when the
-one you need was not recently used.
 
 = Confirming a taskbar-icon click actually raised the window =
 
@@ -99,25 +72,21 @@ exact PropertyCondition, or FindFirst-by-name silently returns null.
 Even with the correct BoundingRectangle center, a synthetic SetCursorPos
 + mouse_event single or double click on that point was repeatedly
 swallowed (verified with tasklist/EnumWindows: no window ever
-appeared) despite the same click mechanism working reliably on the
-Fearless Manager window itself and on ordinary taskbar buttons; likely a
-hit-testing quirk of the XAML-hosted overflow flyout rather than a UIPI
-elevation issue (taskbar buttons, same explorer.exe integrity level,
-click fine). Also: any UI Automation FindFirst/FindAll query issued
-against the flyout after the first successful read sometimes appears to
-close it (a later screenshot shows it collapsed) - re-open with a fresh
-chevron click before every attempt. Unresolved: no reliable genuine-click
-recipe found yet for this specific flyout. When a test needs "the
-window reappears from being hidden", relaunching the already-running
-app's exe (it leaves a message for the existing owner process, which
-drains it and calls the same showManager() path) is a proven working
-substitute that exercises the identical code path.
+appeared) despite the same click mechanism working reliably on ordinary
+windows and taskbar buttons; likely a hit-testing quirk of the
+XAML-hosted overflow flyout rather than a UIPI elevation issue (taskbar
+buttons, same explorer.exe integrity level, click fine). Also: any UI
+Automation FindFirst/FindAll query issued against the flyout after the
+first successful read sometimes appears to close it (a later screenshot
+shows it collapsed) - re-open with a fresh chevron click before every
+attempt. Unresolved: no reliable genuine-click recipe found yet for this
+specific flyout.
 
 = ShowWindow(SW_MAXIMIZE) on a just-launched window before its first paint =
 
 Calling ShowWindow(hwnd, SW_MAXIMIZE=3) via P/Invoke immediately after finding a
 freshly-launched window's handle (before it has painted once at its normal size) can
-leave a Swing frame rendering mostly blank/black at the maximized size, even though
+leave the window rendering mostly blank/black at the maximized size, even though
 GetWindowRect reports correct full-screen bounds and the window is genuinely
 foreground/focused. This is specific to maximizing before the first natural paint, not
 a real product bug: clicking the window's own title-bar maximize button by hand (or
@@ -125,21 +94,3 @@ letting the window paint once at its normal size first) renders correctly every 
 Prefer a plain taskbar-icon click (which activates at natural size) over
 ShowWindow+SetForegroundWindow for a window you have not seen render yet; only reach
 for SW_MAXIMIZE afterward, if at all.
-
-= Building a portable/managed app while its own exe is running =
-
-DeployPortableFearless/DeployManagedFearless clean-deletes the whole output app-image
-folder (including runtime/lib/modules) before rebuilding it. If the app built from that
-folder is still running (even just its tray icon, not just a visible window), the delete
-throws FileSystemException (file in use) and the whole build aborts. Quit the app first
-(its Quit menu item / tray Quit, not just closing the window, which only hides it) and
-confirm the process is gone (tasklist) before rebuilding.
-
-= Eclipse folder pickers on this machine's current build =
-
-This machine's Eclipse (4.40.0.20260604-0652) shows the modern native Windows
-folder-picker dialog (navigation pane plus a "Folder:" field) for both the
-Manager's "Select the Eclipse executable" chooser and the Fearless plugin's
-"New Fearless Project..." command - not the classic SWT DirectoryDialog. The
-existing recipe still works unchanged: click the path field, type the full
-path, click the accept button (labelled "Select Folder" here).

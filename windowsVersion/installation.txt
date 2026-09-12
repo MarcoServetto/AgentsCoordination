@@ -6,7 +6,6 @@ fearlessBranchN, registers the one scheduled task, and reboots.
 
 Preconditions:
 C:\data\accounts.txt is present.
-C:\data\fearlessPaper\Fearless_TOPLAS.zip and Fearless_TOPLAS.pdf are present (copied from the USB stick; see CLAUDE.md "Fearless paper").
 Display 1920x1080 at 150% scaling.
 Windows logs sonta in at boot; Brave is logged in to claude.ai.
 

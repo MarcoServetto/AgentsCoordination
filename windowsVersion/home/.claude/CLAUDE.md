@@ -31,8 +31,7 @@ https://github.com/FearlessLang/StandardLibrary
 The four main Fearless repositories.
 
 https://github.com/FearlessLang/Controllers
-Eclipse plugin for fearless, and the Controller module (depends on
-Coordinator) that the Managed Fearless GUI is built from.
+A system to manage multiple fearless projects interacting; it also includes an eclipse plugin.
 
 https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
@@ -40,12 +39,8 @@ Fearless guide and game to teach fearless.
 
 # Fearless paper
 
-`C:\data\fearlessPaper` holds the TOPLAS paper formalizing Fearless, copied from the USB stick:
-`Fearless_TOPLAS.zip` (the Overleaf project export), `Fearless_TOPLAS.pdf` (its expected output) and
-`Fearless_TOPLAS\` (the export extracted into a local git repository whose first commit is the pristine export, so `git diff` shows every local change).
-Any agent can work on it. Build from inside `Fearless_TOPLAS\` with
-`latexmk -pdf --shell-escape -interaction=nonstopmode main.tex` (MiKTeX fetches missing packages on demand).
-The type system in `appendix_formalism_bounds_hyg.tex` and the one in `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
+`C:\data\fearlessPaper\Fearless_TOPLAS\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
+Its type system and `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
 
 # Scripts
 
@@ -178,7 +173,7 @@ Commons          shared, dependency-free Java utilities. Everything else depends
 Frontend         the Fearless language frontend (parser, name resolution, type inference). Depends on Commons.
 Coordinator      the compiler backend, CLI, and the desktop project manager GUI. Depends on Commons and Frontend.
 StandardLibrary  Fearless SOURCE code, not Java: the language's own base library ("base"), its runtime ("rt"), and a folder of integration-test Fearless projects. This is compiled and run BY Coordinator, not built with javac.
-Controllers      an eclipse plugin for fearless; also the Controller module (depends on Coordinator) that DeployManagedFearless builds into the Managed Fearless GUI
+Controllers      a system to manage multiple fearless projects interacting; it also includes an eclipse plugin. Depends on Coordinator.
 ZeroToHero       Game to teach fearless and overall scratch pad for a lot of stuff.
 FearlessTour     a guide to teach fearless (including tests to run to check consistency with the current state of the language)
 
@@ -392,7 +387,7 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a 'C:\data\AgentsCoordination\windowsVersion\gui_gym.txt' where we write all the findings on how to best operate the PC to emulate a human user as close as possible.
+We are keeping a 'C:\data\AgentsCoordination\windowsVersion\gui_gym.txt' where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
 `Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does, through java.awt.Robot here; prefer it over ad hoc input injection when a test needs real pointer or keyboard input.
 
 
