@@ -1,5 +1,6 @@
 How an agent running on this machine resets it to the state the
-windowsVersion\ folder of this repository describes. reset.ps1 deletes what
+windowsVersion\ folder of this repository describes. reset.ps1 hard resets this
+checkout to upstream/main and calls itself again from the result, deletes what
 the folder does not describe, copies the folder's home\ tree over
 %USERPROFILE% and its data\ tree over C:\data, aligns the seven Fearless repositories in each
 fearlessBranchN, registers the one scheduled task, and reboots.
@@ -29,6 +30,4 @@ Actions:
     git clone https://github.com/marcoautomation2/AgentsCoordination C:\data\AgentsCoordination
     git -C C:\data\AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
   Every reset:
-    git -C C:\data\AgentsCoordination fetch upstream main
-    git -C C:\data\AgentsCoordination reset --hard upstream/main
     & C:\data\AgentsCoordination\windowsVersion\reset.ps1

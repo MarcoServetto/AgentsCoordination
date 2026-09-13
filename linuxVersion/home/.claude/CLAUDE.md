@@ -84,8 +84,7 @@ Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomati
 
 # Managing Disk:
 
-`~/Desktop/MarcoLeftovers` holds Marco's own files. Never move, modify or delete anything in it.
-Everything else on the machine is fair game; prefer `/data` (short paths, no spaces).
+Everything on the machine is fair game; prefer `/data` (short paths, no spaces).
 
 Everything on this machine is disposable, all the important data is kept on the original repositories.
 
@@ -103,6 +102,10 @@ linux1,linux2,linux3 and linuxCoordinator local memory should only report:
 "Do not use this local memory, all the data is in '/data/AgentsCoordination/linuxVersion/global_memory.txt'; add and remove from there when/if needed"
 Those files are the ones under `linuxVersion/data/` and `linuxVersion/home/` of AgentsCoordination; reset.sh writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
+reset.sh hard resets the AgentsCoordination checkout to upstream/main before anything else, so
+everything the repository tracks goes back to what upstream says. `global_memory.txt` is tracked
+and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
+reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
 
 
 # Inter agent messaging

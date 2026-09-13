@@ -1,5 +1,6 @@
 How an agent running on this machine resets it to the state the
-linuxVersion/ folder of this repository describes. reset.sh deletes what
+linuxVersion/ folder of this repository describes. reset.sh hard resets this
+checkout to upstream/main and execs itself again from the result, deletes what
 the folder does not describe, copies the folder's home/ tree over
 $HOME and its data/ tree over /data, aligns the seven Fearless repositories in each
 fearlessBranchN, registers the one autostart entry, and reboots.
@@ -33,6 +34,4 @@ Actions:
     git clone https://github.com/marcoautomation2/AgentsCoordination /data/AgentsCoordination
     git -C /data/AgentsCoordination remote add upstream https://github.com/MarcoServetto/AgentsCoordination
   Every reset:
-    git -C /data/AgentsCoordination fetch upstream main
-    git -C /data/AgentsCoordination reset --hard upstream/main
     /data/AgentsCoordination/linuxVersion/reset.sh

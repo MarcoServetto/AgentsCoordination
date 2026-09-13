@@ -3,7 +3,6 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 log=/data/linuxCoordinator/logs/diagnostic.log
 whitelistFile="$here/process-whitelist.txt"
-leftovers="$HOME/Desktop/MarcoLeftovers"
 mkdir -p "$(dirname "$log")"
 lines=()
 logLine() { lines+=("[$(date '+%Y-%m-%d %H:%M:%S')] $1"); }
@@ -35,15 +34,10 @@ done < <(
   find "$HOME/.local/bin" -maxdepth 1 -name 'claude.old.*' -mtime +7 2>/dev/null
   find /tmp /var/tmp -mindepth 1 -maxdepth 1 -user "$USER" -mtime +7 2>/dev/null
   find "$HOME/.local/share/claude/versions" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null
+  find "$HOME/Downloads" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null
 )
 rm -rf "$HOME/.local/share/Trash/files/"* "$HOME/.local/share/Trash/info/"* 2>/dev/null || true
 logLine "freed $(( freed / 1048576 )) MB"
-
-mkdir -p "$leftovers"
-while IFS= read -r item; do
-  mv -f -- "$item" "$leftovers/" 2>/dev/null || continue
-  logLine "moved $(basename "$item") into MarcoLeftovers"
-done < <(find "$HOME/Downloads" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null)
 
 freeGB=$(df -BG --output=avail / | tail -1 | tr -dc '0-9')
 logLine "disk free: ${freeGB}GB"
