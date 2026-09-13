@@ -84,8 +84,7 @@ Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomati
 
 # Managing Disk:
 
-`~/Desktop/MarcoLeftovers` holds Marco's own files. Never move, modify or delete anything in it.
-Everything else on the machine is fair game; prefer `/data` (short paths, no spaces).
+Everything on the machine is fair game; prefer `/data` (short paths, no spaces).
 
 Everything on this machine is disposable, all the important data is kept on the original repositories.
 
