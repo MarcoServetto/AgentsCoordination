@@ -1,6 +1,8 @@
 How an agent running on this machine resets it to the state the
-linuxVersion/ folder of this repository describes. reset.sh hard resets this
-checkout to upstream/main and execs itself again from the result, deletes what
+linuxVersion/ folder of this repository describes. reset.sh downloads
+reset-body.sh from the public repository and runs it, so the reset that runs is
+always the one main describes and the local copy of reset.sh only has to be able
+to fetch. reset-body.sh hard resets this checkout to upstream/main, deletes what
 the folder does not describe, copies the folder's home/ tree over
 $HOME and its data/ tree over /data, aligns the seven Fearless repositories in each
 fearlessBranchN, registers the one autostart entry, and reboots.

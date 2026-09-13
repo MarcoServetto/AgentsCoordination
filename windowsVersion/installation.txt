@@ -1,6 +1,8 @@
 How an agent running on this machine resets it to the state the
-windowsVersion\ folder of this repository describes. reset.ps1 hard resets this
-checkout to upstream/main and calls itself again from the result, deletes what
+windowsVersion\ folder of this repository describes. reset.ps1 downloads
+reset-body.ps1 from the public repository and runs it, so the reset that runs is
+always the one main describes and the local copy of reset.ps1 only has to be able
+to fetch. reset-body.ps1 hard resets this checkout to upstream/main, deletes what
 the folder does not describe, copies the folder's home\ tree over
 %USERPROFILE% and its data\ tree over C:\data, aligns the seven Fearless repositories in each
 fearlessBranchN, registers the one scheduled task, and reboots.

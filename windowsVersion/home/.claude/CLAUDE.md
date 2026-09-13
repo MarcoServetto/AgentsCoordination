@@ -52,7 +52,7 @@ Whitelisted scripts:
 - `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
-- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -101,9 +101,9 @@ tasks; directly, without asking. Anything writing to an agent's
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
 "Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\windowsVersion\global_memory.txt'; add and remove from there when/if needed"
-Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset.ps1 writes them.
+Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset-body.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
-reset.ps1 hard resets the AgentsCoordination checkout to upstream/main before anything else, so
+A reset hard resets the AgentsCoordination checkout to upstream/main before anything else, so
 everything the repository tracks goes back to what upstream says. `global_memory.txt` is tracked
 and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
 reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
