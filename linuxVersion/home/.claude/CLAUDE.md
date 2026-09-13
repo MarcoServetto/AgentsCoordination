@@ -52,7 +52,7 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/home/.claude/skills/align-branches/align-branches.sh` (you can run it as part of the skill)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
-- `/data/AgentsCoordination/linuxVersion/reset.sh` (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -100,9 +100,9 @@ socket must run as agentubuntu.
 linux1,linux2,linux3 and linuxCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 linux1,linux2,linux3 and linuxCoordinator local memory should only report:
 "Do not use this local memory, all the data is in '/data/AgentsCoordination/linuxVersion/global_memory.txt'; add and remove from there when/if needed"
-Those files are the ones under `linuxVersion/data/` and `linuxVersion/home/` of AgentsCoordination; reset.sh writes them.
+Those files are the ones under `linuxVersion/data/` and `linuxVersion/home/` of AgentsCoordination; reset-body.sh writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
-reset.sh hard resets the AgentsCoordination checkout to upstream/main before anything else, so
+A reset hard resets the AgentsCoordination checkout to upstream/main before anything else, so
 everything the repository tracks goes back to what upstream says. `global_memory.txt` is tracked
 and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
 reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
