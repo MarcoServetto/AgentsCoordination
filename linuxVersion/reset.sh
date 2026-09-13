@@ -10,6 +10,14 @@ nuke() {
   rm -rf -- "$1"
 }
 
+# The hard reset rewrites this very script, so what runs the machine down is the
+# version that came with it, reached by execing it again.
+if [ "${1:-}" != --aligned ]; then
+  git -C "$repo" fetch upstream main
+  git -C "$repo" reset --hard upstream/main
+  exec "$0" --aligned
+fi
+
 declare -A parents=(
   [Commons]=FearlessLang [Frontend]=FearlessLang [Coordinator]=FearlessLang
   [StandardLibrary]=FearlessLang [Controllers]=FearlessLang

@@ -1,3 +1,4 @@
+param([switch]$Aligned)
 $ErrorActionPreference = 'Stop'
 $repo = $PSScriptRoot
 $data = 'C:\data'
@@ -12,6 +13,15 @@ function Nuke($path) {
 function Run([string]$exe, [string[]]$cmdArgs) {
   & $exe @cmdArgs
   if ($LASTEXITCODE -ne 0) { throw "$exe $($cmdArgs -join ' ') failed with exit code $LASTEXITCODE" }
+}
+
+# The hard reset rewrites this very script, so what runs the machine down is the
+# version that came with it, reached by calling it again.
+if (-not $Aligned) {
+  Run git @('-C', $repo, 'fetch', 'upstream', 'main')
+  Run git @('-C', $repo, 'reset', '--hard', 'upstream/main')
+  & $PSCommandPath -Aligned
+  exit
 }
 
 $parents = [ordered]@{

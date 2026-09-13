@@ -103,6 +103,10 @@ win1,win2,win3 and winCoordinator local memory should only report:
 "Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\windowsVersion\global_memory.txt'; add and remove from there when/if needed"
 Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
+reset.ps1 hard resets the AgentsCoordination checkout to upstream/main before anything else, so
+everything the repository tracks goes back to what upstream says. `global_memory.txt` is tracked
+and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
+reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
 
 
 # Inter agent messaging
