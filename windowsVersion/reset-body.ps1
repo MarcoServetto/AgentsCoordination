@@ -1,7 +1,8 @@
 $ErrorActionPreference = 'Stop'
-# This script runs from wherever reset.ps1 downloaded it, so the checkout is named
-# outright; the hard reset below is then free to rewrite the checkout's own copy.
-$repo = 'C:\data\AgentsCoordination\windowsVersion'
+# This script runs from wherever reset.ps1 downloaded it, so it is free to delete
+# and reclone the checkout's own copy below.
+$repoRoot = 'C:\data\AgentsCoordination'
+$repo = "$repoRoot\windowsVersion"
 $data = 'C:\data'
 $userHome = $HOME
 
@@ -16,8 +17,12 @@ function Run([string]$exe, [string[]]$cmdArgs) {
   if ($LASTEXITCODE -ne 0) { throw "$exe $($cmdArgs -join ' ') failed with exit code $LASTEXITCODE" }
 }
 
-Run git @('-C', $repo, 'fetch', 'upstream', 'main')
-Run git @('-C', $repo, 'reset', '--hard', 'upstream/main')
+Nuke $repoRoot
+Run git @('clone', '--quiet', 'https://github.com/marcoautomation2/AgentsCoordination.git', $repoRoot)
+Run git @('-C', $repoRoot, 'remote', 'add', 'upstream', 'https://github.com/MarcoServetto/AgentsCoordination.git')
+Run git @('-C', $repoRoot, 'fetch', 'upstream', 'main')
+Run git @('-C', $repoRoot, 'checkout', '--force', '-B', 'main', 'upstream/main')
+Run git @('-C', $repoRoot, 'clean', '-x', '-d', '--force')
 
 $parents = [ordered]@{
   Commons = "FearlessLang"; Frontend = "FearlessLang"; Coordinator = "FearlessLang"
@@ -32,9 +37,8 @@ New-Item -ItemType Directory -Force -Path "$data\winCoordinator" | Out-Null
 foreach ($item in Get-ChildItem "$data\winCoordinator" -Force) { Nuke $item.FullName }
 foreach ($b in $branches) {
   New-Item -ItemType Directory -Force -Path "$data\$b" | Out-Null
-  foreach ($item in Get-ChildItem "$data\$b" -Force) { if ($parents.Keys -notcontains $item.Name) { Nuke $item.FullName } }
+  foreach ($item in Get-ChildItem "$data\$b" -Force) { Nuke $item.FullName }
   foreach ($r in $parents.Keys) {
-    if (Test-Path "$data\$b\$r") { continue }
     Run git @('clone', '--quiet', "https://github.com/marcoautomation2/$r.git", "$data\$b\$r")
     Run git @('-C', "$data\$b\$r", 'remote', 'add', 'upstream', "https://github.com/$($parents[$r])/$r.git")
   }
