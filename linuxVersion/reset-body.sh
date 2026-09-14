@@ -1,8 +1,9 @@
 #!/bin/bash
 set -euo pipefail
-# This script runs from wherever reset.sh downloaded it, so the checkout is named
-# outright; the hard reset below is then free to rewrite the checkout's own copy.
-repo=/data/AgentsCoordination/linuxVersion
+# This script runs from wherever reset.sh downloaded it, so it is free to delete
+# and reclone the checkout's own copy below.
+repoRoot=/data/AgentsCoordination
+repo="$repoRoot/linuxVersion"
 data=/data
 userHome="$HOME"
 
@@ -12,8 +13,12 @@ nuke() {
   rm -rf -- "$1"
 }
 
-git -C "$repo" fetch upstream main
-git -C "$repo" reset --hard upstream/main
+nuke "$repoRoot"
+git clone --quiet https://github.com/marcoautomation2/AgentsCoordination.git "$repoRoot"
+git -C "$repoRoot" remote add upstream https://github.com/MarcoServetto/AgentsCoordination.git
+git -C "$repoRoot" fetch upstream main
+git -C "$repoRoot" checkout --force -B main upstream/main
+git -C "$repoRoot" clean -x -d --force
 
 declare -A parents=(
   [Commons]=FearlessLang [Frontend]=FearlessLang [Coordinator]=FearlessLang
@@ -32,12 +37,8 @@ mkdir -p "$data/linuxCoordinator"
 for item in "$data"/linuxCoordinator/* "$data"/linuxCoordinator/.[!.]*; do [ -e "$item" ] || continue; nuke "$item"; done
 for b in $branches; do
   mkdir -p "$data/$b"
-  for item in "$data/$b"/* "$data/$b"/.[!.]*; do
-    [ -e "$item" ] || continue
-    case " $repos " in *" $(basename "$item") "*) ;; *) nuke "$item";; esac
-  done
+  for item in "$data/$b"/* "$data/$b"/.[!.]*; do [ -e "$item" ] || continue; nuke "$item"; done
   for r in $repos; do
-    [ -e "$data/$b/$r" ] && continue
     git clone --quiet "https://github.com/marcoautomation2/$r.git" "$data/$b/$r"
     git -C "$data/$b/$r" remote add upstream "https://github.com/${parents[$r]}/$r.git"
   done
