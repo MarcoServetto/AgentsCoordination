@@ -10,6 +10,11 @@ fearlessBranchN, registers the one scheduled task, and reboots.
 Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1080 at 150% scaling.
+Sleep and hibernate are disabled on both AC and battery, lid-close does
+nothing, and Fast Startup is off: this machine must never go unreachable by
+suspending itself. On a laptop chassis, confirm the AC adapter is actually
+seated; a momentary switch to battery plus a stale idle timer is enough to
+put it to sleep even with these settings correct.
 Windows logs sonta in at boot; Brave is logged in to claude.ai.
 Claude Code is installed at %USERPROFILE%\.local\bin\claude.exe and logged in to claude.ai.
 
