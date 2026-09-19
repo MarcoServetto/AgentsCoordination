@@ -96,15 +96,6 @@ agentubuntu has passwordless sudo. Install, uninstall, write /etc and
 asking. Anything writing to an agent's `/run/user/1000/cc-socks/<pid>.sock`
 socket must run as agentubuntu.
 
-A `PermissionRequest` hook (`~/.claude/hooks/auto-approve-permission-request.sh`,
-registered in `settings.json`) auto-approves every permission prompt Claude
-Code would otherwise show, including the `rm`/`rmdir` critical-path check
-that `bypassPermissions` mode itself still asks about. Nobody is ever at this
-machine's keyboard to answer a prompt (see Remote), so an unanswered one
-would otherwise stall a session, sometimes for hours, until a human happens
-to notice; the hook removes that failure mode entirely, consistent with the
-rest of this machine's full-trust setup.
-
 # Shared memory and shared CLAUDE.md
 
 linux1,linux2,linux3 and linuxCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
