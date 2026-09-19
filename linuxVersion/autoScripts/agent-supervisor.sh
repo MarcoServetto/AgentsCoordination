@@ -6,6 +6,13 @@ cleanup="$here/cleanup-watchdog.sh"
 sessDir="$HOME/.claude/sessions"
 export PATH="$HOME/.local/bin:$PATH"
 
+# os.kill(pid, 0) only proves some process currently holds this pid, not
+# that it is the same process the session file was written for: pids get
+# reused. windowsVersion/autoScripts/agent-supervisor.ps1's send() instead
+# matches a session file's procStart field against the live process's own
+# start time (a Windows FILETIME read from Get-Process); the same match by
+# process start time, keyed off /proc/<pid>/stat field 22 (ticks since
+# boot) or another linux equivalent, belongs here too.
 send() {
   python3 - "$sessDir" "$1" "$2" <<'PY'
 import glob, json, os, socket, sys
