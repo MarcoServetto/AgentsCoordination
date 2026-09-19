@@ -46,7 +46,7 @@ foreach ($b in $branches) {
 Copy-Item -Recurse -Force "$repo\data\*" $data
 foreach ($b in $branches) { Push-Location "$data\$b"; & "$repo\home\.claude\skills\align-branches\align-branches.ps1"; Pop-Location }
 
-foreach ($n in 'skills', 'commands', 'agents', 'settings.local.json', 'keybindings.json', 'CLAUDE.local.md') { Nuke "$userHome\.claude\$n" }
+foreach ($n in 'skills', 'commands', 'agents', 'hooks', 'settings.local.json', 'keybindings.json', 'CLAUDE.local.md') { Nuke "$userHome\.claude\$n" }
 foreach ($p in Get-ChildItem "$userHome\.claude\projects" -Directory -ErrorAction SilentlyContinue) { Nuke "$($p.FullName)\memory" }
 Copy-Item -Recurse -Force "$repo\home\*" $userHome
 

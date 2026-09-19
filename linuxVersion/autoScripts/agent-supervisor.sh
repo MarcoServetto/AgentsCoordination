@@ -10,12 +10,18 @@ send() {
   python3 - "$sessDir" "$1" "$2" <<'PY'
 import glob, json, os, socket, sys
 sessDir, agentName, msg = sys.argv[1:]
+def procStart(pid):
+    try:
+        raw = open(f'/proc/{pid}/stat').read()
+    except FileNotFoundError:
+        return None
+    return raw.rsplit(')', 1)[1].split()[19]
 live = []
 for f in glob.glob(os.path.join(sessDir, '*.json')):
     info = json.load(open(f))
     if not info.get('messagingSocketPath'): continue
-    try: os.kill(info['pid'], 0)
-    except OSError: continue
+    if not info.get('procStart'): continue
+    if procStart(info['pid']) != info['procStart']: continue
     if info.get('name') == agentName: live.append(info)
 if len(live) != 1: raise SystemExit(f"expected exactly one live session named '{agentName}', found {len(live)}")
 target = live[0]
@@ -45,6 +51,7 @@ PY
 }
 
 start_agent() {
+  rm -f "$2/.claude/scheduled_tasks.lock"
   clearSession "$1"
   ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
 }

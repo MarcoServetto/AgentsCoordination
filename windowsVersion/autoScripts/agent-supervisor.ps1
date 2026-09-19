@@ -7,7 +7,10 @@ function send($agentName, $msg) {
   $live = Get-ChildItem -LiteralPath $sessDir -Filter '*.json' | ForEach-Object {
     $info = Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json
     if (-not $info.messagingSocketPath) { return }
-    if (-not (Get-Process -Id $info.pid -ErrorAction SilentlyContinue)) { return }
+    if (-not $info.procStart) { return }
+    $proc = Get-Process -Id $info.pid -ErrorAction SilentlyContinue
+    if (-not $proc) { return }
+    if ($proc.StartTime.ToFileTimeUtc() -ne [int64]$info.procStart) { return }
     $info
   }
   $match = @($live | Where-Object { $_.name -eq $agentName })
@@ -40,6 +43,7 @@ function clearSession($agentName) {
 }
 
 function start_agent($agentName, $workDir) {
+  Remove-Item -LiteralPath (Join-Path $workDir '.claude\scheduled_tasks.lock') -Force -ErrorAction SilentlyContinue
   clearSession $agentName
   Start-Process -FilePath 'claude' -ArgumentList "--remote-control $agentName -n $agentName" -WorkingDirectory $workDir -WindowStyle Maximized
 }

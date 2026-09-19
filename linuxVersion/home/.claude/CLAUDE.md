@@ -53,6 +53,7 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
 - `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -151,7 +152,8 @@ After stopping because no more tasks, no more time or some other reason, do a PR
 When you receive run_daily_check_up
 check the general machine health.
 Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
-A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Report it the same way.
+
+A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Assume the user is asleep or away: investigate what needs fixing, apply whatever temporary fix gets it running again, restart `agent-supervisor.sh` yourself, and report to the user only afterward.
 
 # Remote
 

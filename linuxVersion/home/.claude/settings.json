@@ -10,5 +10,17 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "light",
   "agentPushNotifEnabled": true,
-  "crossSessionInbound": "accept"
+  "crossSessionInbound": "accept",
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh"
+          }
+        ]
+      }
+    ]
+  }
 }
