@@ -6,23 +6,22 @@ cleanup="$here/cleanup-watchdog.sh"
 sessDir="$HOME/.claude/sessions"
 export PATH="$HOME/.local/bin:$PATH"
 
-# os.kill(pid, 0) only proves some process currently holds this pid, not
-# that it is the same process the session file was written for: pids get
-# reused. windowsVersion/autoScripts/agent-supervisor.ps1's send() instead
-# matches a session file's procStart field against the live process's own
-# start time (a Windows FILETIME read from Get-Process); the same match by
-# process start time, keyed off /proc/<pid>/stat field 22 (ticks since
-# boot) or another linux equivalent, belongs here too.
 send() {
   python3 - "$sessDir" "$1" "$2" <<'PY'
 import glob, json, os, socket, sys
 sessDir, agentName, msg = sys.argv[1:]
+def procStart(pid):
+    try:
+        raw = open(f'/proc/{pid}/stat').read()
+    except FileNotFoundError:
+        return None
+    return raw.rsplit(')', 1)[1].split()[19]
 live = []
 for f in glob.glob(os.path.join(sessDir, '*.json')):
     info = json.load(open(f))
     if not info.get('messagingSocketPath'): continue
-    try: os.kill(info['pid'], 0)
-    except OSError: continue
+    if not info.get('procStart'): continue
+    if procStart(info['pid']) != info['procStart']: continue
     if info.get('name') == agentName: live.append(info)
 if len(live) != 1: raise SystemExit(f"expected exactly one live session named '{agentName}', found {len(live)}")
 target = live[0]
