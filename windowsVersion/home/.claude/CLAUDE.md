@@ -97,15 +97,6 @@ Install, uninstall, write HKLM and Program Files, manage services, register
 tasks; directly, without asking. Anything writing to an agent's
 `\\.\pipe\LOCAL\cc-msg-*` pipe must itself run at high integrity.
 
-A `PermissionRequest` hook (`auto-approve-permission-request.ps1`, registered
-in `settings.json`) auto-approves every permission prompt Claude Code would
-otherwise show, including the `rm`/`Remove-Item` critical-path check that
-`bypassPermissions` mode itself still asks about. Nobody is ever at this
-machine's keyboard to answer a prompt (see Remote), so an unanswered one
-would otherwise stall a session, sometimes for hours, until a human happens
-to notice; the hook removes that failure mode entirely, consistent with the
-rest of this machine's full-trust setup.
-
 # Shared memory and shared CLAUDE.md
 
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
