@@ -127,7 +127,7 @@ This is ok when asked but:
 
 win3 takes care of overnight tasks.
 When woken up with run_overnight_tasks:
-- The user is asleep, asking anything to the user will block the whole overnight process.
+- The user is asleep, asking anything to the user will block the whole overnight process. A sub agent stalled on a permission prompt (see Running commands) is just as blocking, since nobody is awake to answer it: tell every sub agent to keep scratch/temp files inside the working directory or its own scratchpad directory.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasks/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
 Repeat the following:
@@ -421,3 +421,4 @@ The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
 - Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
 - The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
+- The sandbox only lets a command write inside the working directory, the session's own scratchpad directory, or an explicitly added directory; a write anywhere else needs an interactive approval that `bypassPermissions` does not skip. Nobody is at this machine's keyboard (see Remote), so that approval has nobody to give it and the call hangs until someone notices and approves it by hand, potentially hours later. Sub agents already inherit the session's `bypassPermissions` mode, so this is not about a sub agent running with less trust than the session that spawned it; it is specifically about the write target. Always write scratch/temp files (a PR body, an intermediate script, anything not meant to stay in the repo) inside the working directory or the given scratchpad directory, with a full, correct path; this applies to every sub agent spawned to do delegated work, not just the top-level session.
