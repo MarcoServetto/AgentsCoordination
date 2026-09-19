@@ -46,7 +46,7 @@ done
 cp -r "$repo/data/." "$data"
 for b in $branches; do (cd "$data/$b" && "$repo/home/.claude/skills/align-branches/align-branches.sh"); done
 
-for n in skills commands agents settings.local.json keybindings.json CLAUDE.local.md; do nuke "$userHome/.claude/$n"; done
+for n in skills commands agents hooks settings.local.json keybindings.json CLAUDE.local.md; do nuke "$userHome/.claude/$n"; done
 for p in "$userHome"/.claude/projects/*/; do [ -d "$p" ] && nuke "${p}memory"; done
 cp -r "$repo/home/." "$userHome"
 for d in "$data/linuxCoordinator" "$data"/fearlessBranch1 "$data"/fearlessBranch2 "$data"/fearlessBranch3; do
