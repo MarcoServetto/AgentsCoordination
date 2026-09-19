@@ -31,11 +31,8 @@ s.close()
 PY
 }
 
-# windowsVersion/autoScripts/agent-supervisor.ps1 also clears a stale
-# .claude/scheduled_tasks.lock from the agent's own working directory
-# before each relaunch, since the process id it records never outlives
-# an ungraceful exit; this side does not yet mirror that.
 start_agent() {
+  rm -f "$2/.claude/scheduled_tasks.lock"
   ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
 }
 
