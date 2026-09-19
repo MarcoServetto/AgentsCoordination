@@ -126,7 +126,7 @@ This is ok when asked but:
 
 linux3 takes care of overnight tasks.
 When woken up with run_overnight_tasks:
-- The user is asleep, asking anything to the user will block the whole overnight process.
+- The user is asleep, asking anything to the user will block the whole overnight process. A sub agent stalled on a permission prompt (see Running commands) is just as blocking, since nobody is awake to answer it: tell every sub agent to keep scratch/temp files inside the working directory or its own scratchpad directory.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksLinux/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
 Repeat the following:
@@ -420,3 +420,4 @@ The Bash tool is bash, with no stdin, and each call starts in the session's work
 - Ask `gh` for `--json` and parse with `jq` or `python3 -c`.
 - The desktop session is GNOME on Wayland: `DISPLAY`, `WAYLAND_DISPLAY` and `XDG_RUNTIME_DIR` are set in every agent session, so GUI programs started from Bash open on the display.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
+- A write outside the working directory and outside the session's own scratchpad directory can trigger a permission prompt. Nobody is at this machine's keyboard (see Remote), so that prompt has nobody to answer it and the call hangs until someone notices and approves it by hand, potentially hours later. Always write scratch/temp files (a PR body, an intermediate script, anything not meant to stay in the repo) inside the working directory or the given scratchpad directory, with a full, correct path (a typo'd path missing a directory component, e.g. `/tmp_foo.md` instead of `/tmp/foo.md`, lands outside every allowed directory and is exactly as blocking); this applies to every sub agent spawned to do delegated work, not just the top-level session.
