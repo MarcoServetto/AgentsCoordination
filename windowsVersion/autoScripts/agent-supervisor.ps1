@@ -31,6 +31,7 @@ function send($agentName, $msg) {
 }
 
 function start_agent($agentName, $workDir) {
+  Remove-Item -LiteralPath (Join-Path $workDir '.claude\scheduled_tasks.lock') -Force -ErrorAction SilentlyContinue
   Start-Process -FilePath 'claude' -ArgumentList "--remote-control $agentName -n $agentName" -WorkingDirectory $workDir -WindowStyle Maximized
 }
 
