@@ -6,12 +6,6 @@ cleanup="$here/cleanup-watchdog.sh"
 sessDir="$HOME/.claude/sessions"
 export PATH="$HOME/.local/bin:$PATH"
 
-# The os.kill(pid, 0) check below trusts a reused pid the way windows
-# send() used to. windowsVersion/autoScripts/agent-supervisor.ps1 now
-# clears a session's own files before relaunching it, plus a shutdown
-# handler that clears all four on logoff/shutdown; neither is mirrored
-# here yet. A systemd user unit stopped with SIGTERM and a short
-# TimeoutStopSec is the natural place for the shutdown half on this side.
 send() {
   python3 - "$sessDir" "$1" "$2" <<'PY'
 import glob, json, os, socket, sys
@@ -37,7 +31,21 @@ s.close()
 PY
 }
 
+clearSession() {
+  python3 - "$sessDir" "$1" <<'PY'
+import glob, json, os, sys
+sessDir, agentName = sys.argv[1:]
+for f in glob.glob(os.path.join(sessDir, '*.json')):
+    info = json.load(open(f))
+    if info.get('name') != agentName: continue
+    os.remove(f)
+    for k in glob.glob(os.path.join(sessDir, f"{info['pid']}.*.key")):
+        os.remove(k)
+PY
+}
+
 start_agent() {
+  clearSession "$1"
   ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
 }
 
@@ -54,6 +62,12 @@ check_action() {
   done < "$scheduleFile"
   echo 1
 }
+
+shutdownCleanup() {
+  for a in linux1 linux2 linux3 linuxCoordinator; do clearSession "$a"; done
+  exit 0
+}
+trap shutdownCleanup TERM HUP
 
 until curl -s --max-time 5 -o /dev/null https://api.anthropic.com; do sleep 5; done
 
