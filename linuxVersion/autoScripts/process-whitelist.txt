@@ -120,3 +120,7 @@ gnome-text-edit
 
 # --- Eclipse (Fearless plugin testing) ---
 eclipse
+
+# --- desk helpers that respawn on their own, harmless to leave running ---
+ydotoold
+dart:firmware-n
