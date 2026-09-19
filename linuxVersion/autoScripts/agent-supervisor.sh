@@ -38,6 +38,7 @@ PY
 }
 
 start_agent() {
+  rm -f "$2/.claude/scheduled_tasks.lock"
   ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
 }
 
