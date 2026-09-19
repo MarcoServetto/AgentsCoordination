@@ -53,7 +53,7 @@ Whitelisted scripts:
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
 - `C:\data\AgentsCoordination\windowsVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
-- `C:\data\AgentsCoordination\windowsVersion\home\.claude\hooks\auto-approve-permission-request.ps1` (registered as a `PermissionRequest` hook in `settings.json`, runs automatically on every permission prompt; you don't invoke it yourself)
+- `C:\data\AgentsCoordination\windowsVersion\home\.claude\hooks\auto-approve-permission-request.ps1` (listed here only because it is long-lived, per the rule above; no agent ever runs it, Claude Code itself spawns it as the `hooks.PermissionRequest` command from `settings.json`, once per permission prompt, for as long as that entry exists - see Elevation)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
