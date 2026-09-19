@@ -30,7 +30,17 @@ function send($agentName, $msg) {
   }
 }
 
+function clearSession($agentName) {
+  Get-ChildItem -LiteralPath $sessDir -Filter '*.json' -ErrorAction SilentlyContinue | ForEach-Object {
+    $info = Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json
+    if ($info.name -ne $agentName) { return }
+    Remove-Item -LiteralPath $_.FullName -Force
+    Get-ChildItem -LiteralPath $sessDir -Filter "$($info.pid).*.key" | Remove-Item -Force
+  }
+}
+
 function start_agent($agentName, $workDir) {
+  clearSession $agentName
   Start-Process -FilePath 'claude' -ArgumentList "--remote-control $agentName -n $agentName" -WorkingDirectory $workDir -WindowStyle Maximized
 }
 
@@ -52,6 +62,10 @@ function check_action() {
   }
   return 1
 }
+
+Register-ObjectEvent -InputObject ([Microsoft.Win32.SystemEvents]) -EventName SessionEnding -Action {
+  'win1', 'win2', 'win3', 'winCoordinator' | ForEach-Object { clearSession $_ }
+} | Out-Null
 
 while ($true) {
   try {

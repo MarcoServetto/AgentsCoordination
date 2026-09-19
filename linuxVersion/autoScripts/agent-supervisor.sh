@@ -6,6 +6,12 @@ cleanup="$here/cleanup-watchdog.sh"
 sessDir="$HOME/.claude/sessions"
 export PATH="$HOME/.local/bin:$PATH"
 
+# The os.kill(pid, 0) check below trusts a reused pid the way windows
+# send() used to. windowsVersion/autoScripts/agent-supervisor.ps1 now
+# clears a session's own files before relaunching it, plus a shutdown
+# handler that clears all four on logoff/shutdown; neither is mirrored
+# here yet. A systemd user unit stopped with SIGTERM and a short
+# TimeoutStopSec is the natural place for the shutdown half on this side.
 send() {
   python3 - "$sessDir" "$1" "$2" <<'PY'
 import glob, json, os, socket, sys
