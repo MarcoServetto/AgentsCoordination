@@ -37,8 +37,22 @@ s.close()
 PY
 }
 
+clearSession() {
+  python3 - "$sessDir" "$1" <<'PY'
+import glob, json, os, sys
+sessDir, agentName = sys.argv[1:]
+for f in glob.glob(os.path.join(sessDir, '*.json')):
+    info = json.load(open(f))
+    if info.get('name') != agentName: continue
+    os.remove(f)
+    for k in glob.glob(os.path.join(sessDir, f"{info['pid']}.*.key")):
+        os.remove(k)
+PY
+}
+
 start_agent() {
   rm -f "$2/.claude/scheduled_tasks.lock"
+  clearSession "$1"
   ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
 }
 
@@ -55,6 +69,12 @@ check_action() {
   done < "$scheduleFile"
   echo 1
 }
+
+shutdownCleanup() {
+  for a in linux1 linux2 linux3 linuxCoordinator; do clearSession "$a"; done
+  exit 0
+}
+trap shutdownCleanup TERM HUP
 
 until curl -s --max-time 5 -o /dev/null https://api.anthropic.com; do sleep 5; done
 
