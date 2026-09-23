@@ -206,8 +206,8 @@ If a PR changes the logical content of Commons, a new Commons.jar needs to be ad
     seconds, not minutes.
 
   TestAllFrontendCoordinator.java
-    Builds Commons, Frontend, and Coordinator, and runs Coordinator's test
-    suite EXCLUDING its slow `integrationTests` package (which would compile
+    Runs everything TestAllFrontend.java does, then builds Coordinator and
+    runs Coordinator's test suite EXCLUDING its slow `integrationTests` package (which would compile
     and actually runs whole example Fearless programs, one JVM launch per
     project). Fast. Test `testBuildBase.TestBuildBase` builds the standard library 'base' but does not save it in the cache for integration tests.
 
