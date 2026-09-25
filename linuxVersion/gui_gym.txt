@@ -55,12 +55,14 @@ that is transient, raise it and retry. GTK apps run as native wayland
 clients and never appear in xwininfo unless launched with GDK_BACKEND=x11
 (MOZ_ENABLE_WAYLAND=0 for firefox); the screencast above sees them anyway.
 
-= Multiple agent windows on this shared desktop =
+= Agent terminals have no window =
 
-The screen is shared with the other agents' terminals, usually a maximized
-one: whatever a test opens lands on top of it and steals focus, and a drop
-that misses its window pastes the file path into that terminal. Keep
-pointer paths inside the windows the test opened.
+agent-supervisor.sh runs linux1, linux2, linux3 and linuxCoordinator in
+detached sessions of a tmux server of their own: they have no window, so no
+pointer or key input on the desktop reaches them.
+tmux -L agents attach -t <agent> shows one from a terminal or ssh. The
+desktop holds only the windows tests open, and those of several agents can
+be open at once: keep pointer paths inside the windows the test opened.
 
 = A GUI app that never exits on its own =
 

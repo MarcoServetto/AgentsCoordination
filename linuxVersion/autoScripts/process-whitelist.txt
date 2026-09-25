@@ -10,13 +10,11 @@
 claude
 bash
 sh
-ptyxis
-ptyxis-agent
+tmux: server
 agent-superviso
 sleep
 
 # --- a session started by hand from a terminal or ssh ---
-tmux: server
 tmux: client
 sshd
 sshd-session

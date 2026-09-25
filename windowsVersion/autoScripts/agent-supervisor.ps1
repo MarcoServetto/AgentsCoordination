@@ -45,7 +45,7 @@ function clearSession($agentName) {
 function start_agent($agentName, $workDir) {
   Remove-Item -LiteralPath (Join-Path $workDir '.claude\scheduled_tasks.lock') -Force -ErrorAction SilentlyContinue
   clearSession $agentName
-  Start-Process -FilePath 'claude' -ArgumentList "--remote-control $agentName -n $agentName" -WorkingDirectory $workDir -WindowStyle Maximized
+  Start-Process -FilePath 'claude' -ArgumentList "--remote-control $agentName -n $agentName" -WorkingDirectory $workDir -WindowStyle Hidden
 }
 
 function check_action() {
