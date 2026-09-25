@@ -53,7 +53,7 @@ PY
 start_agent() {
   rm -f "$2/.claude/scheduled_tasks.lock"
   clearSession "$1"
-  ptyxis --new-window --maximize --working-directory "$2" -x "bash -lc 'claude --remote-control $1 -n $1'" &
+  tmux -L agents new-session -d -s "$1" -c "$2" "bash -lc 'claude --remote-control $1 -n $1'"
 }
 
 check_action() {

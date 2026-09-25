@@ -36,15 +36,16 @@ EnumWindows by title. SW_RESTORE (9) un-maximizes a maximized window and moves e
 widget, so never use it for that purpose. SetForegroundWindow alone can be refused; it
 works once the process has injected real input (mouse_event) at least once.
 
-= Multiple agent windows on this shared desktop =
+= Agent terminals are hidden =
 
-win1, win2, win3 and winCoordinator each keep a terminal window open at all times, plus
-whatever app windows they are testing. A blind "inject input" click (e.g. screen center,
-or a window's top-left system-menu corner at (10,10)) can land on another agent's window
-instead of empty desktop - it opened another agent's system menu once in this session.
-Prefer clicking a taskbar icon for the exact window you want (it also raises and focuses
-it in one action) over a blind click elsewhere on screen. Only click coordinates you have
-just confirmed by screenshot belong to the window you intend to affect.
+agent-supervisor.ps1 starts the consoles of win1, win2, win3 and winCoordinator hidden:
+they have no taskbar button, no title bar and are never the foreground window, so no
+pointer or key input on the desktop reaches them. The desktop holds only the app windows
+under test, and those of several agents can be open at once. Prefer clicking a taskbar
+icon for the exact window you want (it also raises and focuses it in one action) over a
+blind click elsewhere on screen. Taskbar buttons shift whenever a window opens or closes:
+only click coordinates you have just confirmed by screenshot belong to the window you
+intend to affect.
 
 EnumWindows + ShowWindow(SW_MAXIMIZE) + SetForegroundWindow on a handle found by title
 substring was unreliable on this box even after a prior mouse_event: it sometimes left an
