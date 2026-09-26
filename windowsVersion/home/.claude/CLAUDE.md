@@ -107,13 +107,12 @@ tasks; directly, without asking. Anything writing to an agent's
 
 win1,win2,win3 and winCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 win1,win2,win3 and winCoordinator local memory should only report:
-"Do not use this local memory, all the data is in 'C:\data\AgentsCoordination\windowsVersion\global_memory.txt'; add and remove from there when/if needed"
+"Do not use this local memory, all the data is in 'C:\data\global_memory.txt'; add and remove from there when/if needed"
 Those files are the ones under `windowsVersion\data\` and `windowsVersion\home\` of AgentsCoordination; reset-body.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 A reset deletes and re-clones the AgentsCoordination checkout from MarcoServetto/AgentsCoordination before anything else, so
-everything the repository tracks goes back to what it says. `global_memory.txt` is tracked
-and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
-reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
+everything the repository tracks goes back to what it says. `global_memory.txt` is committed empty
+in `windowsVersion\data\`: a reset writes it empty to `C:\data`, where the agents edit it.
 
 
 # Inter agent messaging
