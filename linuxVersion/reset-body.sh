@@ -14,11 +14,8 @@ nuke() {
 }
 
 nuke "$repoRoot"
-git clone --quiet https://github.com/marcoautomation2/AgentsCoordination.git "$repoRoot"
-git -C "$repoRoot" remote add upstream https://github.com/MarcoServetto/AgentsCoordination.git
-git -C "$repoRoot" fetch upstream main
-git -C "$repoRoot" checkout --force -B main upstream/main
-git -C "$repoRoot" clean -x -d --force
+git clone --quiet https://github.com/MarcoServetto/AgentsCoordination.git "$repoRoot"
+git -C "$repoRoot" remote add fork https://github.com/marcoautomation2/AgentsCoordination.git
 
 declare -A parents=(
   [Commons]=FearlessLang [Frontend]=FearlessLang [Coordinator]=FearlessLang
