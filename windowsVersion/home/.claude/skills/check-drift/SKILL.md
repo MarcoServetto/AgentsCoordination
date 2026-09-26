@@ -12,6 +12,9 @@ one line per deviation (the path and what differs); change nothing.
 ```powershell
 $repo = 'C:\data\AgentsCoordination\windowsVersion'
 git -C C:\data\AgentsCoordination status --short
+git -C C:\data\AgentsCoordination fetch origin
+git -C C:\data\AgentsCoordination merge --ff-only origin/main
+git diff --no-index "$repo\data\gym" C:\data\gym --stat
 git diff --no-index --stat "$repo\home\.claude\skills" "$HOME\.claude\skills"
 git diff --no-index "$repo\home\.claude\CLAUDE.md" "$HOME\.claude\CLAUDE.md"
 git diff --no-index "$repo\home\.claude\settings.json" "$HOME\.claude\settings.json"

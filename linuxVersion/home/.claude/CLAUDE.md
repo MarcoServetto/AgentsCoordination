@@ -4,8 +4,14 @@ each in its own folder: linux1 in `/data/fearlessBranch1`, linux2 in
 `/data/linuxCoordinator`.
 Every instruction, skill and script on this machine originally comes from the `linuxVersion/` folder of the checkout of
 https://github.com/MarcoServetto/AgentsCoordination at `/data/AgentsCoordination` (`windowsVersion/` describes the Windows machine).
+The checkout has `origin` = MarcoServetto/AgentsCoordination itself; the marcoautomation2 fork is the remote `fork` and is only a
+place to push branches from which PRs to `origin` are opened.
+The checkout is the reference. What agents read and edit are the working copies that reset writes from it:
+`linuxVersion/data/` lands in `/data` (the gym files in `/data/gym`) and `linuxVersion/home/` lands in `$HOME`.
+The scripts in `linuxVersion/autoScripts/` run from the checkout.
 
-The current local copy can deviate from it, at regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
+The working copies can deviate from it, sometimes for months: an experiment is a working copy edited in place.
+At regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
 
 # Never include history of events in skills and CLAUDE.md files
 
@@ -100,13 +106,12 @@ socket must run as agentubuntu.
 
 linux1,linux2,linux3 and linuxCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 linux1,linux2,linux3 and linuxCoordinator local memory should only report:
-"Do not use this local memory, all the data is in '/data/AgentsCoordination/linuxVersion/global_memory.txt'; add and remove from there when/if needed"
+"Do not use this local memory, all the data is in '/data/global_memory.txt'; add and remove from there when/if needed"
 Those files are the ones under `linuxVersion/data/` and `linuxVersion/home/` of AgentsCoordination; reset-body.sh writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
-A reset deletes and re-clones the AgentsCoordination checkout from upstream/main before anything else, so
-everything the repository tracks goes back to what upstream says. `global_memory.txt` is tracked
-and committed empty for that reason: a clone installs it, a reset empties it. Between resets it
-reads as modified in `git status`, and that line is the memory itself, not a deviation to revert.
+A reset deletes and re-clones the AgentsCoordination checkout from MarcoServetto/AgentsCoordination before anything else, so
+everything the repository tracks goes back to what it says. `global_memory.txt` is committed empty
+in `linuxVersion/data/`: a reset writes it empty to `/data`, where the agents edit it.
 
 
 # Inter agent messaging
@@ -151,7 +156,7 @@ After stopping because no more tasks, no more time or some other reason, do a PR
 
 When you receive run_daily_check_up
 check the general machine health.
-Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
+Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files. Run `git -C /data/AgentsCoordination fetch origin` and `git -C /data/AgentsCoordination merge --ff-only origin/main` silently: the checkout is never edited by hand, so it always follows `origin/main`; report only a merge that fails. Report the working copies that differ from the checkout (the check-drift skill). Write a numbered bullet point list of what you propose to do and wait for the user to give instructions; do not act, just monitor.
 
 A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Assume the user is asleep or away: investigate what needs fixing, apply whatever temporary fix gets it running again, restart `agent-supervisor.sh` yourself, and report to the user only afterward.
 
@@ -399,7 +404,7 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a '/data/AgentsCoordination/linuxVersion/gui_gym.txt' where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
+We are keeping a '/data/gym/gui_gym.txt' (the working copy of `linuxVersion/data/gym/gui_gym.txt` in AgentsCoordination; edit the working copy, never the checkout) where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
 `Controllers/src/agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does; prefer it over ad hoc input injection when a test needs real pointer or keyboard input. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (GNOME, D-Bus, python, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
 
 

@@ -12,6 +12,9 @@ one line per deviation (the path and what differs); change nothing.
 ```bash
 repo=/data/AgentsCoordination/linuxVersion
 git -C /data/AgentsCoordination status --short
+git -C /data/AgentsCoordination fetch origin
+git -C /data/AgentsCoordination merge --ff-only origin/main
+git diff --no-index "$repo/data/gym" /data/gym --stat
 git diff --no-index --stat "$repo/home/.claude/skills" "$HOME/.claude/skills"
 git diff --no-index "$repo/home/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 git diff --no-index "$repo/home/.claude/settings.json" "$HOME/.claude/settings.json"
