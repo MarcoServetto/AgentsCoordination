@@ -18,11 +18,8 @@ function Run([string]$exe, [string[]]$cmdArgs) {
 }
 
 Nuke $repoRoot
-Run git @('clone', '--quiet', 'https://github.com/marcoautomation2/AgentsCoordination.git', $repoRoot)
-Run git @('-C', $repoRoot, 'remote', 'add', 'upstream', 'https://github.com/MarcoServetto/AgentsCoordination.git')
-Run git @('-C', $repoRoot, 'fetch', 'upstream', 'main')
-Run git @('-C', $repoRoot, 'checkout', '--force', '-B', 'main', 'upstream/main')
-Run git @('-C', $repoRoot, 'clean', '-x', '-d', '--force')
+Run git @('clone', '--quiet', 'https://github.com/MarcoServetto/AgentsCoordination.git', $repoRoot)
+Run git @('-C', $repoRoot, 'remote', 'add', 'fork', 'https://github.com/marcoautomation2/AgentsCoordination.git')
 
 $parents = [ordered]@{
   Commons = "FearlessLang"; Frontend = "FearlessLang"; Coordinator = "FearlessLang"
