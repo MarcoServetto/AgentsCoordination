@@ -61,6 +61,7 @@ SearchIndexer
 SearchProtocolHost
 SearchHost
 SearchFilterHost
+msedgewebview2
 MsMpEng
 NisSrv
 MpDefenderCoreService
