@@ -33,3 +33,20 @@ added tab explicitly.
 Window > Perspective > Open Perspective lists only a few recently used perspectives plus
 "Other..."; use Other... to reach the full list (with each perspective's icon) when the
 one you need was not recently used.
+
+= Starting and seeing Eclipse =
+
+Start Eclipse with -data <workspace> -perspective <perspective id> to open a fresh workspace
+directly in that perspective. A plugin jar replaced in dropins with the same Bundle-Version
+keeps its old plugin.xml and MANIFEST.MF from Eclipse's cache: start with -clean after such a
+replacement.
+
+The Eclipse window can be captured while other windows cover it: PrintWindow(handle, dc, 2)
+(PW_RENDERFULLCONTENT) on the handle found by EnumWindows renders its real content, so checking
+what Eclipse shows does not need raising it.
+
+The enabled state of a toolbar button changed by something in the background can stay stale on
+screen until the next part activation; click a view tab before trusting a screenshot of it.
+
+A minimized view opened from the icon rail at the window edge shows as an overlay; a click
+outside it hides it again.
