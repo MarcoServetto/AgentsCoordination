@@ -2,11 +2,9 @@ Findings on operating the Fearless manager (the managed app built by DeployManag
 
 = Bringing the hidden window back =
 
-Its tray icon sits in the Windows 11 "show hidden icons" flyout, where a synthetic click
-is swallowed (see gui_gym.txt). When a test needs "the window reappears from being
-hidden", relaunching the already-running app's exe is a working substitute that
-exercises the identical code path: it leaves a message for the existing owner process,
-which drains it and calls the same showManager() path.
+Its tray icon sits in the Windows 11 "show hidden icons" flyout (see gui_gym.txt):
+a double click on it shows the window, and its right-click menu holds "Show manager"
+and "Quit manager".
 
 = Rebuilding while the app is running =
 
