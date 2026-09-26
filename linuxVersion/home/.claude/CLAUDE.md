@@ -43,11 +43,6 @@ https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
 Fearless guide and game to teach fearless.
 
-# Fearless paper
-
-`/data/fearlessPaper/Fearless_TOPLAS/` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
-Its type system and `Frontend/FearlessFrontend/src/typeSystem` describe the same language: a bug found in one is checked in the other.
-
 # Scripts
 
 Building, testing and packaging Fearless is done only by the Java programs
