@@ -64,24 +64,14 @@ Do not trust a screenshot alone to confirm which window is now focused.
 
 = System tray icon in the Windows 11 "show hidden icons" flyout =
 
-Clicking the taskbar corner chevron ("^" near the clock) opens a flyout
-hosted in a window with class TopLevelWindowForOverflowXamlIsland. Find it
-with UI Automation (root.FindFirst by that ClassName), then FindAll
-descendants: each icon's accessible Name has a leading space (" Fearless
-Manager", not "Fearless Manager") - match with .Trim() or -like, not an
-exact PropertyCondition, or FindFirst-by-name silently returns null.
-Even with the correct BoundingRectangle center, a synthetic SetCursorPos
-+ mouse_event single or double click on that point was repeatedly
-swallowed (verified with tasklist/EnumWindows: no window ever
-appeared) despite the same click mechanism working reliably on ordinary
-windows and taskbar buttons; likely a hit-testing quirk of the
-XAML-hosted overflow flyout rather than a UIPI elevation issue (taskbar
-buttons, same explorer.exe integrity level, click fine). Also: any UI
-Automation FindFirst/FindAll query issued against the flyout after the
-first successful read sometimes appears to close it (a later screenshot
-shows it collapsed) - re-open with a fresh chevron click before every
-attempt. Unresolved: no reliable genuine-click recipe found yet for this
-specific flyout.
+Clicking the taskbar corner chevron ("^" near the clock) opens a flyout of
+the hidden tray icons; find the icon in a screenshot. Controllers'
+agentTools.Pilot operates it like any other window: glide the pointer onto
+the icon, pause, then doubleClick it (or press and release the right button
+for its menu); the flyout needs the pointer to arrive and hover before the
+press, so a click delivered at a point the pointer jumped to is swallowed.
+A tray icon menu item is reached by gliding from the icon into the menu, not
+by jumping to it.
 
 = ShowWindow(SW_MAXIMIZE) on a just-launched window before its first paint =
 
