@@ -66,5 +66,15 @@ be open at once: keep pointer paths inside the windows the test opened.
 
 = A GUI app that never exits on its own =
 
-Launch it with nohup ... & in the background, wait a few seconds for the
-window to render, capture, then pkill by the binary name before finishing.
+Launch it with nohup ... & in the background and note its pid ($! right
+after the launch), wait a few seconds for the window to render, capture,
+then kill that pid before finishing.
+
+= Kill by pid, never by name =
+
+The kernel keeps only the first 15 characters of a process name, and
+pkill -x and killall match those: pkill -x gnome-session-i matches
+gnome-session-init-worker, the leader of the desktop session, and ends the
+session of every agent on the machine. session-guard.timer then reboots it,
+losing all running work. Kill what you started by the pid you noted; pkill -f
+has the problem described above.
