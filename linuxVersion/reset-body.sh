@@ -24,7 +24,7 @@ declare -A parents=(
 )
 repos="Commons Frontend Coordinator StandardLibrary Controllers ZeroToHero FearlessTour"
 branches="fearlessBranch1 fearlessBranch2 fearlessBranch3"
-keep=" AgentsCoordination linuxCoordinator tools fearlessPaper accounts.txt $branches "
+keep=" AgentsCoordination linuxCoordinator tools accounts.txt $branches "
 
 for item in "$data"/* "$data"/.[!.]*; do
   [ -e "$item" ] || continue
