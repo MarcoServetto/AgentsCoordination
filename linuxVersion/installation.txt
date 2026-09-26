@@ -13,6 +13,24 @@ Preconditions:
 Display 1920x1080, GNOME on Wayland.
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking, locking and suspend are off; agentubuntu has passwordless sudo.
+GDM logs in automatically only at boot, so a session that ends leaves the machine
+at the greeter, out of reach: the systemd timer session-guard.timer (enabled) reboots
+when agentubuntu has no graphical session.
+/etc/systemd/system/session-guard.service:
+  [Unit]
+  Description=Reboot when agentubuntu has no graphical session, so GDM logs it in again
+  [Service]
+  Type=oneshot
+  ExecStart=/bin/sh -c '[ -n "$(loginctl show-user agentubuntu -p Display --value)" ] || systemctl reboot'
+/etc/systemd/system/session-guard.timer:
+  [Unit]
+  Description=Check every minute that agentubuntu has a graphical session
+  [Timer]
+  OnBootSec=5min
+  OnUnitActiveSec=1min
+  AccuracySec=10s
+  [Install]
+  WantedBy=timers.target
 The machine is on WiFi (Intel AX211, iwlwifi); its firmware crashes under load
 with power saving on, so it is off: /etc/NetworkManager/conf.d/wifi-powersave-off.conf
 ([connection] wifi.powersave = 2), /etc/modprobe.d/iwlwifi-stability.conf
