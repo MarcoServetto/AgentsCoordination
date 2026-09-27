@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+cd /
 # This script runs from wherever reset.sh downloaded it, so it is free to delete
 # and reclone the checkout's own copy below.
 repoRoot=/data/AgentsCoordination
