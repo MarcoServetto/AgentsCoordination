@@ -75,6 +75,6 @@ then kill that pid before finishing.
 The kernel keeps only the first 15 characters of a process name, and
 pkill -x and killall match those: pkill -x gnome-session-i matches
 gnome-session-init-worker, the leader of the desktop session, and ends the
-session of every agent on the machine. session-guard.timer then reboots it,
-losing all running work. Kill what you started by the pid you noted; pkill -f
+session of every agent on the machine. session-guard.timer then powers it
+off until someone switches it on by hand. Kill what you started by the pid you noted; pkill -f
 has the problem described above.

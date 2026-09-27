@@ -14,14 +14,14 @@ Display 1920x1080, GNOME on Wayland.
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking, locking and suspend are off; agentubuntu has passwordless sudo.
 GDM logs in automatically only at boot, so a session that ends leaves the machine
-at the greeter, out of reach: the systemd timer session-guard.timer (enabled) reboots
-when agentubuntu has no graphical session.
+at the greeter, out of reach: the systemd timer session-guard.timer (enabled) powers
+the machine off when agentubuntu has no graphical session.
 /etc/systemd/system/session-guard.service:
   [Unit]
-  Description=Reboot when agentubuntu has no graphical session, so GDM logs it in again
+  Description=Power off when agentubuntu has no graphical session
   [Service]
   Type=oneshot
-  ExecStart=/bin/sh -c '[ -n "$(loginctl show-user agentubuntu -p Display --value)" ] || systemctl reboot'
+  ExecStart=/bin/sh -c '[ -n "$(loginctl show-user agentubuntu -p Display --value)" ] || systemctl poweroff'
 /etc/systemd/system/session-guard.timer:
   [Unit]
   Description=Check every minute that agentubuntu has a graphical session
