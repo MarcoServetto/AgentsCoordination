@@ -10,9 +10,10 @@ fearlessBranchN, registers the one autostart entry, and reboots.
 
 Preconditions:
 /data/accounts.txt is present.
-Display 1920x1080, GNOME on Wayland.
+Display: one virtual 3840x2160 screen at scale 1.0, GNOME on Wayland.
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
-screen blanking, locking and suspend are off; agentubuntu has passwordless sudo.
+screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
+agentubuntu has passwordless sudo.
 GDM logs in automatically only at boot, so a session that ends leaves the machine
 at the greeter, out of reach: the systemd timer session-guard.timer (enabled) reboots
 when agentubuntu has no graphical session.
