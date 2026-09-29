@@ -38,6 +38,21 @@ with power saving on, so it is off: /etc/NetworkManager/conf.d/wifi-powersave-of
 (options iwlwifi power_save=0; options iwlmvm power_scheme=1) and
 /etc/sysctl.d/90-tcp-mtu-probing.conf (net.ipv4.tcp_mtu_probing = 1, the uplink is PPPoE with path MTU 1492).
 Claude Code is installed at ~/.local/bin/claude and logged in to claude.ai.
+The user reaches the desktop remotely (for example to log Claude Code in again)
+over RDP through Tailscale: the machine is behind NAT, so Tailscale is the only way in.
+Tailscale: package tailscale from the pkgs.tailscale.com apt repository for this
+Ubuntu release, tailscaled enabled, logged in once to the user's tailnet as
+linux-agents (sudo tailscale set --operator=agentubuntu; sudo tailscale up --hostname=linux-agents,
+the printed URL goes to the user), key expiry disabled in the Tailscale admin console.
+GNOME Remote Desktop shares the autologin session: a self-signed TLS key and
+certificate in ~/.local/share/gnome-remote-desktop (grdctl rdp set-tls-key, set-tls-cert),
+grdctl rdp set-credentials with the Remote desktop user and password of /data/accounts.txt,
+grdctl rdp disable-view-only, grdctl rdp enable,
+systemctl --user enable --now gnome-remote-desktop.service.
+The login keyring has no password (~/.local/share/keyrings/login.keyring is the
+plain text form: [keyring] display-name=login lock-on-idle=false lock-after=false;
+~/.local/share/keyrings/default contains login): autologin never unlocks an
+encrypted keyring, and a locked one puts an unlock prompt on a screen nobody watches.
 
 Needed Tools, each at its default install path; only install if not present.
   sudo apt-get install git gh jq curl tmux fakeroot
