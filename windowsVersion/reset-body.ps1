@@ -47,11 +47,22 @@ foreach ($n in 'skills', 'commands', 'agents', 'hooks', 'settings.local.json', '
 foreach ($p in Get-ChildItem "$userHome\.claude\projects" -Directory -ErrorAction SilentlyContinue) { Nuke "$($p.FullName)\memory" }
 Copy-Item -Recurse -Force "$repo\home\*" $userHome
 
-Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' -and $_.TaskName -ne 'ClaudeAgentSupervisor' } | Unregister-ScheduledTask -Confirm:$false
+$sysPol = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
+Set-ItemProperty $sysPol HideFastUserSwitching 1 -Type DWord
+Set-ItemProperty $sysPol DisableLockWorkstation 1 -Type DWord
+Run auditpol @('/set', '/subcategory:Other Logon/Logoff Events', '/success:enable', '/failure:enable')
+
+Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' -and @('ClaudeAgentSupervisor', 'ClaudeSessionGuard') -notcontains $_.TaskName } | Unregister-ScheduledTask -Confirm:$false
 Register-ScheduledTask -TaskName ClaudeAgentSupervisor -Force `
   -Action (New-ScheduledTaskAction -Execute powershell.exe -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File $repo\autoScripts\agent-supervisor.ps1") `
   -Trigger (New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME) `
   -Principal (New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Highest) `
   -Settings (New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan) -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries) | Out-Null
+$guard = "function gone { -not (Get-Process explorer -IncludeUserName -ErrorAction SilentlyContinue | Where-Object UserName -like '*\$env:USERNAME') }; if ((gone) -and ((Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime).TotalMinutes -gt 5) { Start-Sleep 180; if (gone) { Restart-Computer -Force } }"
+Register-ScheduledTask -TaskName ClaudeSessionGuard -Force `
+  -Action (New-ScheduledTaskAction -Execute powershell.exe -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand $([Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($guard)))") `
+  -Trigger (New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 9999)) `
+  -Principal (New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest) `
+  -Settings (New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 10) -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries) | Out-Null
 Write-Output 'rebooting'
 Restart-Computer -Force
