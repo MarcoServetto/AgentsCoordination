@@ -12,6 +12,12 @@ Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1080 at 150% scaling.
 Windows logs sonta in at boot; Brave is logged in to claude.ai.
+Windows logs in automatically only at boot, so a session that ends leaves the machine at the
+logon screen waiting for a typed password, out of reach: the scheduled task ClaudeSessionGuard
+(SYSTEM, every minute, registered by reset-body.ps1 with no script file) waits 3 minutes and reboots when
+sonta has no explorer.exe, never within 5 minutes of boot. Switching user and locking the
+workstation are disabled by policy (HideFastUserSwitching, DisableLockWorkstation), and the audit
+of "Other Logon/Logoff Events" is on, so a disconnect leaves a trace in the Security log.
 Claude Code is installed at %USERPROFILE%\.local\bin\claude.exe and logged in to claude.ai.
 
 Needed Tools, each at its default install path; only install if not present.
