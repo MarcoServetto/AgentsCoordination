@@ -73,10 +73,10 @@ This is a soft rule and there are plenty of reasons a task may require to use ot
 
 
 # File names:
-Folders and files we create (test fixtures, logs, scripts, any value that ends up as a file name) respect the Fearless folder rule when possible:
+Folders and files we create respect the Fearless folder rule when possible:
 only lowercase letters a-z, digits 0-9 and underscore _, starting with a letter or underscore; a file has at most one dot, followed by an extension of lowercase letters and digits.
 Java source code follows the Java conventions: a file is named after its public class, in CamelCase.
-
+Any parameter for command line tool should respect the file name convention too. Parameters with - @ space or other strange symbols should not be used.
 
 # Accounts
 
