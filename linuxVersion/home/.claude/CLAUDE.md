@@ -420,8 +420,6 @@ We are keeping a '/data/gym/gui_gym.txt' (the working copy of `linuxVersion/data
 Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
-Only run `/data/AgentsCoordination/linuxVersion/fearlessManagerAutomatedGuiTests/allTests.txt` when asked, since it takes one hour.
-
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
