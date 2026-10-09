@@ -153,6 +153,7 @@ Starting a task:
 A task need to be started in a sub agent (sonnet max)
 Focus on not trying to understand the tasks but just delegating them; just collect compacted informations about the results.
 The sub agent should write a log of its actions and conclusions.
+The sub agent must respect `ZeroToHero/tasks/readBeforeChanging/<Repo>*.txt` of every repository it changes.
 The task will contain info on how to communicate the results to the user.
 If a task needs discussion in the morning, the user should ask to delegate it to win1/win2; give full context by pointing to the logs of the sub agent.
 
