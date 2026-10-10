@@ -1,0 +1,116 @@
+Testing the Fearless manager on the VMs.
+A VM starts from the state its disk is in; there are no snapshots. Its user
+tester logs in by itself into the graphical session, with no lock, no
+blanking and no idle power action; its /etc/hosts maps its own hostname to
+127.0.1.1 (without it every JVM in the VM waits about 15 s on a DNS lookup
+at start); it answers qemu-guest-agent (guest-exec allowed) and mounts the
+share. Files tester creates on the share belong to agentubuntu on
+ubuntu_gnome.
+The share is /data/pilotio, mount tag pilotio, the filesIOFolder argument of
+TestAgentTools: the script copies the freshly built managed app into it and
+the tests write their fixtures and results there. It is virtiofs (in the
+domain XML a filesystem with driver type='virtiofs', binary
+/usr/libexec/virtiofsd and no cache element, so cache mode auto, with
+memoryBacking source type='memfd' access mode='shared'; in the VM the fstab
+line "pilotio /data/pilotio virtiofs defaults,nofail 0 0" mounts it before
+the desktop session). FUSE inodes are keyed by node id, so the manager's
+inotify watch on messages/ keeps seeing what the VM writes after "echo 3
+>/proc/sys/vm/drop_caches". With cache auto the VM keeps attributes and
+names for 1 s: ManagerTest.stabilize ("sync; echo 3
+>/proc/sys/vm/drop_caches" through qemu-guest-agent) makes ubuntu_gnome
+writes visible at once; VM writes reach ubuntu_gnome when write returns.
+A test on a VM: virsh -c qemu:///system start <vm>; virt-viewer -c
+qemu:///system --full-screen <vm> & (keeping the pid of the viewer); from
+Coordinator/Build/src, /opt/jdk-26.0.2/bin/java -ea --module-path
+../../../Commons/Commons.jar --add-modules Commons
+scripts/TestAgentTools.java <vm> false <TestClassName> <channelFolder>
+/data/pilotio; then kill the viewer by its pid and virsh -c qemu:///system
+shutdown <vm>. One VM is alive at a time.
+Every VM is 1920x1080 in its domain XML, shown on the 3840x2160 ubuntu_gnome
+screen, and every position is on that screen: where the VM keeps 1920x1080
+a VM pixel is two ubuntu_gnome pixels. The full screen viewer gets the
+keyboard after a click inside it on an empty desktop spot; for a few
+seconds after it opens its toolbar covers the top centre of the screen. The
+Super key never reaches a VM; Ctrl+Alt chords do, and Ctrl+Alt+T opens the
+terminal of every VM. virsh -c qemu:///system screenshot <vm> <file> is the
+VM framebuffer, taken without any input or capture on ubuntu_gnome.
+
+VM                desktop                         under the viewer   tray   terminal
+arch_sway         sway, wayland                   1920x1080          yes    foot (also Alt+Enter)
+debian_cinnamon   Cinnamon, X11                   3840x2160          yes    gnome-terminal
+debian_gnome_x11  GNOME, X11                      3840x2160          no     gnome-terminal
+debian_mate       MATE, X11                       1920x1080          no     mate-terminal
+fedora_cosmic     COSMIC, wayland                 1920x1080          yes    cosmic-term
+fedora_gnome      GNOME, wayland                  3840x2160          no     gnome-terminal
+kubuntu_plasma    Plasma 6, wayland               3840x2160          yes    Konsole
+lubuntu_lxqt      LXQt, X11                       5120x2160 at 0.75  yes    qterminal
+omarchy_hyprland  Hyprland with Omarchy, wayland  1920x1080          yes    foot (also Alt+Enter)
+opensuse_plasma   Plasma 6, wayland               3840x2160          yes    Konsole
+void_i3           i3, X11                         1920x1080          no     xterm (also Alt+Enter)
+xubuntu_xfce      Xfce, X11                       1920x1080          yes    xfce4-terminal
+
+arch_sway: ~/.bash_profile exports _JAVA_AWT_WM_NONREPARENTING=1 before exec
+sway (the manager draws fully only with it). ~/.config/sway/config is the
+stock config ($mod Mod4) plus Alt+Return and Ctrl+Alt+T for foot and
+Alt+Shift+Q to close the focused window; swaymsg reload as tester with
+SWAYSOCK=/run/user/1000/sway-ipc.1000.<pid>.sock applies an edit. The file
+manager is Thunar, with no daemon: xdg-open on a folder runs in the
+foreground, so it is started with nohup setsid -f xdg-open.
+debian_gnome_x11, fedora_gnome: Ctrl+Alt+T is gsettings media-keys custom0.
+debian_gnome_x11: an xrandr query in the VM (as tester, DISPLAY=:0) before
+the first click paints the display, which otherwise shows only the top bar
+clock until a window opens, and lets the first Ctrl+Alt+T open the
+terminal.
+fedora_gnome: gnome-shell opens its background menu on a 500 ms press of
+the bare wallpaper, and Pilot.click holds the button about 400 ms, so the
+click that gives the viewer the keyboard is a double click. GNOME key
+repeat is on (delay 500 ms): a key release reaching the VM late repeats
+the key in the terminal. qemu-guest-agent runs commands as root with
+DISPLAY=:0 and XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.*; xprop and
+xwininfo are installed.
+debian_cinnamon: the file manager is Nemo.
+xubuntu_xfce: the file manager is Thunar, always running as Thunar --daemon.
+fedora_cosmic: Ctrl+Alt+T is a custom shortcut in
+~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom. COSMIC
+places every new floating window horizontally centred near the top of the
+screen, whatever position the program asks for, and draws the pointer into
+the framebuffer, so a shot taken within 200 ms of a pointer move can show
+it at the old spot. Input from the viewer can reach the VM late and
+bunched (a press up to 750 ms after its motion). The file manager is
+cosmic-files, which exits with its last window and counts a double click
+only within 300 ms; it is started with nohup setsid -f xdg-open.
+kubuntu_plasma, opensuse_plasma: ~/.config/kscreenlockerrc and
+~/.config/powerdevilrc switch off the lock and the idle dimming;
+kwriteconfig6 through qemu-guest-agent needs the absolute file path.
+kubuntu_plasma: the display runs at 3840x2160 under the viewer although
+~/.config/kwinoutputconfig.json holds the 1920x1080 mode KWin starts with.
+Dolphin exits with its last window, and started without the session
+environment (through qemu-guest-agent without XDG_CONFIG_DIRS) opens with
+another size: copy plasmashell's /proc environ to explore.
+opensuse_plasma: Dolphin opens at the size saved by its last normal close
+(~/.local/state/dolphinstaterc). desktop-file-utils is installed.
+omarchy_hyprland: ~/.local/state/omarchy/indicators/stay-awake switches off
+the idle screensaver and the lock. ~/.config/hypr/bindings.lua adds
+Alt+Return and Ctrl+Alt+T for foot and Alt+Shift+Q to close the focused
+window (hyprctl reload as tester applies an edit); Omarchy's own bindings
+use Super. ~/.config/hypr/monitors.lua sets GDK_SCALE=2, so Java draws at
+ui scale 2: four ubuntu_gnome pixels per Java pixel. Hyprland draws the
+pointer into the framebuffer and hides it after a key press until the next
+pointer motion. The file manager is nautilus, which xdg-open runs in the
+foreground: it is started with nohup setsid -f xdg-open.
+void_i3: i3 loads ~/.config/i3/config, where Alt is the modifier of every
+binding: Alt+Shift+Q closes the focused window, Alt+Return opens a
+terminal. The session has no D-Bus session bus (the first gio or GTK
+program autolaunches one for the display; programs started from the
+terminal have no DBUS_SESSION_BUS_ADDRESS) and i3bar has no
+StatusNotifierItem host, so there is no tray and i3 keeps an iconified
+window tiled. The file manager is Thunar, with no daemon, started with
+nohup setsid -f xdg-open.
+debian_mate: lightdm starts X with "-s 0 -dpms". caja always runs and draws
+the desktop.
+lubuntu_lxqt: the display runs at 5120x2160 under the viewer, letterboxed
+to ubuntu_gnome x 0..3840, y 270..1890: a VM pixel is 0.75 ubuntu_gnome
+pixel. The viewer redraws each VM update rectangle on its own, so two shots
+of the same VM content can differ by up to 3 levels per channel in
+scattered pixels: a screen comparison on this desk needs that tolerance.
+pcmanfm-qt --desktop always runs and draws the desktop.

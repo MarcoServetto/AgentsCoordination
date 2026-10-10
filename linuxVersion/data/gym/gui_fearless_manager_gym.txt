@@ -1,8 +1,2 @@
-Findings on operating the Fearless manager (the managed app built by DeployManagedFearless) like a human would. General GUI findings are in gui_gym.txt.
-
-= Component logic is tested off screen =
-
-Component logic of the manager GUI is better tested off screen
-(component.printAll into a BufferedImage on the EDT) inside the normal
-junit suite, as the Controller tests do; the desktop drive in gui_gym.txt is
-for end-to-end checks against real windows.
+The Fearless manager is the app produced by Coordinator/Build/src/scripts/DeployManagedFearless.java.
+The design of the Fearless manager is in ZeroToHero/tasks/ControllersDesign.
