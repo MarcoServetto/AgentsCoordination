@@ -13,6 +13,11 @@ declare -A parents=(
 for repo in Commons Frontend Coordinator StandardLibrary Controllers ZeroToHero FearlessTour; do
   echo "=== $repo"
   gh repo sync "marcoautomation2/$repo" --source "${parents[$repo]}/$repo" --force
+  open=$(gh pr list --repo "${parents[$repo]}/$repo" --state open --limit 200 --json headRefName,headRepositoryOwner --jq '.[] | select(.headRepositoryOwner.login == "marcoautomation2") | .headRefName' | tr '\n' ' ')
+  all=$(gh api --paginate "repos/marcoautomation2/$repo/branches" --jq '.[].name')
+  for b in $all; do
+    case " main $open" in *" $b "*) ;; *) gh api -X DELETE "repos/marcoautomation2/$repo/git/refs/heads/$b" > /dev/null;; esac
+  done
   git -C "$repo" config core.autocrlf false
   git -C "$repo" fetch origin main
   git -C "$repo" checkout --force -B main origin/main
