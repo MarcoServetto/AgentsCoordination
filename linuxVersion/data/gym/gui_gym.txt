@@ -1,80 +1,35 @@
-Findings on operating this machine's GUI like a human would: only what holds across
-GUIs in general (screen, pointer, windows, the OS menus). What is about one application
-goes in gui_<app>_gym.txt next to this file.
-
-= Driving and watching the screen =
-
-The desktop is GNOME 50 on wayland, with DISPLAY and WAYLAND_DISPLAY set in
-every agent session.
-The one mechanism that works for both input and screenshots, including
-native wayland apps (nautilus, the file dialogs, the portal dialogs,
-eclipse, firefox), is mutter's private session-bus API, which any process
-of the logged-in user may call and which never asks for permission:
-  org.gnome.Mutter.RemoteDesktop  CreateSession -> a Session object with
+Input and screenshots that reach every window, native wayland clients
+included, go through mutter's session bus API, which any process of the
+logged in user may call and which asks nothing:
+  org.gnome.Mutter.RemoteDesktop  CreateSession -> a Session with
     NotifyPointerMotionAbsolute(stream,x,y), NotifyPointerMotionRelative,
     NotifyPointerButton(evdev code, down), NotifyKeyboardKeysym(keysym, down)
-  org.gnome.Mutter.ScreenCast     CreateSession({remote-desktop-session-id})
-    then RecordMonitor(connector,{cursor-mode}) -> a Stream; after Start the
+  org.gnome.Mutter.ScreenCast     CreateSession({remote-desktop-session-id}),
+    RecordMonitor(connector,{cursor-mode}) -> a Stream; after Start the
     Stream signals PipeWireStreamAdded(node); absolute pointer motion is in
-    that stream's pixels, and one frame of the pipewire node is a full
-    screenshot: gst-launch-1.0 pipewiresrc path=<node> num-buffers=1 !
-    videoconvert ! video/x-raw,format=RGB ! pngenc ! filesink location=x.png
-The sessions live as long as the D-Bus connection that created them, so
-they must be held by one long-lived process (not one busctl/gdbus call
-each). Controllers/src/agentTools does exactly this: Pilot (glide the pointer
-with a set of buttons held, click, drag, chords, screenshots, and
-Pilot.changed to find what a shot changed) over Desk.open(), which is
-Mutter (a python3 -c helper over stdin, needs python3-gi and
-gstreamer1.0-pipewire, both part of the desktop install) on wayland and
-java.awt.Robot elsewhere. Coordinator/Build/src/scripts/
-TestAgentTools.java runs the agentTools tests that drive it.
-
-= What does not work, so do not retry it =
-
-- X_TEST fake input (xdotool, java.awt.Robot) blocks: Xwayland runs with
-  -enable-ei-portal, so the first fake event makes the RemoteDesktop portal
-  pop a permission dialog and the X request hangs until it is answered.
-  xdotool getmouselocation then reports Xwayland's own fake pointer, not
-  the real one.
-- ydotool (uinput) delivers keys, but its pointer motion goes through
-  libinput acceleration and cannot be positioned reliably.
-- org.gnome.Shell.Screenshot and gnome-screenshot: AccessDenied for an
-  agent process, even when owning the org.gnome.Screenshot bus name.
-- pkill -f <pattern> from the Bash tool matches the tool's own shell when
-  the pattern appears in the command line, killing the call with exit 144.
-
-= Screenshots of a single X11 window =
-
-Screenshots of a single X11 window (Swing/AWT apps, xmessage) also work
-with plain X11 tools against Xwayland, without any session:
-  DISPLAY=:0 xwininfo -root -tree   lists windows with their hex ids
-  DISPLAY=:0 xwd -id <winid> -silent -out shot.xwd; convert shot.xwd shot.png
-xwd -root always fails with BadMatch; target a window id. A per-window
-capture can fail the same way while the window is unmapped or obscured;
-that is transient, raise it and retry. GTK apps run as native wayland
-clients and never appear in xwininfo unless launched with GDK_BACKEND=x11
-(MOZ_ENABLE_WAYLAND=0 for firefox); the screencast above sees them anyway.
-
-= Agent terminals have no window =
-
-agent-supervisor.sh runs linux1, linux2, linux3 and linuxCoordinator in
-detached sessions of a tmux server of their own: they have no window, so no
-pointer or key input on the desktop reaches them.
-tmux -L agents attach -t <agent> shows one from a terminal or ssh. The
-desktop holds only the windows tests open, and those of several agents can
-be open at once: keep pointer paths inside the windows the test opened.
-
-= A GUI app that never exits on its own =
-
-Launch it with nohup ... & in the background and note its pid ($! right
-after the launch), wait a few seconds for the window to render, capture,
-then kill that pid before finishing.
-
-= Kill by pid, never by name =
-
-The kernel keeps only the first 15 characters of a process name, and
-pkill -x and killall match those: pkill -x gnome-session-i matches
-gnome-session-init-worker, the leader of the desktop session, and ends the
-session of every agent on the machine. session-guard.timer then reboots it,
-losing all running work. Kill what you started by the pid you noted; pkill -f
-has the problem described above.
+    that stream's pixels, and one frame of the pipewire node is a screenshot:
+    gst-launch-1.0 pipewiresrc path=<node> num-buffers=1 ! videoconvert !
+    video/x-raw,format=RGB ! pngenc ! filesink location=x.png
+A session lives as long as the D-Bus connection that created it: one long
+lived process holds it.
+Pilot (java.awt.Robot) goes through the RemoteDesktop portal, with the
+restore token in ~/.java/robot/remote-desktop-tokens.properties; one Robot
+JVM runs at a time. A second Robot JVM started while the first is still
+starting makes the portal ask again: its "Remote Desktop" dialog blocks
+every Robot call of both JVMs until "Allow Remote Interaction" is on and
+Share is pressed, which stores the token again. A Robot screen capture does
+not show the pointer: a hover highlight is the only sign of where it is.
+A window a program opens shows on top without the keyboard: a click inside
+it gives it the keyboard.
+Robot types through the compositor's keyboard state: with Caps Lock on the
+typed text arrives uppercase. xset q under Xwayland reports Caps Lock off
+whatever the compositor holds; /sys/class/leds/*capslock*/brightness is the
+state (1 on), and one press of VK_CAPS_LOCK switches it off.
+linux1, linux2, linux3 and linuxCoordinator run in detached tmux sessions
+(tmux -L agents attach -t <agent> shows one): they have no window, so the
+desktop holds only the windows tests open, of several agents at once, and a
+pointer path stays inside the windows its own test opened.
+A process is killed by the pid noted when it was started, never by name: a
+name is matched on its first 15 characters, pkill -f matches the shell of
+the Bash tool itself, and the session of every agent on the machine is one
+such match away.
