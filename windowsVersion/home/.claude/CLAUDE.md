@@ -242,12 +242,12 @@ If a PR changes the logical content of Commons, a new Commons.jar needs to be ad
     of small generic programs, each compared with all its instantiations.
     Very slow - about 40 minutes: run it only when asked, or overnight.
 
-  TestAgentTools.java
-    Same build, then only Controllers' `agentTools` tests: `DesktopDragTest`
-    drives the real desktop through `agentTools.Pilot` (pointer, keys,
-    screenshots), opening two folder windows on the Desktop and dragging a
-    file between them. It takes the pointer and keyboard away from every
-    agent on this shared desktop: run it only when asked.
+  TestAgentTools.java <desk> <agent> [<TestClassName>] <channelFolder> <filesIOFolder>
+    Same build, then Controllers' `agentTools` tests (one, or the whole
+    package) on one desk: they drive the desk through `agentTools.Pilot`
+    (pointer, keys, screenshots) with the recordings of that desk, and take
+    the pointer and keyboard away from every agent on this shared desktop:
+    run it only when asked.
 
   DeployPortableFearless.java
     Builds a self-contained, runnable application image of the Fearless
@@ -438,6 +438,17 @@ so that the bug stops showing hides the bug and passes for the wrong
 reason.
 `Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does; prefer it over ad hoc input injection when a test needs real pointer or keyboard input. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (windows, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
 
+
+## The desks
+
+This machine is the desk windows. The linux machine is the desk
+ubuntu_gnome (GNOME on wayland) and runs 12 libvirt VMs, one desktop each:
+arch_sway, debian_cinnamon, debian_gnome_x11, debian_mate, fedora_cosmic,
+fedora_gnome, kubuntu_plasma, lubuntu_lxqt, omarchy_hyprland,
+opensuse_plasma, void_i3, xubuntu_xfce: the desks Fearless users have, so
+the manager and its agentTools tests run on every one of them. A desk is
+always named by its name, never by its role: the words guest and host mean
+too many other things.
 
 ## Automated tests.
 
