@@ -182,6 +182,8 @@ for Commons, Frontend, Coordinator, StandardLibrary, Controllers;
 `MarcoServetto/<name>` for ZeroToHero, FearlessTour. Never commit a
 CLAUDE.md or any Claude-local config into them.
 
+Fearless has zero users: breaking existing code is never a concern when discussing a design.
+
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
 `Coordinator/Build/src/resources/LocalResources.java` (gitignored) is the copy of `linuxVersion/LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `/data/tools/eclipse`. The align-branches skill fills `FearlessTour/externalJars` from `/data/tools/flexmark`.
@@ -449,3 +451,4 @@ The Bash tool is bash, with no stdin, and each call starts in the session's work
 - Ask `gh` for `--json` and parse with `jq` or `python3 -c`.
 - The desktop session is GNOME on Wayland: `DISPLAY`, `WAYLAND_DISPLAY` and `XDG_RUNTIME_DIR` are set in every agent session, so GUI programs started from Bash open on the display.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
+- Temporary files go in the session scratchpad directory, never in a bare `/tmp` path: it is outside `/data`.

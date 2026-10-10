@@ -188,6 +188,8 @@ for Commons, Frontend, Coordinator, StandardLibrary, Controllers;
 `MarcoServetto/<name>` for ZeroToHero, FearlessTour. Never commit a
 CLAUDE.md or any Claude-local config into them.
 
+Fearless has zero users: breaking existing code is never a concern when discussing a design.
+
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
 `Coordinator\Build\src\resources\LocalResources.java` (gitignored) is the copy of `windowsVersion\LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `C:\data\tools\eclipse`. The align-branches skill fills `FearlessTour\externalJars` from `C:\data\tools\flexmark`.
@@ -458,3 +460,4 @@ The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
 - Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
 - The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
+- Temporary files go in the session scratchpad directory, never in a bare `/tmp` or `$env:TEMP` path: those are outside `C:\data`.
