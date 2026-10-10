@@ -93,7 +93,7 @@ asking. Password, token and 2FA all live in 'C:\data\accounts.txt'
 # PRs:
 When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto).
 When considering making a new PR: look if we can just amend the existing PR instead.
-When considering amending a PR: look if it has already been merged,
+Hard rule: before amending a PR check that it is still open (`gh pr view <n> --repo <PARENT> --json state`), else open a new one instead; a push to the branch of a merged PR reaches nobody.
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
