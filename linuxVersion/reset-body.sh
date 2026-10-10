@@ -42,7 +42,20 @@ for b in $branches; do
   done
 done
 cp -r "$repo/data/." "$data"
-for b in $branches; do (cd "$data/$b" && "$repo/home/.claude/skills/align-branches/align-branches.sh"); done
+for n in eclipse eclipse-workspace flexmark; do nuke "$data/tools/$n"; done
+nuke "$userHome/eclipse-workspace"
+mkdir -p "$data/tools/flexmark"
+curl -fsSL -o "$data/tools/eclipse.tar.gz" 'https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2026-06/R/eclipse-java-2026-06-R-linux-gtk-x86_64.tar.gz&r=1'
+tar -xzf "$data/tools/eclipse.tar.gz" -C "$data/tools"
+nuke "$data/tools/eclipse.tar.gz"
+for a in flexmark flexmark-ext-tables flexmark-util-ast flexmark-util-builder flexmark-util-collection flexmark-util-data flexmark-util-dependency flexmark-util-format flexmark-util-html flexmark-util-misc flexmark-util-options flexmark-util-sequence flexmark-util-visitor; do
+  curl -fsSL -o "$data/tools/flexmark/$a-0.64.8.jar" "https://repo1.maven.org/maven2/com/vladsch/flexmark/$a/0.64.8/$a-0.64.8.jar"
+done
+curl -fsSL -o "$data/tools/flexmark/annotations-24.0.1.jar" https://repo1.maven.org/maven2/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar
+for b in $branches; do
+  cp "$repo/LocalResources.java" "$data/$b/Coordinator/Build/src/resources/LocalResources.java"
+  (cd "$data/$b" && "$repo/home/.claude/skills/align-branches/align-branches.sh")
+done
 
 for n in skills commands agents hooks settings.local.json keybindings.json CLAUDE.local.md; do nuke "$userHome/.claude/$n"; done
 for p in "$userHome"/.claude/projects/*/; do [ -d "$p" ] && nuke "${p}memory"; done

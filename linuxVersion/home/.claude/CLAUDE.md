@@ -184,7 +184,7 @@ CLAUDE.md or any Claude-local config into them.
 
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
-Note the file `Coordinator/Build/src/resources/LocalResources.java` (gitignored, machine-specific: `LocalResourcesTemplate.java` from the same folder, keeping `package resources;`, with `prefix` set to the branch folder) must exist in each working copy.
+`Coordinator/Build/src/resources/LocalResources.java` (gitignored) is the copy of `linuxVersion/LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `/data/tools/eclipse`. The align-branches skill fills `FearlessTour/externalJars` from `/data/tools/flexmark`.
 Details:
 
 Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.

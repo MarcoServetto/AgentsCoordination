@@ -41,8 +41,22 @@ foreach ($b in $branches) {
   }
 }
 Copy-Item -Recurse -Force "$repo\data\*" $data
-foreach ($b in $branches) { Push-Location "$data\$b"; & "$repo\home\.claude\skills\align-branches\align-branches.ps1"; Pop-Location }
+foreach ($n in 'eclipse', 'eclipse-workspace', 'flexmark') { Nuke "$data\tools\$n" }
+Nuke "$userHome\eclipse-workspace"
+New-Item -ItemType Directory -Force -Path "$data\tools\flexmark" | Out-Null
+Run curl.exe @('-fsSL', '-o', "$data\tools\eclipse.zip", 'https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2026-06/R/eclipse-java-2026-06-R-win32-x86_64.zip&r=1')
+Run tar.exe @('-xf', "$data\tools\eclipse.zip", '-C', "$data\tools")
+Nuke "$data\tools\eclipse.zip"
+foreach ($a in 'flexmark', 'flexmark-ext-tables', 'flexmark-util-ast', 'flexmark-util-builder', 'flexmark-util-collection', 'flexmark-util-data', 'flexmark-util-dependency', 'flexmark-util-format', 'flexmark-util-html', 'flexmark-util-misc', 'flexmark-util-options', 'flexmark-util-sequence', 'flexmark-util-visitor') {
+  Run curl.exe @('-fsSL', '-o', "$data\tools\flexmark\$a-0.64.8.jar", "https://repo1.maven.org/maven2/com/vladsch/flexmark/$a/0.64.8/$a-0.64.8.jar")
+}
+Run curl.exe @('-fsSL', '-o', "$data\tools\flexmark\annotations-24.0.1.jar", 'https://repo1.maven.org/maven2/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar')
+foreach ($b in $branches) {
+  Copy-Item -Force "$repo\LocalResources.java" "$data\$b\Coordinator\Build\src\resources\LocalResources.java"
+  Push-Location "$data\$b"; & "$repo\home\.claude\skills\align-branches\align-branches.ps1"; Pop-Location
+}
 
+Nuke "$env:LOCALAPPDATA\Temp\claude"
 foreach ($n in 'skills', 'commands', 'agents', 'hooks', 'settings.local.json', 'keybindings.json', 'CLAUDE.local.md') { Nuke "$userHome\.claude\$n" }
 foreach ($p in Get-ChildItem "$userHome\.claude\projects" -Directory -ErrorAction SilentlyContinue) { Nuke "$($p.FullName)\memory" }
 Copy-Item -Recurse -Force "$repo\home\*" $userHome

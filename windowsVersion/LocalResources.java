@@ -1,9 +1,11 @@
 package resources;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class LocalResources {
-  private static Path prefix= Path.of("C:\\").resolve("data","fearlessBranch2");
+  private static Path prefix= branchRoot(Path.of("").toAbsolutePath());
+  private static Path branchRoot(Path p){ return Files.isDirectory(p.resolve("Commons")) ? p : branchRoot(p.getParent()); }
 
   static public final Path stLibPath= prefix.resolve("StandardLibrary","base");
   static public final Path stLibRTPath= prefix.resolve("StandardLibrary","rt");
@@ -20,4 +22,5 @@ public class LocalResources {
   static public final Path managedFolderOut= prefix.resolve("StandardLibrary","fearlessManagedArtefact");
   static public final Path badZipCorpous= prefix.resolve("Coordinator","badZips");
   static public final Path packaging= prefix.resolve("Coordinator","_fearless_packaging");
+  static public final Path portableEclipse= Path.of("C:\\data\\tools\\eclipse");
 }

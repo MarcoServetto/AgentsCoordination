@@ -17,6 +17,7 @@ for repo in Commons Frontend Coordinator StandardLibrary Controllers ZeroToHero 
   git -C "$repo" fetch origin main
   git -C "$repo" checkout --force -B main origin/main
   git -C "$repo" clean -x -d --force -e Build/src/resources/LocalResources.java
+  if [ "$repo" = FearlessTour ]; then cp /data/tools/flexmark/*.jar "$repo/externalJars/"; fi
 done
 
 rm -rf out

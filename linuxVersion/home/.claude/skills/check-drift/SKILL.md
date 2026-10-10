@@ -18,17 +18,18 @@ git diff --no-index "$repo/data/gym" /data/gym --stat
 git diff --no-index --stat "$repo/home/.claude/skills" "$HOME/.claude/skills"
 git diff --no-index "$repo/home/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 git diff --no-index "$repo/home/.claude/settings.json" "$HOME/.claude/settings.json"
+for b in fearlessBranch1 fearlessBranch2 fearlessBranch3; do git diff --no-index "$repo/LocalResources.java" "/data/$b/Coordinator/Build/src/resources/LocalResources.java"; done
 ls -la "$HOME"/.claude/projects/*/memory
 ls -la "$HOME"/.claude/commands "$HOME"/.claude/agents "$HOME"/.claude/settings.local.json "$HOME"/.claude/keybindings.json "$HOME"/.claude/CLAUDE.local.md 2>/dev/null
-ls -la /data /data/linuxCoordinator /data/fearlessBranch*
+ls -la /data /data/linuxCoordinator /data/tools /data/fearlessBranch*
 ls -la "$HOME"/.config/autostart
 ```
 
 reset.sh keeps, in `/data`, only `AgentsCoordination`, `fearlessBranch1`,
 `fearlessBranch2`, `fearlessBranch3`, `linuxCoordinator`, `tools` and
-`accounts.txt`; in `linuxCoordinator` nothing; in each `fearlessBranchN` only
-the seven repositories; under `$HOME/.claude` none of the five entries
-listed above and, in each `projects/<slug>/memory`, only the `MEMORY.md`
-of `$repo/home/.claude/projects`; among the autostart entries only
-`claude-agent-supervisor.desktop`. Everything else the commands list is drift, and so
-is every diff line.
+`accounts.txt`; in `linuxCoordinator` nothing; in `tools` only `eclipse` and
+`flexmark`; in each `fearlessBranchN` only the seven repositories; under
+`$HOME/.claude` none of the five entries listed above and, in each
+`projects/<slug>/memory`, only the `MEMORY.md` of `$repo/home/.claude/projects`;
+among the autostart entries only `claude-agent-supervisor.desktop`.
+Everything else the commands list is drift, and so is every diff line.

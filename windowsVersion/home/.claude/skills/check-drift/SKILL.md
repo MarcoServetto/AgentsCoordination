@@ -18,17 +18,18 @@ git diff --no-index "$repo\data\gym" C:\data\gym --stat
 git diff --no-index --stat "$repo\home\.claude\skills" "$HOME\.claude\skills"
 git diff --no-index "$repo\home\.claude\CLAUDE.md" "$HOME\.claude\CLAUDE.md"
 git diff --no-index "$repo\home\.claude\settings.json" "$HOME\.claude\settings.json"
+foreach ($b in 'fearlessBranch1', 'fearlessBranch2', 'fearlessBranch3') { git diff --no-index "$repo\LocalResources.java" "C:\data\$b\Coordinator\Build\src\resources\LocalResources.java" }
 Get-ChildItem "$HOME\.claude\projects\*\memory" | Select-Object FullName, Length
 Get-ChildItem "$HOME\.claude\commands", "$HOME\.claude\agents", "$HOME\.claude\settings.local.json", "$HOME\.claude\keybindings.json", "$HOME\.claude\CLAUDE.local.md" -ErrorAction SilentlyContinue
-Get-ChildItem C:\data, C:\data\winCoordinator, C:\data\fearlessBranch* -Force
+Get-ChildItem C:\data, C:\data\winCoordinator, C:\data\tools, C:\data\fearlessBranch* -Force
 Get-ScheduledTask | Where-Object { $_.TaskName -like 'Claude*' }
 ```
 
 reset.ps1 keeps, in `C:\data`, only `AgentsCoordination`, `fearlessBranch1`,
 `fearlessBranch2`, `fearlessBranch3`, `winCoordinator`, `tools`, `fearlessPaper` and
-`accounts.txt`; in `winCoordinator` nothing; in each `fearlessBranchN` only
-the seven repositories; under `$HOME\.claude` none of the five entries
-listed above and, in each `projects\<slug>\memory`, only the `MEMORY.md`
-of `$repo\home\.claude\projects`; among the tasks only
-`ClaudeAgentSupervisor`. Everything else the commands list is drift, and so
-is every diff line.
+`accounts.txt`; in `winCoordinator` nothing; in `tools` only `eclipse` and
+`flexmark`; in each `fearlessBranchN` only the seven repositories; under
+`$HOME\.claude` none of the five entries listed above and, in each
+`projects\<slug>\memory`, only the `MEMORY.md` of `$repo\home\.claude\projects`;
+among the tasks only `ClaudeAgentSupervisor` and `ClaudeSessionGuard`.
+Everything else the commands list is drift, and so is every diff line.
