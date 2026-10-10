@@ -18,6 +18,12 @@ $parents = [ordered]@{
 foreach ($repo in $parents.Keys) {
   Write-Output "=== $repo"
   Run gh @("repo", "sync", "marcoautomation2/$repo", "--source", "$($parents[$repo])/$repo", "--force")
+  $prs = gh pr list --repo "$($parents[$repo])/$repo" --state open --limit 200 --json headRefName,headRepositoryOwner
+  if ($LASTEXITCODE -ne 0) { throw "gh pr list $repo failed with exit code $LASTEXITCODE" }
+  $open = $prs | ConvertFrom-Json | Where-Object { $_.headRepositoryOwner.login -eq "marcoautomation2" } | ForEach-Object { $_.headRefName }
+  $all = gh api --paginate "repos/marcoautomation2/$repo/branches" --jq ".[].name"
+  if ($LASTEXITCODE -ne 0) { throw "gh api branches $repo failed with exit code $LASTEXITCODE" }
+  foreach ($b in $all) { if ($b -ne "main" -and $open -notcontains $b) { Run gh @("api", "-X", "DELETE", "repos/marcoautomation2/$repo/git/refs/heads/$b") } }
   Run git @("-C", $repo, "config", "core.autocrlf", "false")
   Run git @("-C", $repo, "fetch", "origin", "main")
   Run git @("-C", $repo, "checkout", "--force", "-B", "main", "origin/main")
