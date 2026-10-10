@@ -26,8 +26,8 @@ ls -la "$HOME"/.config/autostart
 ```
 
 reset.sh keeps, in `/data`, only `AgentsCoordination`, `fearlessBranch1`,
-`fearlessBranch2`, `fearlessBranch3`, `linuxCoordinator`, `tools` and
-`accounts.txt`; in `linuxCoordinator` nothing; in `tools` only `eclipse` and
+`fearlessBranch2`, `fearlessBranch3`, `linuxCoordinator`, `pilotio`, `tools`,
+`vms` and `accounts.txt`; in `linuxCoordinator` nothing; in `tools` only `eclipse` and
 `flexmark`; in each `fearlessBranchN` only the seven repositories; under
 `$HOME/.claude` none of the five entries listed above and, in each
 `projects/<slug>/memory`, only the `MEMORY.md` of `$repo/home/.claude/projects`;
