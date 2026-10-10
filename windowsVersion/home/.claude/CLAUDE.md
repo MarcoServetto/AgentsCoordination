@@ -144,25 +144,22 @@ This is ok when asked but:
 
 win3 takes care of overnight tasks.
 When woken up with run_overnight_tasks:
-- The user is asleep, asking anything to the user will block the whole overnight process.
+- The user is asleep, asking anything to the user blocks the whole night.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasks/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
-Repeat the following:
-(1)- check the time
-  if it is after 8am, stop.
-(2)- Use the check-claude-usage skill
+Repeat the following until no task is left or the user says to stop:
+- Use the check-claude-usage skill
 If the "Current session" is less than 70%, start a task;
-else sleep until the "Current session" is over, then go to (1).
+else sleep until the "Current session" is over.
 
 Starting a task:
-A task need to be started in a sub agent (sonnet max)
-Focus on not trying to understand the tasks but just delegating them; just collect compacted informations about the results.
-The sub agent should write a log of its actions and conclusions.
+A task is delegated to a sub agent; do not try to understand the task,
+just collect compacted information about the results.
+The text of the task says which model and effort the sub agent runs
+with, what it logs and how its results reach the user.
 The sub agent must respect `ZeroToHero/tasks/readBeforeChanging/<Repo>*.txt` of every repository it changes.
-The task will contain info on how to communicate the results to the user.
-If a task needs discussion in the morning, the user should ask to delegate it to win1/win2; give full context by pointing to the logs of the sub agent.
 
-After stopping because no more tasks, no more time or some other reason, do a PR to ZeroToHero moving the done tasks into the done file, and the text of the PR should be a report on what happened in the night.
+After stopping, do a PR to ZeroToHero moving the done tasks into the done file; the text of the PR is a report on what happened in the night.
 
 
 # Machine-health review (winCoordinator)
