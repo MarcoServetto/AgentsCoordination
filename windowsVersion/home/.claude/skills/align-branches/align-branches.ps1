@@ -22,6 +22,7 @@ foreach ($repo in $parents.Keys) {
   Run git @("-C", $repo, "fetch", "origin", "main")
   Run git @("-C", $repo, "checkout", "--force", "-B", "main", "origin/main")
   Run git @("-C", $repo, "clean", "-x", "-d", "--force", "-e", "Build/src/resources/LocalResources.java")
+  if ($repo -eq "FearlessTour") { Copy-Item -Force C:\data\tools\flexmark\*.jar "$repo\externalJars" }
 }
 
 if (Test-Path out) { Remove-Item -Recurse -Force out }
