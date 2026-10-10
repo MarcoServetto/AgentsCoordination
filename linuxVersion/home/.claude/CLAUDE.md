@@ -19,6 +19,11 @@ Describe the current desired behaviour only.
 The text should read as if the current version was the only version it ever existed.
 Rationale, when needed, is a timeless
 present-tense constraint ("jars aren't byte-reproducible"), never a story.
+The ways to go wrong are without number. A specific thing that went wrong,
+written down as a thing not to repeat, is history, and a list of wrong
+behaviours is not a fix: describe the correct behaviour instead. When the
+correct behaviour is already described and is still not followed, the
+problem is the sentence describing it: rephrase it until it is understood.
 
 # Never include history of events in code or code comments.
 
@@ -413,6 +418,18 @@ tool: rely on its formal semantics, not on its recommended usage.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
 We are keeping a '/data/gym/gui_gym.txt' (the working copy of `linuxVersion/data/gym/gui_gym.txt` in AgentsCoordination; edit the working copy, never the checkout) where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
+A gym file holds only what a person at the keyboard, with the design of
+the application in hand, would still need to be told: what the screen does
+not show and the design does not say. Saving anything else there (what is
+visible, what the design or the code says, a key that reaches a place
+without the pointer, what happened one day on one machine) teaches the
+next agent to operate the GUI in ways no person does.
+A GUI test acts as a person acts and checks what a person sees. A program
+behaving in a way the design does not describe is a bug to report (or to
+fix, when asked), never something a test steps around: a test that reaches
+a stable state through a trick (a keyboard binding, a wait, an extra click)
+so that the bug stops showing hides the bug and passes for the wrong
+reason.
 `Controllers/src/agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does; prefer it over ad hoc input injection when a test needs real pointer or keyboard input. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (GNOME, D-Bus, python, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
 
 
