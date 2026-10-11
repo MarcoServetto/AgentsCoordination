@@ -323,6 +323,27 @@ or just `return image;`, not `assert image != null: "load() runs first"`.
 
 Graceful degradation is the enemy: immediate hard failures, via assertions when reasonable.
 
+Design files can assume the following, and code can simply fail with 
+'new Error("Broken Environment")' when an Acceptable assumptions is detected,
+and needs to do no work to attempt detecting them. If a place of code could get simplified (or can be written simpler to begin with) by integrating one of those 'Acceptable assumptions' do simplify that code and add a comment in place about the specific assumption.
+
+Acceptable assumptions under our offensive behaviour style:
+- Storage is reliable: a file system operation reported as successful has changed the drive as it should. Failures come from the input, never from the drive or from other programs using the drive.
+- Platform primitives do what their specification says: OS calls, the runtime, the standard library.
+- The program's own installation is intact: not half deleted or tampered with.
+- Resources are sufficient for normal operation: memory, disk, handles.
+- Time on one machine moves forward, enough to order events.
+- The environment is live: what is requested eventually happens.
+- There is no adversary on the local machine: protecting private files from an attacker is out of scope.
+- Inputs are within reasonable sizes enough to allow for recursive implementations to work.
+
+This following list is counterexamples: cases where we can not relax our offensive behaviour style:
+- Storage is persistent: a file may not hold what was written to it, even in a dedicated app folder; the design/code must decide what happens when a file is corrupted.
+- Random identifiers do not collide.
+- File paths are valid Unicode: on most systems they need not be.
+- Coding for the current machine instead of in ways that are OS an FS portable; this include locale, screen and keyboard layout.
+- Rare user interactions: misclicks, cancelling halfway, editing a file by hand.
+
 ## Style
 
 If a condition is longish, pull it into a local variable. Always brace
