@@ -1,30 +1,7 @@
-Input and screenshots that reach every window, native wayland clients
-included, go through mutter's session bus API, which any process of the
-logged in user may call and which asks nothing:
-  org.gnome.Mutter.RemoteDesktop  CreateSession -> a Session with
-    NotifyPointerMotionAbsolute(stream,x,y), NotifyPointerMotionRelative,
-    NotifyPointerButton(evdev code, down), NotifyKeyboardKeysym(keysym, down)
-  org.gnome.Mutter.ScreenCast     CreateSession({remote-desktop-session-id}),
-    RecordMonitor(connector,{cursor-mode}) -> a Stream; after Start the
-    Stream signals PipeWireStreamAdded(node); absolute pointer motion is in
-    that stream's pixels, and one frame of the pipewire node is a screenshot:
-    gst-launch-1.0 pipewiresrc path=<node> num-buffers=1 ! videoconvert !
-    video/x-raw,format=RGB ! pngenc ! filesink location=x.png
-A session lives as long as the D-Bus connection that created it: one long
-lived process holds it.
-Pilot (java.awt.Robot) goes through the RemoteDesktop portal, with the
-restore token in ~/.java/robot/remote-desktop-tokens.properties; one Robot
-JVM runs at a time. A second Robot JVM started while the first is still
-starting makes the portal ask again: its "Remote Desktop" dialog blocks
-every Robot call of both JVMs until "Allow Remote Interaction" is on and
-Share is pressed, which stores the token again. A Robot screen capture does
-not show the pointer: a hover highlight is the only sign of where it is.
+A Robot screen capture does not show the pointer: a hover highlight is the
+only sign of where it is.
 A window a program opens shows on top without the keyboard: a click inside
 it gives it the keyboard.
-Robot types through the compositor's keyboard state: with Caps Lock on the
-typed text arrives uppercase. xset q under Xwayland reports Caps Lock off
-whatever the compositor holds; /sys/class/leds/*capslock*/brightness is the
-state (1 on), and one press of VK_CAPS_LOCK switches it off.
 linux1, linux2, linux3 and linuxCoordinator run in detached tmux sessions
 (tmux -L agents attach -t <agent> shows one): they have no window, so the
 desktop holds only the windows tests open, of several agents at once, and a

@@ -16,7 +16,8 @@ Display: one 1920x1080 screen at scale 1.0, GNOME on Wayland (~/.config/monitors
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 agentubuntu has passwordless sudo.
-The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms, set up as vms.txt describes.
+The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio.
+java.awt.Robot reaches the screen through the RemoteDesktop portal: ~/.java/robot/remote-desktop-tokens.properties holds only working restore tokens (the first Robot program shows the portal dialog "Remote Desktop", answered with "Allow Remote Interaction" on and Share).
 GDM logs in automatically only at boot, so a session that ends leaves the machine
 at the greeter, out of reach: the systemd timer session-guard.timer (enabled) reboots
 when agentubuntu has no graphical session.
