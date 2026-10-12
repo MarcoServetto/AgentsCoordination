@@ -59,6 +59,7 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
 - `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh` (opens and closes a VM, see /data/gym/gui_vms_gym.txt)
 - `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
@@ -473,7 +474,7 @@ fix, when asked), never something a test steps around: a test that reaches
 a stable state through a trick (a keyboard binding, a wait, an extra click)
 so that the bug stops showing hides the bug and passes for the wrong
 reason.
-`Controllers/src/agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `changed`) drives the desk the way a person does; prefer it over ad hoc input injection when a test needs real pointer or keyboard input. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (GNOME, D-Bus, python, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
+`Controllers/src/agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `seen`, `changed`) drives the desk the way a person does; prefer it over ad hoc input injection when a test needs real pointer or keyboard input. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (GNOME, D-Bus, python, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
 
 
 ## The VMs
