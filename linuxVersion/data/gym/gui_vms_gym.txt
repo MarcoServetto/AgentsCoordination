@@ -1,8 +1,52 @@
-A VM opens with
-  /data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open <vm>
-which returns when the desktop of <vm> fills the screen, ready for input.
-A VM closes with
-  /data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close <vm>
-which returns when <vm> is off.
+vm.sh open returns when the desktop of the VM fills the screen, ready for input.
+vm.sh close returns when the VM is off.
 One VM is open at a time.
 A test on a VM gets /data/pilotio as the filesIOFolder argument of TestAgentTools.
+
+arch_sway
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open arch_sway
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close arch_sway
+
+debian_cinnamon
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open debian_cinnamon
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close debian_cinnamon
+
+debian_gnome_x11
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open debian_gnome_x11
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close debian_gnome_x11
+
+debian_mate
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open debian_mate
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close debian_mate
+
+fedora_cosmic
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open fedora_cosmic
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close fedora_cosmic
+
+fedora_gnome
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open fedora_gnome
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close fedora_gnome
+
+kubuntu_plasma
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open kubuntu_plasma
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close kubuntu_plasma
+
+lubuntu_lxqt
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open lubuntu_lxqt
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close lubuntu_lxqt
+
+omarchy_hyprland
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open omarchy_hyprland
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close omarchy_hyprland
+
+opensuse_plasma
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open opensuse_plasma
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close opensuse_plasma
+
+void_i3
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open void_i3
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close void_i3
+
+xubuntu_xfce
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh open xubuntu_xfce
+/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh close xubuntu_xfce
