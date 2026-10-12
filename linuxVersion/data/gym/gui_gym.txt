@@ -14,7 +14,15 @@ A session lives as long as the D-Bus connection that created it: one long
 lived process holds it.
 Pilot (java.awt.Robot) goes through the RemoteDesktop portal, with the
 restore token in ~/.java/robot/remote-desktop-tokens.properties; one Robot
-JVM runs at a time. A second Robot JVM started while the first is still
+JVM runs at a time.
+Every Robot call tries the tokens of that file in order, and a call made
+with a token other than the one of the open session closes that session
+first. Closing a session releases every key and button held in it, so with
+a dead token in the file no Shift, Ctrl or Alt chord and no drag arrives:
+the file holds only tokens that work. Running any Robot JVM with
+-Dawt.robot.screenshotDebug=true prints "No streams available with current
+token" after "with token |<token>|" for a dead token, whose line is deleted
+from the file. A second Robot JVM started while the first is still
 starting makes the portal ask again: its "Remote Desktop" dialog blocks
 every Robot call of both JVMs until "Allow Remote Interaction" is on and
 Share is pressed, which stores the token again. A Robot screen capture does
