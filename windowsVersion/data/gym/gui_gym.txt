@@ -2,18 +2,6 @@ Findings on operating this machine's GUI like a human would: only what holds acr
 GUIs in general (screen, pointer, windows, the OS menus). What is about one application
 goes in gui_<app>_gym.txt next to this file.
 
-= Agent terminals are hidden =
-
-agent-supervisor.ps1 starts the consoles of win1, win2, win3 and winCoordinator hidden:
-they have no taskbar button, no title bar and are never the foreground window, so no
-pointer or key input on the desktop reaches them. The desktop holds only the app windows
-under test, and those of several agents can be open at once.
-
-= Taskbar =
-
-Taskbar buttons shift whenever a window opens or closes.
-Clicking the taskbar button of the window that is already active minimizes it.
-
 = System tray icon in the Windows 11 "show hidden icons" flyout =
 
 Clicking the taskbar corner chevron ("^" near the clock) opens a flyout of

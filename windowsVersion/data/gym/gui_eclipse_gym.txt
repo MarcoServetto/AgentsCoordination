@@ -1,24 +1,9 @@
 Findings on operating Eclipse like a human would. General GUI findings are in gui_gym.txt.
 
-= Commands =
-
-Menu bar positions depend on the active part and selection (Source and Refactor appear
-when a project is selected in the Package Explorer), and a JUnit import brings the JUnit
-view to the front of its stack. Quick Access (Ctrl+3, type the command name, Enter) reaches
-every command whatever the active part and selection.
-Start Eclipse with -data <workspace> to skip the workspace prompt; Alt+F4 closes it.
-
 = Folder pickers =
 
 The Windows folder picker (SWT DirectoryDialog) accepts a full path typed into its
 Folder field followed by the Select Folder button.
-
-This machine's Eclipse (4.40.0.20260604-0652) shows the modern native Windows
-folder-picker dialog (navigation pane plus a "Folder:" field) for both the
-Manager's "Select the Eclipse executable" chooser and the Fearless plugin's
-"New Fearless Project..." command - not the classic SWT DirectoryDialog. The
-same recipe works unchanged: click the path field, type the full path, click
-the accept button (labelled "Select Folder" here).
 
 = Views already present but minimized =
 
@@ -29,20 +14,3 @@ front if a same-named or stacked view tab exists; check that rail (click each sm
 before assuming a view must be added from Show View. Show View can also add a view as a
 new background tab in an existing stack rather than switching to it - click the newly
 added tab explicitly.
-
-Window > Perspective > Open Perspective lists only a few recently used perspectives plus
-"Other..."; use Other... to reach the full list (with each perspective's icon) when the
-one you need was not recently used.
-
-= Starting and seeing Eclipse =
-
-Start Eclipse with -data <workspace> -perspective <perspective id> to open a fresh workspace
-directly in that perspective. A plugin jar replaced in dropins with the same Bundle-Version
-keeps its old plugin.xml and MANIFEST.MF from Eclipse's cache: start with -clean after such a
-replacement.
-
-The enabled state of a toolbar button changed by something in the background can stay stale on
-screen until the next part activation; click a view tab before trusting a screenshot of it.
-
-A minimized view opened from the icon rail at the window edge shows as an overlay; a click
-outside it hides it again.

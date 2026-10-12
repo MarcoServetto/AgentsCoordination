@@ -2,11 +2,3 @@ Pilot.shot does not show the pointer.
 Pilot.seen is the same shot with a purple ring around the pointer.
 A window a program opens shows on top without the keyboard: a click inside
 it gives it the keyboard.
-linux1, linux2, linux3 and linuxCoordinator run in detached tmux sessions
-(tmux -L agents attach -t <agent> shows one): they have no window, so the
-desktop holds only the windows tests open, of several agents at once, and a
-pointer path stays inside the windows its own test opened.
-A process is killed by the pid noted when it was started, never by name: a
-name is matched on its first 15 characters, pkill -f matches the shell of
-the Bash tool itself, and the session of every agent on the machine is one
-such match away.
