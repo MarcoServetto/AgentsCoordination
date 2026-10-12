@@ -482,7 +482,7 @@ ubuntu_gnome (GNOME on wayland) and runs 12 libvirt VMs, one desktop each:
 arch_sway, debian_cinnamon, debian_gnome_x11, debian_mate, fedora_cosmic,
 fedora_gnome, kubuntu_plasma, lubuntu_lxqt, omarchy_hyprland,
 opensuse_plasma, void_i3, xubuntu_xfce: the desks Fearless users have, so
-the manager and its agentTools tests run on every one of them. 
+the manager and its agentTools tests run on every one of them.
 ## Automated tests.
 
 Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
