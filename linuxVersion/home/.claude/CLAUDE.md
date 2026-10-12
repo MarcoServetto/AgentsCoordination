@@ -362,6 +362,21 @@ Switch expressions are good, but factor out a sub-method instead of using `yield
 - Java collections are either shallow immutable or updatable.
   We use the static type system to hint what is the nature of a collection object. When possible, use ArrayList<T> or other concrete collection types to indicate that we do know the object is updatable, and use List<T> when we can assume is not. In many points we do wrap an ArrayList into List.copyOf or Collections.unmodifiableList to make the transition clear; we may occasionally avoid it for performance in crucial places.
 
+English style:
+-Never keep the context implcit.
+Example Good: new Foo().bar and new Beer() are two expressions. Both compile and run without error.
+Example Bad: new Foo().bar and new Beer() are two expressions. They are to be understood as Java code and under the class table in figure 3. Both compile and run without error.
+This is Bad because 'Both' is now too far from the two expressions. Instead, repeat the two elements.
+Same for 'It' 'The bug' 'This solution' 'The idea'
+If they are not extraordinarily clearly connected to the linked concept, repeat the concept.
+
+-Use simple English when possible: avoid words like 'wherever'. Make short sentences. When possible, go new line after each sentence.
+
+-Use consistent terms: avoid using synonymous to mean the same thing. If you use different terms, it must mean to mean different things.
+
+-The reader is an expert in Theoretical computer science, programming language design, metarules, type systems, Java. When using technical terms outside of this area of expertise, you have to explain them, and if they are not needed, avoid them.
+For example the reader had no idea that 'host' and 'guest' were terms used when talking about Virtual Machines. Overall the biggest issue is that those area specific technical terms often clash with technical terms from other areas.
+
 ## No adding comments
 Do not add comments to generated code. Preserve existing comments literally.
 
@@ -460,9 +475,7 @@ desktop each: arch_sway, debian_cinnamon, debian_gnome_x11, debian_mate,
 fedora_cosmic, fedora_gnome, kubuntu_plasma, lubuntu_lxqt,
 omarchy_hyprland, opensuse_plasma, void_i3, xubuntu_xfce: the desks
 Fearless users have, so the manager and its agentTools tests run on every
-one of them. A desk is always named by its name, never by its role: the
-words guest and host mean too many other things.
-The definitions of the VMs are in /etc/libvirt/qemu, their disks in
+one of them. The definitions of the VMs are in /etc/libvirt/qemu, their disks in
 /data/vms, and /data/pilotio is the folder every VM mounts as its share;
 reset.sh keeps both folders. How to drive a VM is in
 /data/gym/gui_vms_gym.txt.
