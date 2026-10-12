@@ -1,5 +1,6 @@
-A Robot screen capture does not show the pointer: a hover highlight is the
-only sign of where it is.
+Pilot.shot does not show the pointer.
+Pilot.seen is the same shot with a purple ring around the pointer: an agent
+looks at the screen through Pilot.seen.
 A window a program opens shows on top without the keyboard: a click inside
 it gives it the keyboard.
 linux1, linux2, linux3 and linuxCoordinator run in detached tmux sessions
