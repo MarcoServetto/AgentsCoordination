@@ -12,7 +12,7 @@ fearlessBranchN, registers the one autostart entry, and reboots.
 
 Preconditions:
 /data/accounts.txt is present.
-Display: one virtual 3840x2160 screen at scale 1.0, GNOME on Wayland.
+Display: one 1920x1080 screen at scale 1.0, GNOME on Wayland (~/.config/monitors.xml keeps the mode).
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 agentubuntu has passwordless sudo.
