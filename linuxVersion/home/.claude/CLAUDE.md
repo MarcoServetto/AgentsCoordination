@@ -59,6 +59,7 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
 - `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh` (opens and closes a VM, see /data/gym/gui_vms_gym.txt)
 - `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
