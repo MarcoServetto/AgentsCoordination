@@ -384,6 +384,14 @@ If they are not extraordinarily clearly connected to the linked concept, repeat 
 -The reader is an expert in Theoretical computer science, programming language design, metarules, type systems, Java. When using technical terms outside of this area of expertise, you have to explain them, and if they are not needed, avoid them.
 For example the reader had no idea that 'host' and 'guest' were terms used when talking about Virtual Machines. Overall the biggest issue is that those area specific technical terms often clash with technical terms from other areas.
 
+Example Bad: The terminal may use a parallel strategy only where the flow has no .hintSequential. .hintParallel asks the terminal to use a parallel strategy wherever it can run one that returns what the sequential strategy returns.
+Example Good:
+The flow terminal may choose to use a parallel strategy only when the flow has no `.hintSequential`.
+The presence of `.hintParallel` further incentivizes the flow terminal to apply a parallel strategy.
+Why: 'flow' specifies what this 'terminal' is.
+The Good version has two separate lines.
+The Bad English is contorted and indirect: 'wherever it can run one that returns what'.
+
 ## No adding comments
 Do not add comments to generated code. Preserve existing comments literally.
 
