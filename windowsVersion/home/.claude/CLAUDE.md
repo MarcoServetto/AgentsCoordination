@@ -480,7 +480,12 @@ fix, when asked), never something a test steps around: a test that reaches
 a stable state through a trick (a keyboard binding, a wait, an extra click)
 so that the bug stops showing hides the bug and passes for the wrong
 reason.
-`Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `seen`, `changed`) drives the desk the way a person does. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (windows, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
+An agent answering a test in agent mode is the person at the desk.
+It answers each action from what the screen shows.
+Its finding is whether each step of the test is something that person does on this desk, and whether the screen then shows what the design says.
+A test passing is not the goal.
+A step that does nothing on this desk, or that a person does differently, is a finding: the agent stops and reports it.
+`Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `seen`, `changed`; `java agentTools.Pilot seen|shot <file.png>` saves the screen) drives the desk the way a person does. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (windows, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
 
 
 ## The desks
