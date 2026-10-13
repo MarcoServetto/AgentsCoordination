@@ -36,6 +36,7 @@ The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop
         if (this._id){ Main.layoutManager.disconnect(this._id); this._id= null; }
       }
     }
+Their notification banners are off too (show-banners false), as on this machine.
 GNOME on this machine takes the Super key before virt-viewer passes it to a VM, so the keys of the tiling desks of the VMs are Alt chords:
   arch_sway: wmenu installed; ~/.config/sway/config ends with bindsym Mod1+Return exec foot, bindsym Ctrl+Mod1+t exec foot, bindsym Mod1+Shift+q kill, bindsym Mod1+d exec $menu.
   void_i3: dmenu installed; ~/.config/i3/config binds Mod1+d to dmenu_run and Mod1+Shift+q to kill.
