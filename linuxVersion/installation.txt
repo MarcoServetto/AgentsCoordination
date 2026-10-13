@@ -17,6 +17,9 @@ GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 agentubuntu has passwordless sudo.
 The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs defaults,nofail 0 0), except kubuntu_plasma and opensuse_plasma, which share it over 9p: in their definition the filesystem of /data/pilotio has accessmode passthrough and no virtiofs driver, and their fstab reads pilotio /data/pilotio 9p trans=virtio,version=9p2000.L,msize=262144,cache=none,nofail 0 0.
+virtiofs is built on FUSE, and KDE treats a FUSE mount as slow: Dolphin types the files there by their name only, so a program on the share shows as an unknown file and a double click on it opens "Choose Application" instead of offering to launch it.
+qemu runs as agentubuntu, uid 1000 like the user of each VM, so files the VM user writes over 9p belong to agentubuntu.
 The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop, as this machine does, not in the Overview: the user extension startdesktop@pilotio (~/.local/share/gnome-shell/extensions/startdesktop@pilotio, enabled in org.gnome.shell enabled-extensions) hides the Overview once the shell has started:
   metadata.json: {"uuid": "startdesktop@pilotio", "name": "Start on the desktop", "description": "Hides the Overview that GNOME Shell shows at login.", "shell-version": ["48", "49", "50"]}
   extension.js:
