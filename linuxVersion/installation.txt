@@ -17,6 +17,20 @@ GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 agentubuntu has passwordless sudo.
 The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop, as this machine does, not in the Overview: the user extension startdesktop@pilotio (~/.local/share/gnome-shell/extensions/startdesktop@pilotio, enabled in org.gnome.shell enabled-extensions) hides the Overview once the shell has started:
+  metadata.json: {"uuid": "startdesktop@pilotio", "name": "Start on the desktop", "description": "Hides the Overview that GNOME Shell shows at login.", "shell-version": ["48", "49", "50"]}
+  extension.js:
+    import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+    import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+    export default class StartDesktop extends Extension{
+      enable(){
+        if (!Main.layoutManager._startingUp){ return; }
+        this._id= Main.layoutManager.connect('startup-complete',()=>Main.overview.hide());
+      }
+      disable(){
+        if (this._id){ Main.layoutManager.disconnect(this._id); this._id= null; }
+      }
+    }
 A VM showing its desktop with no input changes its screen at most once a minute (its clock shows no seconds): vm.sh open waits for a screen unchanged for 6 seconds.
 java.awt.Robot reaches the screen through the RemoteDesktop portal: ~/.java/robot/remote-desktop-tokens.properties holds only working restore tokens (the first Robot program shows the portal dialog "Remote Desktop", answered with "Allow Remote Interaction" on and Share).
 GDM logs in automatically only at boot, so a session that ends leaves the machine
