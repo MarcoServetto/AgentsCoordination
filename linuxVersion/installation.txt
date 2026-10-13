@@ -15,8 +15,34 @@ Preconditions:
 Display: one 1920x1080 screen at scale 1.0, GNOME on Wayland (~/.config/monitors.xml keeps the mode).
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
+notification banners are off (gsettings org.gnome.desktop.notifications show-banners false): when GNOME refuses a window's request to come to the front, it shows a banner "... is ready" over the top of the screen, and that banner takes the clicks meant for the window under it;
 agentubuntu has passwordless sudo.
 The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs defaults,nofail 0 0), except kubuntu_plasma and opensuse_plasma, which share it over 9p: in their definition the filesystem of /data/pilotio has accessmode passthrough and no virtiofs driver, and their fstab reads pilotio /data/pilotio 9p trans=virtio,version=9p2000.L,msize=262144,cache=loose,nofail 0 0.
+virtiofs is built on FUSE, and KDE treats a FUSE mount as slow: Dolphin types the files there by their name only, so a program on the share shows as an unknown file and a double click on it opens "Choose Application" instead of offering to launch it.
+qemu runs as agentubuntu, uid 1000 like the user of each VM, so files the VM user writes over 9p belong to agentubuntu.
+The 9p mount uses cache=loose: with cache=none a program in the VM gets no inotify event for a file another program of the VM creates on the share, and the manager watches its messages folder with inotify.
+The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop, as this machine does, not in the Overview: the user extension startdesktop@pilotio (~/.local/share/gnome-shell/extensions/startdesktop@pilotio, enabled in org.gnome.shell enabled-extensions) hides the Overview once the shell has started:
+  metadata.json: {"uuid": "startdesktop@pilotio", "name": "Start on the desktop", "description": "Hides the Overview that GNOME Shell shows at login.", "shell-version": ["48", "49", "50"]}
+  extension.js:
+    import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+    import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+    export default class StartDesktop extends Extension{
+      enable(){
+        if (!Main.layoutManager._startingUp){ return; }
+        this._id= Main.layoutManager.connect('startup-complete',()=>Main.overview.hide());
+      }
+      disable(){
+        if (this._id){ Main.layoutManager.disconnect(this._id); this._id= null; }
+      }
+    }
+Their notification banners are off too (show-banners false), as on this machine.
+GNOME on this machine takes the Super key before virt-viewer passes it to a VM, so the keys of the tiling desks of the VMs are Alt chords:
+  arch_sway: wmenu installed; ~/.config/sway/config ends with bindsym Mod1+Return exec foot, bindsym Ctrl+Mod1+t exec foot, bindsym Mod1+Shift+q kill, bindsym Mod1+d exec $menu.
+  void_i3: dmenu installed; ~/.config/i3/config binds Mod1+d to dmenu_run and Mod1+Shift+q to kill.
+  omarchy_hyprland: ~/.config/hypr/bindings.lua ends with o.bind("ALT + RETURN", "Terminal", "foot"), o.bind("CTRL + ALT + T", "Terminal", "foot"), o.bind("ALT + SHIFT + Q", "Close window", hl.dsp.window.close()), o.bind("ALT + SPACE", "Apps menu", "omarchy-menu toggle apps").
+The omarchy_hyprland bar keeps tray icons in a drawer that opens only while the pointer is over it; the icon of the Fearless manager is pinned to the bar instead: in ~/.config/omarchy/shell.json the bar entry {"id": "omarchy.tray"} has "pinned": ["fearless-manager"], the Id of the manager's StatusNotifierItem.
+omarchy_hyprland draws every window opaque and with no animation, so a window looks the same focused or not and is in its final place as soon as it shows: ~/.config/hypr/hyprland.lua ends with o.window(".*", { opacity = "1 1" }) and hl.config({ animations = { enabled = false } }).
 A VM showing its desktop with no input changes its screen at most once a minute (its clock shows no seconds): vm.sh open waits for a screen unchanged for 6 seconds.
 java.awt.Robot reaches the screen through the RemoteDesktop portal: ~/.java/robot/remote-desktop-tokens.properties holds only working restore tokens (the first Robot program shows the portal dialog "Remote Desktop", answered with "Allow Remote Interaction" on and Share).
 GDM logs in automatically only at boot, so a session that ends leaves the machine
