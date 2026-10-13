@@ -15,6 +15,7 @@ Preconditions:
 Display: one 1920x1080 screen at scale 1.0, GNOME on Wayland (~/.config/monitors.xml keeps the mode).
 GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
+notification banners are off (gsettings org.gnome.desktop.notifications show-banners false): when GNOME refuses a window's request to come to the front, it shows a banner "... is ready" over the top of the screen, and that banner takes the clicks meant for the window under it;
 agentubuntu has passwordless sudo.
 The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
 The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs defaults,nofail 0 0), except kubuntu_plasma and opensuse_plasma, which share it over 9p: in their definition the filesystem of /data/pilotio has accessmode passthrough and no virtiofs driver, and their fstab reads pilotio /data/pilotio 9p trans=virtio,version=9p2000.L,msize=262144,cache=loose,nofail 0 0.
