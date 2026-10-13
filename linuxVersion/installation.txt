@@ -17,6 +17,7 @@ GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 agentubuntu has passwordless sudo.
 The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+A VM showing its desktop with no input changes its screen at most once a minute (its clock shows no seconds): vm.sh open waits for a screen unchanged for 6 seconds.
 java.awt.Robot reaches the screen through the RemoteDesktop portal: ~/.java/robot/remote-desktop-tokens.properties holds only working restore tokens (the first Robot program shows the portal dialog "Remote Desktop", answered with "Allow Remote Interaction" on and Share).
 GDM logs in automatically only at boot, so a session that ends leaves the machine
 at the greeter, out of reach: the systemd timer session-guard.timer (enabled) reboots
