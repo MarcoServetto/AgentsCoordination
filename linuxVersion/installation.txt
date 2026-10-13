@@ -35,6 +35,7 @@ GNOME on this machine takes the Super key before virt-viewer passes it to a VM, 
   arch_sway: wmenu installed; ~/.config/sway/config ends with bindsym Mod1+Return exec foot, bindsym Ctrl+Mod1+t exec foot, bindsym Mod1+Shift+q kill, bindsym Mod1+d exec $menu.
   void_i3: dmenu installed; ~/.config/i3/config binds Mod1+d to dmenu_run and Mod1+Shift+q to kill.
   omarchy_hyprland: ~/.config/hypr/bindings.lua ends with o.bind("ALT + RETURN", "Terminal", "foot"), o.bind("CTRL + ALT + T", "Terminal", "foot"), o.bind("ALT + SHIFT + Q", "Close window", hl.dsp.window.close()), o.bind("ALT + SPACE", "Apps menu", "omarchy-menu toggle apps").
+The omarchy_hyprland bar keeps tray icons in a drawer that opens only while the pointer is over it; the icon of the Fearless manager is pinned to the bar instead: in ~/.config/omarchy/shell.json the bar entry {"id": "omarchy.tray"} has "pinned": ["fearless-manager"], the Id of the manager's StatusNotifierItem.
 A VM showing its desktop with no input changes its screen at most once a minute (its clock shows no seconds): vm.sh open waits for a screen unchanged for 6 seconds.
 java.awt.Robot reaches the screen through the RemoteDesktop portal: ~/.java/robot/remote-desktop-tokens.properties holds only working restore tokens (the first Robot program shows the portal dialog "Remote Desktop", answered with "Allow Remote Interaction" on and Share).
 GDM logs in automatically only at boot, so a session that ends leaves the machine
