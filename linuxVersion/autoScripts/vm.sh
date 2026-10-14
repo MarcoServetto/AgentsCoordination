@@ -4,6 +4,7 @@ virsh() { command virsh -c qemu:///system "$@"; }
 vm=$2
 case $1 in
   open)
+    qemu-img create -q -f qcow2 -F qcow2 -b "/data/vms/disks/$vm.qcow2" "/data/vms/runs/$vm.qcow2"
     virsh start "$vm" >/dev/null
     setsid -f virt-viewer -c qemu:///system --kiosk --kiosk-quit on-disconnect "$vm" >/dev/null 2>&1
     until virsh qemu-agent-command "$vm" '{"execute":"guest-ping"}' >/dev/null 2>&1; do sleep 2; done
@@ -15,6 +16,9 @@ case $1 in
   close)
     virsh shutdown "$vm" >/dev/null
     until [ "$(virsh domstate "$vm")" = "shut off" ]; do sleep 2; done
+    ;;
+  keep)
+    qemu-img commit -q "/data/vms/runs/$vm.qcow2"
     ;;
   *) exit 2;;
 esac

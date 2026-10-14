@@ -1,4 +1,5 @@
 vm.sh open returns when the desktop of the VM fills the screen, ready for input.
+Every vm.sh open starts the VM from its clean disk: what a run changes inside the VM is gone at the next open.
 vm.sh close returns when the VM is off.
 One VM is open at a time.
 A test on a VM gets /data/pilotio as the filesIOFolder argument of TestAgentTools.
