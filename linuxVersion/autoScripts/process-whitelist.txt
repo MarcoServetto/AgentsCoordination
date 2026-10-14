@@ -116,7 +116,8 @@ user-session-he
 spice-vdagent
 gnome-text-edit
 
-# --- the viewer of the open VM (autoScripts/vm.sh) ---
+# --- the open VM and its viewer (autoScripts/vm.sh) ---
+qemu-system-x86
 virt-viewer
 
 # --- Eclipse (Fearless plugin testing) ---
