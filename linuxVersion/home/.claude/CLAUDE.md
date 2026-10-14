@@ -284,13 +284,12 @@ Example locations:
 ## Commons
 
 Prefer `Commons/src/{utils,offensiveUtils,tools}` over rolling your own;
-`Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element; use it instead of `findFirst` whenever one result is assumed), `Join`, `Push`, `Pop`, `Range`, `Box`, `GetO`, `Mapper`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
-`Err` (test matcher with `[###]` holes), `Pos`, `ThrowingConsumer`/
-`ThrowingFunction`, `UriSort`. `offensiveUtils`: `Require` (`check` is the
+`Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element; use it instead of `findFirst` whenever one result is assumed), `Join`, `Push`, `Pop`, `Range`, `Box`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
+`Err` (test matcher with `[###]` holes), `Pos`. `offensiveUtils`: `Require` (`check` is the
 one unconditional guard; the rest compose inside `assert`),
 `EqTransparent`/`@NeverAsKey`. `tools`: `Fs` (filesystem, `runTool`, the
 `allowed` character set), `JavacTool`, `JavaTool` (child JVM),
-`PortableApp`, `SourceOracle`, `Zips`, `ReadZip`, `ZipWalk`.
+`PortableApp`, `SourceOracle`, `ReadZip`, `UriSort`.
 
 # Coding rules
 
