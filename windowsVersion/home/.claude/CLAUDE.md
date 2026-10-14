@@ -325,8 +325,8 @@ or just `return image;`, not `assert image != null: "load() runs first"`.
 Graceful degradation is the enemy: immediate hard failures, via assertions when reasonable.
 
 Design files can assume the following, and code can simply fail with 
-'new Error("Broken Environment")' when an Acceptable assumptions is detected,
-and needs to do no work to attempt detecting them. If a place of code could get simplified (or can be written simpler to begin with) by integrating one of those 'Acceptable assumptions' do simplify that code and add a comment in place about the specific assumption.
+'new Error("Broken Environment")' when it detects that an Acceptable assumption does not hold,
+and the code does no work to check those assumptions. If a place of code could get simplified (or can be written simpler to begin with) by integrating one of those 'Acceptable assumptions' do simplify that code and add a comment in place about the specific assumption.
 
 Acceptable assumptions under our offensive behaviour style:
 - Storage is reliable: a file system operation reported as successful has changed the drive as it should. Failures come from the input, never from the drive or from other programs using the drive.
@@ -383,7 +383,8 @@ If they are not extraordinarily clearly connected to the linked concept, repeat 
 -Use consistent terms: avoid using synonyms to mean the same thing. If you use different terms, it must mean different things.
 
 -The reader is an expert in Theoretical computer science, programming language design, metarules, type systems, Java. When using technical terms outside of this area of expertise, you have to explain them, and if they are not needed, avoid them.
-For example the reader had no idea that 'host' and 'guest' were terms used when talking about Virtual Machines. Overall the biggest issue is that those area specific technical terms often clash with technical terms from other areas.
+For example, 'host' and 'guest' are terms of virtual machines.
+Terms specific to an area often clash with the same words in other areas.
 
 Example Bad: The terminal may use a parallel strategy only where the flow has no .hintSequential. .hintParallel asks the terminal to use a parallel strategy wherever it can run one that returns what the sequential strategy returns.
 Example Good:
