@@ -17,7 +17,27 @@ GDM logs agentubuntu in at boot (AutomaticLogin in /etc/gdm3/custom.conf);
 screen blanking (gsettings org.gnome.desktop.session idle-delay 0), locking and suspend are off;
 notification banners are off (gsettings org.gnome.desktop.notifications show-banners false): when GNOME refuses a window's request to come to the front, it shows a banner "... is ready" over the top of the screen, and that banner takes the clicks meant for the window under it;
 agentubuntu has passwordless sudo.
-The 12 VMs are defined in /etc/libvirt/qemu, with their disks in /data/vms; each one logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+The desk of this machine has a fixed shape, the one the agentTools tests are recorded on; GNOME and the programs of the desk keep what a run changes, so an agent brings the desk back to that shape by hand:
+  no window is open;
+  no file of Fearless is outside /data/pilotio: no fearless* file in ~/.local/share/applications, ~/.local/share/mime/packages, ~/.local/share/icons/hicolor/*/apps and ~/.local/share/icons/hicolor/*/mimetypes, and no fearless line in ~/.config/mimeapps.list;
+  GNOME lists no Fearless program: org.gnome.shell app-picker-layout and the keys under /org/gnome/desktop/notifications/ hold their defaults, except show-banners;
+  Files (nautilus) has its default settings and no setting for a single folder;
+  org.gnome.shell enabled-extensions is ['ubuntu-appindicators@ubuntu.com'], org.gnome.shell favorite-apps is ['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'snap-store_snap-store.desktop', 'org.gnome.Yelp.desktop', 'org.gnome.Ptyxis.desktop'], org.gnome.mutter center-new-windows is true, and idle-delay and show-banners are as above.
+  The commands bringing the desk back to that shape, with no window open:
+    pkill -x gvfsd-metadata; rm -rf ~/.local/share/gvfs-metadata
+    rm -f ~/.local/share/applications/fearless* ~/.local/share/mime/packages/fearless* ~/.local/share/icons/hicolor/*/apps/fearless* ~/.local/share/icons/hicolor/*/mimetypes/fearless*
+    sed -i '/fearless/d' ~/.config/mimeapps.list
+    update-mime-database ~/.local/share/mime; update-desktop-database ~/.local/share/applications
+    dconf reset -f /org/gnome/nautilus/; dconf reset /org/gnome/shell/app-picker-layout; dconf reset -f /org/gnome/desktop/notifications/
+    gsettings set org.gnome.desktop.notifications show-banners false
+    gsettings set org.gnome.shell enabled-extensions "['ubuntu-appindicators@ubuntu.com']"
+    gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'snap-store_snap-store.desktop', 'org.gnome.Yelp.desktop', 'org.gnome.Ptyxis.desktop']"
+    gsettings set org.gnome.mutter center-new-windows true
+The 12 VMs are defined in /etc/libvirt/qemu.
+Each VM <vm> has a clean disk /data/vms/disks/<vm>.qcow2 and runs on its run disk /data/vms/runs/<vm>.qcow2, the disk of its definition: a qcow2 layer over the clean disk, holding only what changes while the VM runs.
+vm.sh open <vm> makes the run disk anew, so every open starts from the clean disk.
+vm.sh keep <vm>, on a closed VM, writes the changes of its run disk into its clean disk: a change to the setup of a VM is an open, the change, a close and a keep.
+The clean disk of each VM holds no file of Fearless outside /data/pilotio; each VM logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
 The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs defaults,nofail 0 0), except kubuntu_plasma and opensuse_plasma, which share it over 9p: in their definition the filesystem of /data/pilotio has accessmode passthrough and no virtiofs driver, and their fstab reads pilotio /data/pilotio 9p trans=virtio,version=9p2000.L,msize=262144,cache=loose,nofail 0 0.
 virtiofs is built on FUSE, and KDE treats a FUSE mount as slow: Dolphin types the files there by their name only, so a program on the share shows as an unknown file and a double click on it opens "Choose Application" instead of offering to launch it.
 qemu runs as agentubuntu, uid 1000 like the user of each VM, so files the VM user writes over 9p belong to agentubuntu.
