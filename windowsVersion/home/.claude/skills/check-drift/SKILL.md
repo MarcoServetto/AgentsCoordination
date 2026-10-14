@@ -33,3 +33,6 @@ reset.ps1 keeps, in `C:\data`, only `AgentsCoordination`, `fearlessBranch1`,
 `projects\<slug>\memory`, only the `MEMORY.md` of `$repo\home\.claude\projects`;
 among the tasks only `ClaudeAgentSupervisor` and `ClaudeSessionGuard`.
 Everything else the commands list is drift, and so is every diff line.
+
+`$HOME\.claude\skills\synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date.
+It is never drift: leave every file under it, and every diff line for it, out of the report.
