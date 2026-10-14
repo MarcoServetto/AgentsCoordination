@@ -148,11 +148,13 @@ If the "Current session" is less than 70%, start a task;
 else sleep until the "Current session" is over.
 
 Starting a task:
-A task is delegated to a sub agent; do not try to understand the task,
-just collect compacted information about the results.
-The text of the task says which model and effort the sub agent runs
-with, what it logs and how its results reach the user.
-The sub agent must respect `ZeroToHero/tasks/readBeforeChanging/<Repo>*.txt` of every repository it changes.
+Each task starts with a line saying how it runs:
+- `in-session task: <name>`: linux3 does the task itself, in this session.
+  A task that starts agents of its own is an in-session task: an agent started by another agent cannot start agents.
+- `delegated task: <name> (<model>, <effort>)`: linux3 starts a sub agent with that model and effort and gives it the text of the task.
+  linux3 does not try to understand a delegated task; it only collects compacted information about the results.
+The text of the task says what it logs and how its results reach the user.
+Whoever does a task respects `ZeroToHero/tasks/readBeforeChanging/<Repo>*.txt` of every repository it changes.
 
 After stopping, do a PR to ZeroToHero moving the done tasks into the done file; the text of the PR is a report on what happened in the night.
 
