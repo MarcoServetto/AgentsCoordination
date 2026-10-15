@@ -35,6 +35,24 @@ Needed Tools, each at its default install path; only install if not present.
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false
 
+The desk of this machine has a fixed shape, the one the agentTools tests are recorded on; Explorer and the manager of Fearless keep what a run changes, so an agent checks every item before a test and brings the desk back to that shape by hand:
+  no window is open: no Explorer window, no fearlessManaged* process, no other window with a title except the Settings windows (a window with a taskbar button moves the buttons of the taskbar, and with them every recorded click on it);
+  the Quick access of Explorer pins C:\data\pilotio and no other folder: a pinned folder moves the sidebar of every Explorer window, and with it every recorded click on it (the other entries of Quick access are frequent folders: they are not pinned and stay);
+  the tray icon of the manager is always visible in the notification area: HKCU:\Control Panel\NotifyIconSettings\<id> has IsPromoted=1 for C:\data\pilotio\fearlessManaged0_001\fearlessManaged0_001w.exe and for fearlessManaged0_001.exe (the entries exist once the manager has run);
+  the display is 1920x1080 at 150% scaling: 1280x720 pixels for a java program, the unit of the recorded values.
+  The checks, in PowerShell:
+    (New-Object -ComObject shell.application).Windows().Count is 0
+    Get-Process | Where-Object { $_.MainWindowTitle } lists only ApplicationFrameHost and SystemSettings
+    Get-Process fearlessManaged* prints nothing
+    (New-Object -ComObject shell.application).Namespace('shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}').Items() | Where-Object IsFolder | ForEach-Object { $_.Path + ' ' + $_.ExtendedProperty('System.Home.IsPinned') } shows True only for C:\data\pilotio
+    Get-ChildItem 'HKCU:\Control Panel\NotifyIconSettings' | ForEach-Object { Get-ItemProperty $_.PSPath } | Where-Object { $_.ExecutablePath -like 'C:\data\pilotio\*' } | Select-Object ExecutablePath, IsPromoted shows 1 for both exe files
+  The commands bringing the desk back to that shape:
+    Get-Process fearlessManaged* | Stop-Process -Force
+    (New-Object -ComObject shell.application).Windows() | ForEach-Object { $_.Quit() }
+    for each folder of the Quick access namespace that is pinned and is not C:\data\pilotio: $_.InvokeVerb('unpinfromhome')
+    when C:\data\pilotio is not pinned: (New-Object -ComObject shell.application).Namespace('C:\data\pilotio').Self.InvokeVerb('pintohome') (the same call on a pinned folder unpins it)
+    for each of those registry entries: Set-ItemProperty -Path $_.PSPath -Name IsPromoted -Value 1 -Type DWord
+
 Actions:
   Once:
     git clone https://github.com/MarcoServetto/AgentsCoordination C:\data\AgentsCoordination
