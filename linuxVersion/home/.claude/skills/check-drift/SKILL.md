@@ -36,3 +36,6 @@ Everything else the commands list is drift, and so is every diff line.
 
 `$HOME/.claude/skills/synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date.
 It is never drift: leave every file under it, and every diff line for it, out of the report.
+
+An empty `.claude` folder, in any folder of the listing, is never drift: leave it out of the report.
+A `.claude` folder with any content is drift.
