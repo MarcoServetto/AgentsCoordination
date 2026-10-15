@@ -63,6 +63,7 @@ SearchHost
 SearchFilterHost
 msedgewebview2
 MsMpEng
+DefenderSessionHelper
 NisSrv
 MpDefenderCoreService
 SecurityHealthService
