@@ -92,6 +92,7 @@ When considering making a new PR: look if we can just amend the existing PR inst
 Hard rule: before amending a PR check that it is still open (`gh pr view <n> --repo <PARENT> --json state`), else open a new one instead; a push to the branch of a merged PR reaches nobody.
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
+A PR to AgentsCoordination that changes a file with a working copy (`linuxVersion/data/` lands in `/data`, `linuxVersion/home/` lands in `$HOME`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
 `gh pr view <n> --repo <PARENT> --json state,mergedAt`
