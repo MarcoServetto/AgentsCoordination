@@ -13,8 +13,8 @@ foreach ($p in Get-CimInstance Win32_Process) {
   if ($p.ProcessId -le 4 -or $p.ProcessId -eq $PID -or -not $p.CreationDate) { continue }
   if ($whitelist -contains [IO.Path]::GetFileNameWithoutExtension($p.Name).ToLowerInvariant()) { continue }
   if (((Get-Date) - $p.CreationDate).TotalHours -lt 1) { continue }
-  Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue
-  Log "killed $($p.Name) (pid $($p.ProcessId)): $($p.CommandLine)"
+  try { Stop-Process -Id $p.ProcessId -Force; Log "killed $($p.Name) (pid $($p.ProcessId)): $($p.CommandLine)" }
+  catch { Log "ATTENTION: could not kill $($p.Name) (pid $($p.ProcessId)): $($_.Exception.Message)" }
   $killed++
 }
 if ($killed -eq 0) { Log "process sweep: clean" }
