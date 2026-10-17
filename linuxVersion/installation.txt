@@ -57,10 +57,10 @@ The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop
       }
     }
 Their notification banners are off too (show-banners false), as on this machine.
-GNOME on this machine takes the Super key before virt-viewer passes it to a VM, so the keys of the tiling desks of the VMs are Alt chords:
-  arch_sway: wmenu installed; ~/.config/sway/config ends with bindsym Mod1+Return exec foot, bindsym Ctrl+Mod1+t exec foot, bindsym Mod1+Shift+q kill, bindsym Mod1+d exec $menu.
+GNOME on this machine takes the Super key before virt-viewer passes it to a VM, so the keys of the tiling desks of the VMs are Alt chords, and in arch_sway and omarchy_hyprland Caps Lock is Super, a key GNOME on this machine passes to virt-viewer:
+  arch_sway: wmenu installed; ~/.config/sway/config ends with bindsym Mod1+Return exec foot, bindsym Ctrl+Mod1+t exec foot, bindsym Mod1+Shift+q kill, bindsym Mod1+d exec $menu, input type:keyboard xkb_options caps:super.
   void_i3: dmenu installed; ~/.config/i3/config binds Mod1+d to dmenu_run and Mod1+Shift+q to kill.
-  omarchy_hyprland: ~/.config/hypr/bindings.lua ends with o.bind("ALT + RETURN", "Terminal", "foot"), o.bind("CTRL + ALT + T", "Terminal", "foot"), o.bind("ALT + SHIFT + Q", "Close window", hl.dsp.window.close()), o.bind("ALT + SPACE", "Apps menu", "omarchy-menu toggle apps").
+  omarchy_hyprland: ~/.config/hypr/bindings.lua ends with o.bind("ALT + RETURN", "Terminal", "foot"), o.bind("CTRL + ALT + T", "Terminal", "foot"), o.bind("ALT + SHIFT + Q", "Close window", hl.dsp.window.close()), o.bind("ALT + SPACE", "Apps menu", "omarchy-menu toggle apps"); ~/.config/hypr/input.lua ends with hl.config({ input = { kb_options = "shift:both_capslock_cancel,caps:super" } }).
 The omarchy_hyprland bar keeps tray icons in a drawer that opens only while the pointer is over it; the icon of the Fearless manager is pinned to the bar instead: in ~/.config/omarchy/shell.json the bar entry {"id": "omarchy.tray"} has "pinned": ["fearless-manager"], the Id of the manager's StatusNotifierItem.
 omarchy_hyprland draws every window opaque and with no animation, so a window looks the same focused or not and is in its final place as soon as it shows: ~/.config/hypr/hyprland.lua ends with o.window(".*", { opacity = "1 1" }) and hl.config({ animations = { enabled = false } }).
 A VM showing its desktop with no input changes its screen at most once a minute (its clock shows no seconds): vm.sh open waits for a screen unchanged for 6 seconds.
