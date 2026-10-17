@@ -93,7 +93,7 @@ Hard rule: before amending a PR check that it is still open (`gh pr view <n> --r
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
 A PR to AgentsCoordination that changes a file with a working copy (`linuxVersion/data/` lands in `/data`, `linuxVersion/home/` lands in `$HOME`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
-Once the user merges a PR to AgentsCoordination, `git -C /data/AgentsCoordination pull --ff-only` brings the checkout to it.
+The checkout stays on `main`; once the user merges a PR to AgentsCoordination, `git -C /data/AgentsCoordination pull --ff-only origin main` brings it to that PR.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
 `gh pr view <n> --repo <PARENT> --json state,mergedAt`
