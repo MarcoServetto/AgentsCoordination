@@ -220,9 +220,13 @@ compiled into Coordinator's tests, which read paths from it.
 it is present and ready immediately after cloning or updating.
 If a PR changes the logical content of Commons, a new Commons.jar needs to be added to the PR. Copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
 
+  TestAllCommons.java
+    Builds Commons and runs its test suite, the module
+    `Frontend/commons_tests`. Fast - seconds, not minutes.
+
   TestAllFrontend.java
-    Builds Commons and Frontend and runs Frontend's test suite. Fast -
-    seconds, not minutes.
+    Runs everything TestAllCommons.java does, then builds Frontend and runs
+    Frontend's test suite. Fast - seconds, not minutes.
 
   TestAllFrontendCoordinator.java
     Runs everything TestAllFrontend.java does, then builds Coordinator and
@@ -502,7 +506,7 @@ the manager and its agentTools tests run on every one of them.
 
 ## Automated tests.
 
-Run (only) one of TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
+Run (only) one of TestAllCommons.java, TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
 Only run `C:\data\AgentsCoordination\windowsVersion\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
