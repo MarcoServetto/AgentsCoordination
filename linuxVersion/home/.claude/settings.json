@@ -1,6 +1,7 @@
 {
   "env": {
-    "EDITOR": "nano"
+    "EDITOR": "nano",
+    "CLAUDE_CODE_SHELL_PREFIX": "/data/AgentsCoordination/linuxVersion/autoScripts/command_scope.sh"
   },
   "permissions": {
     "defaultMode": "bypassPermissions"
