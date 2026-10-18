@@ -61,6 +61,7 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh` (opens and closes a VM, and keeps the changes of a closed VM in its clean disk; see /data/gym/gui_vms_gym.txt and installation.txt)
 - `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/command_scope.sh` (Claude Code itself runs every Bash command through it, as the `CLAUDE_CODE_SHELL_PREFIX` of `settings.json`: each command runs in its own scope with its own memory and task limits, and the kernel kills that command before any agent when memory runs out)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
