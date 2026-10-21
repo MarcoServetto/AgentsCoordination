@@ -369,7 +369,7 @@ public static final String allowed=
 ```
 (mirrored in `Fs.allowed`). Modern Java: streams, lambdas, optionals; no
 long inline lambdas; declare a method (`this::foo`, or
-`(a,b) -> foo(a, b, c, d)`); a lambda needing several statements or returns is
+`(a, b) -> foo(a, b, c, d)`); a lambda needing several statements or returns is
 too big.
 Switch expressions are good, but factor out a sub-method instead of using `yield`.
 
