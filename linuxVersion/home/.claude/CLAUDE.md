@@ -508,6 +508,12 @@ reset.sh keeps both folders. How to drive a VM is in
 Run (only) one of TestAllCommons.java, TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
+## Tests showing a bug
+
+A test showing a bug asserts the correct behaviour, so it fails until the bug is fixed.
+A test asserting what the code wrongly does today passes on the bug and hides it.
+A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
+
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
