@@ -510,6 +510,12 @@ the manager and its agentTools tests run on every one of them.
 Run (only) one of TestAllCommons.java, TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
 Depending on the estimate risk of regression.
 
+## Tests showing a bug
+
+A test showing a bug asserts the correct behaviour, so it fails until the bug is fixed.
+A test asserting what the code wrongly does today passes on the bug and hides it.
+A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
+
 Only run `C:\data\AgentsCoordination\windowsVersion\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
 
 # Think, do not jump to probing
