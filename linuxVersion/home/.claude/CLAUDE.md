@@ -240,12 +240,6 @@ If a PR changes the logical content of Commons, a new Commons.jar needs to be ad
     module, which depends on Coordinator), and runs Controllers' JUnit test
     suite except its `agentTools` package. Fast.
 
-  TestInstantiationSweep.java
-    Builds Commons and Frontend, then runs only Frontend's
-    `instantiationSweep` package, which TestAllFrontend.java skips: millions
-    of small generic programs, each compared with all its instantiations.
-    Very slow - about 40 minutes: run it only when asked, or overnight.
-
   TestAgentTools.java <desk> <agent> [<TestClassName>] <channelFolder> <filesIOFolder>
     Same build, then Controllers' `agentTools` tests (one, or the whole
     package) on one desk, ubuntu_gnome or a VM: they drive the desk through
