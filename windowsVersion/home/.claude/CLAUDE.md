@@ -510,8 +510,6 @@ A test showing a bug asserts the correct behaviour, so it fails until the bug is
 A test asserting what the code wrongly does today passes on the bug and hides it.
 A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
 
-Only run `C:\data\AgentsCoordination\windowsVersion\fearlessManagerAutomatedGuiTests\allTests.txt` when asked, since it takes one hour.
-
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
