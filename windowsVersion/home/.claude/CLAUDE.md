@@ -219,7 +219,9 @@ compiled into Coordinator's tests, which read paths from it.
 
 `Commons.jar` is committed to the Commons repository itself specifically so
 it is present and ready immediately after cloning or updating.
-If a PR changes the logical content of Commons, a new Commons.jar needs to be added to the PR. Copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
+`Commons.jar` is regenerated only for a semantic change: a change of what a caller of Commons can observe (a signature, a result, an error text that reaches the caller).
+Comments, formatting, the texts of `Bug` and assert messages, and code rewritten to behave the same (a minimization, a rename) are not semantic changes: a PR made only of those leaves `Commons.jar` as it is.
+For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
 
   TestAllCommons.java
     Builds Commons and runs its test suite, the module
