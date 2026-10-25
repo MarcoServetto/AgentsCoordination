@@ -42,6 +42,15 @@ The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs
 virtiofs is built on FUSE, and KDE treats a FUSE mount as slow: Dolphin types the files there by their name only, so a program on the share shows as an unknown file and a double click on it opens "Choose Application" instead of offering to launch it.
 qemu runs as agentubuntu, uid 1000 like the user of each VM, so files the VM user writes over 9p belong to agentubuntu.
 The 9p mount uses cache=loose: with cache=none a program in the VM gets no inotify event for a file another program of the VM creates on the share, and the manager watches its messages folder with inotify.
+fedora_cosmic logs its user in through greetd: the package cosmic-greeter owns /etc/greetd/cosmic-greeter.toml and replaces it at every update, so the autologin lives in files no package owns.
+  /etc/greetd/autologin.toml: cosmic-greeter.toml plus
+    [initial_session]
+    command = "start-cosmic"
+    user = "tester"
+  /etc/systemd/system/cosmic-greeter.service.d/autologin.conf:
+    [Service]
+    ExecStart=
+    ExecStart=greetd --config /etc/greetd/autologin.toml
 The GNOME desks of the VMs (debian_gnome_x11, fedora_gnome) start on the desktop, as this machine does, not in the Overview: the user extension startdesktop@pilotio (~/.local/share/gnome-shell/extensions/startdesktop@pilotio, enabled in org.gnome.shell enabled-extensions) hides the Overview once the shell has started:
   metadata.json: {"uuid": "startdesktop@pilotio", "name": "Start on the desktop", "description": "Hides the Overview that GNOME Shell shows at login.", "shell-version": ["48", "49", "50"]}
   extension.js:
