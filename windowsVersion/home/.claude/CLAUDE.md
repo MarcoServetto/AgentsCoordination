@@ -370,17 +370,21 @@ Switch expressions are good, but factor out a sub-method instead of using `yield
 - Java collections are either shallow immutable or updatable.
   We use the static type system to hint what is the nature of a collection object. When possible, use ArrayList<T> or other concrete collection types to indicate that we do know the object is updatable, and use List<T> when we can assume is not. In many points we do wrap an ArrayList into List.copyOf or Collections.unmodifiableList to make the transition clear; we may occasionally avoid it for performance in crucial places.
 
-English style:
--Never keep the context implicit.
+English style, for design documents, PR descriptions, chat replies and comments:
+-Never keep the context implicit. A pronoun ('it', 'its', 'they', 'them', 'this', 'both') stands for a noun only when that noun is in the same clause; otherwise repeat the noun.
 Example Good: new Foo().bar and new Beer() are two expressions. Both compile and run without error.
 Example Bad: new Foo().bar and new Beer() are two expressions. They are to be understood as Java code and under the class table in figure 3. Both compile and run without error.
 This is Bad because 'Both' is now too far from the two expressions. Instead, repeat the two elements.
 Same for 'It' 'The bug' 'This solution' 'The idea'
 If they are not extraordinarily clearly connected to the linked concept, repeat the concept.
 
--Use simple English when possible: avoid words like 'wherever'. Make short sentences. When possible, go new line after each sentence.
+-Use consistent terms: one term per concept, one concept per term. A term is defined once, in quotes at the definition only (the 'single' manager, a 'collapsible area'), and then used verbatim everywhere: never a synonym, never a shortened form ('the run' for 'a run of the manager program'), never a word that is already a term for something else ('the message' for the text of an error, when a message is a file). If you use different terms, it must mean different things.
 
--Use consistent terms: avoid using synonyms to mean the same thing. If you use different terms, it must mean different things.
+-Say what happens, not that something happens. 'Saying why', 'the appropriate error', 'handles the error', 'as usual', 'the right one' are placeholders for a sentence that is missing: write what the text of the error holds, which action is taken, which file is written.
+
+-A sentence whose removal changes no implementation and no test is redundant: a restatement of a rule given elsewhere, an example that only repeats the rule, a rationale the rule already carries, a goal with nothing to check ('designed with discoverability in mind'). Remove the sentence, or move the sentence to the chat reply or the PR description.
+
+-Use simple English when possible: avoid words like 'wherever'. Make short sentences. When possible, go new line after each sentence.
 
 -The reader is an expert in Theoretical computer science, programming language design, metarules, type systems, Java. When using technical terms outside of this area of expertise, you have to explain them, and if they are not needed, avoid them.
 For example, 'host' and 'guest' are terms of virtual machines.
@@ -393,6 +397,8 @@ The presence of `.hintParallel` further incentivizes the flow terminal to apply 
 Why: 'flow' specifies what this 'terminal' is.
 The Good version has two separate lines.
 The Bad English is contorted and indirect: 'wherever it can run one that returns what'.
+
+-Editing an existing document: one small change at a time, so that a word diff shows each change, and a PR description listing each change as old -> new. A sentence is rephrased only where a word changes the meaning; a sentence that already says the right thing is left alone. When a duplicate is removed, the PR description names the line that keeps the statement.
 
 ## No adding comments
 Do not add comments to generated code. Preserve existing comments literally.
