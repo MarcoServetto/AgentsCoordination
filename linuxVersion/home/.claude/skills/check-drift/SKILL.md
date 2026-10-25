@@ -6,7 +6,7 @@ description: List how this machine deviates from the state described by /data/Ag
 # Checking the drift
 
 The drift is what `/data/AgentsCoordination/linuxVersion/reset.sh` would delete or
-overwrite. Collect it with the commands below, then report a numbered list,
+overwrite and no commit of the checkout explains. Collect it with the commands below, then report a numbered list,
 one line per deviation (the path and what differs); change nothing.
 
 ```bash
@@ -32,7 +32,8 @@ reset.sh keeps, in `/data`, only `AgentsCoordination`, `fearlessBranch1`,
 `$HOME/.claude` none of the five entries listed above and, in each
 `projects/<slug>/memory`, only the `MEMORY.md` of `$repo/home/.claude/projects`;
 among the autostart entries only `claude-agent-supervisor.desktop`.
-Everything else the commands list is drift, and so is every diff line.
+Everything else the commands list is drift, and so is every diff line that no commit of the checkout explains.
+A diff line where the working copy lacks a change a commit of the checkout made is not drift: that working copy is behind, and the report lists it as behind.
 
 `$HOME/.claude/skills/synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date.
 It is never drift: leave every file under it, and every diff line for it, out of the report.
