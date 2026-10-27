@@ -8,9 +8,6 @@ and "Quit manager".
 
 = Rebuilding while the app is running =
 
-DeployPortableFearless/DeployManagedFearless clean-deletes the whole output app-image
-folder (including runtime/lib/modules) before rebuilding it. If the app built from that
-folder is still running (even just its tray icon, not just a visible window), the delete
-throws FileSystemException (file in use) and the whole build aborts. Quit the app first
+Before DeployPortableFearless/DeployManagedFearless rebuilds the app, quit the app
 (its Quit menu item / tray Quit, not just closing the window, which only hides it) and
-confirm the process is gone (tasklist) before rebuilding.
+confirm the process is gone (tasklist).

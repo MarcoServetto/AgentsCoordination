@@ -63,7 +63,7 @@ Whitelisted scripts:
 - `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
-- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
+- `C:\data\AgentsCoordination\windowsVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
 - `C:\data\AgentsCoordination\windowsVersion\home\.claude\hooks\auto-approve-permission-request.ps1` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
@@ -97,7 +97,7 @@ Hard rule: before amending a PR check that it is still open (`gh pr view <n> --r
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
 A PR to AgentsCoordination that changes a file with a working copy (`windowsVersion\data\` lands in `C:\data`, `windowsVersion\home\` lands in `%USERPROFILE%`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
-The checkout stays on `main`; once the user merges a PR to AgentsCoordination, `git -C C:\data\AgentsCoordination pull --ff-only origin main` brings it to that PR.
+The checkout stays on `main`; once the user merges a PR to AgentsCoordination, run `git -C C:\data\AgentsCoordination pull --ff-only origin main`.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
 `gh pr view <n> --repo <PARENT> --json state,mergedAt`
@@ -172,7 +172,7 @@ When you receive run_daily_check_up
 check the general machine health.
 Check for the activities of `cleanup-watchdog.ps1` in `C:\data\winCoordinator\logs\diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files.
 Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
-- Step 1: run these three commands; they discard every local edit of the checkout and make the checkout equal to `main` on GitHub:
+- Step 1: run
   `git -C <data>/AgentsCoordination fetch origin`
   `git -C <data>/AgentsCoordination checkout -f -B main origin/main`
   `git -C <data>/AgentsCoordination clean -fdx`
@@ -272,15 +272,13 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
 
   DeployPortableFearless.java
     Builds a self-contained, runnable application image of the Fearless
-    compiler/runner (the "portable" build). It also invokes jlink and
-    jpackage.
+    compiler/runner (the "portable" build).
   (When testing, note that the portable binary needs a project folder as its argument; with none it opens a welcome GUI and never exits)
 
   DeployManagedFearless.java
     Builds Commons, Frontend, Coordinator and Controllers, then packages
     them into a self-contained, runnable application image of the Managed
-    Fearless GUI (entry point `Controller/controller.Main`). It also invokes
-    jlink and jpackage.
+    Fearless GUI (entry point `Controller/controller.Main`).
 
 Every dependency jar they need is already checked in, nothing needs a separate download - but from two different folders, kept deliberately separate:
 `Coordinator/externalJars/` (what a *running* Fearless program needs, ends up bundled inside DeployPortableFearless/DeployManagedFearless's
