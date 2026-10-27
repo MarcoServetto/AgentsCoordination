@@ -169,20 +169,26 @@ check the general machine health.
 Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check that `session-guard.timer` is enabled and active (`systemctl is-enabled session-guard.timer`, `systemctl is-active session-guard.timer`), check for the self consistency of all the scripts, memories and CLAUDE.md files.
 Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
 - Step 1: run
-  `git -C <data>/AgentsCoordination fetch origin`
-  `git -C <data>/AgentsCoordination checkout -f -B main origin/main`
-  `git -C <data>/AgentsCoordination clean -fdx`
-- Step 2: compare each file of Step 1 with the file at the same place in the folders Claude reads:
-  `<data>/AgentsCoordination/<os>Version/data/gym/` with `<data>/gym/`, file by file;
-  `<data>/AgentsCoordination/<os>Version/data/<agent>/CLAUDE.md` with `<data>/<agent>/CLAUDE.md`, for each `<agent>` folder in `<data>/AgentsCoordination/<os>Version/data/`;
-  `<data>/AgentsCoordination/<os>Version/home/.claude/CLAUDE.md` with `<home>/.claude/CLAUDE.md`;
-  `<data>/AgentsCoordination/<os>Version/home/.claude/settings.json` with `<home>/.claude/settings.json`;
-  `<data>/AgentsCoordination/<os>Version/home/.claude/hooks/` with `<home>/.claude/hooks/`, file by file;
-  `<data>/AgentsCoordination/<os>Version/home/.claude/skills/` with `<home>/.claude/skills/`, file by file;
-  `<data>/AgentsCoordination/<os>Version/home/.claude/projects/` with `<home>/.claude/projects/`, the `MEMORY.md` of each agent.
-  On Linux `<data>` is `/data`, `<home>` is `$HOME` and `<os>Version` is `linuxVersion`.
-  On Windows `<data>` is `C:\data`, `<home>` is `%USERPROFILE%` and `<os>Version` is `windowsVersion`.
-- Step 3: if the state from Step 1 is clearly just richer than the state in the folders of Step 2, align the content of the folders of Step 2 with the content of Step 1 without asking. Do not report this alignment.
+  `git -C /data/AgentsCoordination fetch origin`
+  `git -C /data/AgentsCoordination checkout -f -B main origin/main`
+  `git -C /data/AgentsCoordination clean -fdx`
+- Step 2: compare
+  `/data/AgentsCoordination/linuxVersion/data/gym/` with `/data/gym/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch1/CLAUDE.md` with `/data/fearlessBranch1/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch2/CLAUDE.md` with `/data/fearlessBranch2/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch3/CLAUDE.md` with `/data/fearlessBranch3/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/linuxCoordinator/CLAUDE.md` with `/data/linuxCoordinator/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/CLAUDE.md` with `$HOME/.claude/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/settings.json` with `$HOME/.claude/settings.json`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` with `$HOME/.claude/hooks/auto-approve-permission-request.sh`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/align-branches/` with `$HOME/.claude/skills/align-branches/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/check-claude-usage/` with `$HOME/.claude/skills/check-claude-usage/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/check-drift/` with `$HOME/.claude/skills/check-drift/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch1/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch1/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch2/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch2/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch3/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch3/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-linuxCoordinator/memory/MEMORY.md` with `$HOME/.claude/projects/-data-linuxCoordinator/memory/MEMORY.md`.
+- Step 3: if the first elements of the pairs of Step 2 are clearly just richer than the second elements, align each second element with its first element without asking. Do not report this alignment.
 - Step 4: write a numbered bullet point list of what you propose to do with each difference that Step 3 leaves, and wait for the user to give instructions; beyond Step 3, do not act, just monitor.
 
 A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Assume the user is asleep or away: investigate what needs fixing, apply whatever temporary fix gets it running again, restart `agent-supervisor.sh` yourself, and report to the user only afterward.
