@@ -58,10 +58,10 @@ Whitelisted scripts:
 - `/data/AgentsCoordination/linuxVersion/home/.claude/skills/align-branches/align-branches.sh` (you can run it as part of the skill)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/data/AgentsCoordination/linuxVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
-- `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (resets the machine to what the repository describes and reboots; run it only when asked to reset the machine, see installation.txt)
-- `/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh` (opens and closes a VM, and keeps the changes of a closed VM in its clean disk; see /data/gym/gui_vms_gym.txt and installation.txt)
+- `/data/AgentsCoordination/linuxVersion/reset.sh` and the `reset-body.sh` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/vm.sh` (see /data/gym/gui_vms_gym.txt and installation.txt)
 - `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
-- `/data/AgentsCoordination/linuxVersion/autoScripts/command_scope.sh` (Claude Code itself runs every Bash command through it, as the `CLAUDE_CODE_SHELL_PREFIX` of `settings.json`: each command runs in its own scope with its own memory and task limits, and the kernel kills that command before any agent when memory runs out)
+- `/data/AgentsCoordination/linuxVersion/autoScripts/command_scope.sh` (Claude Code itself runs every Bash command through it, as the `CLAUDE_CODE_SHELL_PREFIX` of `settings.json`)
 
 Never add a long lived `.sh`/`.py` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -94,7 +94,7 @@ Hard rule: before amending a PR check that it is still open (`gh pr view <n> --r
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
 A PR to AgentsCoordination that changes a file with a working copy (`linuxVersion/data/` lands in `/data`, `linuxVersion/home/` lands in `$HOME`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
-The checkout stays on `main`; once the user merges a PR to AgentsCoordination, `git -C /data/AgentsCoordination pull --ff-only origin main` brings it to that PR.
+The checkout stays on `main`; once the user merges a PR to AgentsCoordination, run `git -C /data/AgentsCoordination pull --ff-only origin main`.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
 `gh pr view <n> --repo <PARENT> --json state,mergedAt`
@@ -166,7 +166,30 @@ After stopping, do a PR to ZeroToHero moving the done tasks into the done file; 
 
 When you receive run_daily_check_up
 check the general machine health.
-Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check that `session-guard.timer` is enabled and active (`systemctl is-enabled session-guard.timer`, `systemctl is-active session-guard.timer`), check for the self consistency of all the scripts, memories and CLAUDE.md files. Run `git -C /data/AgentsCoordination fetch origin` and `git -C /data/AgentsCoordination merge --ff-only origin/main` silently: the checkout is never edited by hand, so it always follows `origin/main`; report only a merge that fails. Compare the working copies with the checkout (the check-drift skill). A working copy that lacks a change a commit of the checkout made is behind: edit the working copy by hand so that it holds that change and every other line of the working copy stays as it is, without asking, and list the change in the report. A reset is never the way to bring a working copy up to date: `reset.sh` overwrites every working copy and deletes the drift the user has yet to decide about. Drift is what remains: edits of the working copy that no commit of the checkout explains. Write a numbered bullet point list of what you propose to do with the drift and wait for the user to give instructions; beyond bringing the working copies up to date, do not act, just monitor.
+Check for the activities of `cleanup-watchdog.sh` in `/data/linuxCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check that `session-guard.timer` is enabled and active (`systemctl is-enabled session-guard.timer`, `systemctl is-active session-guard.timer`), check for the self consistency of all the scripts, memories and CLAUDE.md files.
+Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
+- Step 1: run
+  `git -C /data/AgentsCoordination fetch origin`
+  `git -C /data/AgentsCoordination checkout -f -B main origin/main`
+  `git -C /data/AgentsCoordination clean -fdx`
+- Step 2: compare
+  `/data/AgentsCoordination/linuxVersion/data/gym/` with `/data/gym/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch1/CLAUDE.md` with `/data/fearlessBranch1/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch2/CLAUDE.md` with `/data/fearlessBranch2/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/fearlessBranch3/CLAUDE.md` with `/data/fearlessBranch3/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/data/linuxCoordinator/CLAUDE.md` with `/data/linuxCoordinator/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/CLAUDE.md` with `$HOME/.claude/CLAUDE.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/settings.json` with `$HOME/.claude/settings.json`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/hooks/auto-approve-permission-request.sh` with `$HOME/.claude/hooks/auto-approve-permission-request.sh`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/align-branches/` with `$HOME/.claude/skills/align-branches/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/check-claude-usage/` with `$HOME/.claude/skills/check-claude-usage/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/skills/check-drift/` with `$HOME/.claude/skills/check-drift/`, file by file;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch1/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch1/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch2/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch2/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-fearlessBranch3/memory/MEMORY.md` with `$HOME/.claude/projects/-data-fearlessBranch3/memory/MEMORY.md`;
+  `/data/AgentsCoordination/linuxVersion/home/.claude/projects/-data-linuxCoordinator/memory/MEMORY.md` with `$HOME/.claude/projects/-data-linuxCoordinator/memory/MEMORY.md`.
+- Step 3: if the first elements of the pairs of Step 2 are clearly just richer than the second elements, align each second element with its first element without asking. Do not report this alignment.
+- Step 4: write a numbered bullet point list of what you propose to do with each difference that Step 3 leaves, and wait for the user to give instructions; beyond Step 3, do not act, just monitor.
 
 A bare `scheduler_failed` message means the polling loop of `agent-supervisor.sh` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Assume the user is asleep or away: investigate what needs fixing, apply whatever temporary fix gets it running again, restart `agent-supervisor.sh` yourself, and report to the user only afterward.
 
@@ -251,15 +274,13 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
 
   DeployPortableFearless.java
     Builds a self-contained, runnable application image of the Fearless
-    compiler/runner (the "portable" build). It also invokes jlink and
-    jpackage.
+    compiler/runner (the "portable" build).
   (When testing, note that the portable binary needs a project folder as its argument; with none it opens a welcome GUI and never exits)
 
   DeployManagedFearless.java
     Builds Commons, Frontend, Coordinator and Controllers, then packages
     them into a self-contained, runnable application image of the Managed
-    Fearless GUI (entry point `Controller/controller.Main`). It also invokes
-    jlink and jpackage.
+    Fearless GUI (entry point `Controller/controller.Main`).
 
 Every dependency jar they need is already checked in, nothing needs a separate download - but from two different folders, kept deliberately separate:
 `Coordinator/externalJars/` (what a *running* Fearless program needs, ends up bundled inside DeployPortableFearless/DeployManagedFearless's

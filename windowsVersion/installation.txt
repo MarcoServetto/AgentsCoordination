@@ -1,14 +1,5 @@
 How an agent running on this machine resets it to the state the
-windowsVersion\ folder of this repository describes. reset.ps1 downloads
-reset-body.ps1 from the public repository and runs it, so the reset that runs is
-always the one main describes and the local copy of reset.ps1 only has to be able
-to fetch. reset-body.ps1 deletes this checkout and clones MarcoServetto/AgentsCoordination
-again (remote `origin`; the marcoautomation2 fork is the remote `fork`, only used to push PR branches),
-deletes what the folder does not describe, copies the folder's home\ tree over
-%USERPROFILE% and its data\ tree over C:\data (the gym files land in C:\data\gym), downloads Eclipse (the portable
-package, unpacked, never installed) and the flexmark jars of FearlessTour into C:\data\tools, writes its
-LocalResources.java into and aligns the seven Fearless repositories in each
-fearlessBranchN, registers the two scheduled tasks, and reboots.
+windowsVersion\ folder of this repository describes.
 
 Preconditions:
 C:\data\accounts.txt is present.
@@ -50,7 +41,7 @@ The desk of this machine has a fixed shape, the one the agentTools tests are rec
     Get-Process fearlessManaged* | Stop-Process -Force
     (New-Object -ComObject shell.application).Windows() | ForEach-Object { $_.Quit() }
     for each folder of the Quick access namespace that is pinned and is not C:\data\pilotio: $_.InvokeVerb('unpinfromhome')
-    when C:\data\pilotio is not pinned: (New-Object -ComObject shell.application).Namespace('C:\data\pilotio').Self.InvokeVerb('pintohome') (the same call on a pinned folder unpins it)
+    when C:\data\pilotio is not pinned: (New-Object -ComObject shell.application).Namespace('C:\data\pilotio').Self.InvokeVerb('pintohome')
     for each of those registry entries: Set-ItemProperty -Path $_.PSPath -Name IsPromoted -Value 1 -Type DWord
 
 Actions:
