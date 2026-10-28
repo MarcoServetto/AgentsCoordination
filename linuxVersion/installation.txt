@@ -28,6 +28,13 @@ The 12 VMs are defined in /etc/libvirt/qemu.
 Each VM <vm> has a clean disk /data/vms/disks/<vm>.qcow2 and runs on its run disk /data/vms/runs/<vm>.qcow2, the disk of its definition: a qcow2 layer over the clean disk, holding only what changes while the VM runs.
 A change to the setup of a VM <vm> is vm.sh open <vm>, the change, vm.sh close <vm> and vm.sh keep <vm>.
 The clean disk of each VM holds no file of Fearless outside /data/pilotio; each VM logs its user in by itself, answers qemu-guest-agent and mounts /data/pilotio, and its file manager has a sidebar entry pilotio opening /data/pilotio, as the file manager of this machine has (home/.config/gtk-3.0/bookmarks).
+The Fearless GUI draws with Vulkan, and the VMs have no 3D acceleration.
+The clean disk of each VM has the Vulkan loader and lavapipe, the Vulkan driver of Mesa that draws on the CPU:
+  debian_cinnamon, debian_gnome_x11, debian_mate, kubuntu_plasma, lubuntu_lxqt, xubuntu_xfce: libvulkan1 mesa-vulkan-drivers
+  fedora_cosmic, fedora_gnome: vulkan-loader mesa-vulkan-drivers
+  arch_sway, omarchy_hyprland: vulkan-icd-loader vulkan-swrast
+  void_i3: vulkan-loader mesa-vulkan-lavapipe
+  opensuse_plasma: libvulkan1 libvulkan_lvp
 The VMs share /data/pilotio over virtiofs (fstab: pilotio /data/pilotio virtiofs defaults,nofail 0 0), except kubuntu_plasma and opensuse_plasma, which share it over 9p: in their definition the filesystem of /data/pilotio has accessmode passthrough and no virtiofs driver, and their fstab reads pilotio /data/pilotio 9p trans=virtio,version=9p2000.L,msize=262144,cache=loose,nofail 0 0.
 virtiofs is built on FUSE, and KDE treats a FUSE mount as slow: Dolphin types the files there by their name only, so a program on the share shows as an unknown file and a double click on it opens "Choose Application" instead of offering to launch it.
 qemu runs as agentubuntu, uid 1000 like the user of each VM, so files the VM user writes over 9p belong to agentubuntu.
