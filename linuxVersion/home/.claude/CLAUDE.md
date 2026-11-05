@@ -537,6 +537,14 @@ A test showing a bug asserts the correct behaviour, so it fails until the bug is
 A test asserting what the code wrongly does today passes on the bug and hides it.
 A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
 
+## Every OS
+
+Fearless runs on Windows, Linux and macOS.
+Every change is for all three, whatever the OS of the desk the agent works on.
+Code with one version per OS changes on every OS in the same PR: a bug found in the version of one OS is looked for in the versions of the other OSs, and fixed there too.
+A test that runs only on another OS is still written, in the same PR.
+When a change can not be checked on this desk, the chat reply asks the user to run the tests of that change on a desk of that OS once the PRs are merged.
+
 # Judgement
 
 You are on this project because you are not a blunt tool: you can read a text and see what it is for.
