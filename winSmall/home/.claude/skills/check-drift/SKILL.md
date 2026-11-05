@@ -31,7 +31,7 @@ reset.ps1 keeps, in `C:\data`, only `AgentsCoordination`, `fearlessBranch1`,
 `flexmark`; in each `fearlessBranchN` only the seven repositories; under
 `$HOME\.claude` none of the five entries listed above and, in each
 `projects\<slug>\memory`, only the `MEMORY.md` of `$repo\home\.claude\projects`;
-among the tasks only `ClaudeAgentSupervisor` and `ClaudeSessionGuard`.
+among the tasks only `ClaudeAgentSupervisor`.
 Everything else the commands list is drift, and so is every diff line.
 
 `$HOME\.claude\skills\synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date.

@@ -4,14 +4,19 @@ winSmall\ folder of this repository describes.
 Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1200 at 150% scaling.
-Windows logs servetto in at boot; Brave is logged in to claude.ai.
-Windows logs in automatically only at boot, so a session that ends leaves the machine at the
-logon screen waiting for a typed password, out of reach: the scheduled task ClaudeSessionGuard
-(SYSTEM, every minute, registered by reset-body.ps1 with no script file) waits 3 minutes and reboots when
-servetto has no explorer.exe, never within 5 minutes of boot. Switching user and locking the
+Windows does not log in automatically: servetto is a domain account, and the domain shows a logon notice.
+After every boot (the end of a reset, a Windows Update reboot) the user types the password of servetto at the logon screen;
+until then no agent runs. Switching user and locking the
 workstation are disabled by policy (HideFastUserSwitching, DisableLockWorkstation), and the audit
 of "Other Logon/Logoff Events" is on, so a disconnect leaves a trace in the Security log.
 Claude Code is installed at %USERPROFILE%\.local\bin\claude.exe and logged in to claude.ai.
+The laptop stays on the charger.
+The power plan never sleeps, never hibernates and never turns the display off, on charger and on battery, and closing the lid does nothing:
+  powercfg /change <name> 0 for each name in standby-timeout-ac, standby-timeout-dc, hibernate-timeout-ac, hibernate-timeout-dc, monitor-timeout-ac, monitor-timeout-dc
+  powercfg -attributes SUB_BUTTONS LIDACTION -ATTRIB_HIDE (the lid setting is hidden on this laptop)
+  powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0
+  powercfg /setdcvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0
+  powercfg /setactive SCHEME_CURRENT
 
 Needed Tools, each at its default install path; only install if not present.
   winget install Git.Git
@@ -21,7 +26,8 @@ Needed Tools, each at its default install path; only install if not present.
   winget install MiKTeX.MiKTeX (scope machine, then initexmf --admin --set-config-value="[MPM]AutoInstall=1")
   winget install StrawberryPerl.StrawberryPerl (latexmk needs perl)
   winget install oschwartz10612.Poppler (pdftoppm: lets the Read tool render PDF pages)
-  JDK 26 unpacked by hand at C:\Program Files\Java\jdk-26.0.2 (never installed: no winget, no installer), no JAVA_HOME
+  JDK 26 unpacked by hand at C:\Program Files\Java\jdk-26.0.2 (never installed: no winget, no installer), no JAVA_HOME:
+    the zip https://download.oracle.com/java/26/archive/jdk-26.0.2_windows-x64_bin.zip, checked against its .sha256, extracted with tar.exe -xf into C:\Program Files\Java
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false
