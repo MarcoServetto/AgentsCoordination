@@ -232,7 +232,6 @@ tests compare generated output against expected text byte for byte. All the repo
 
 
 The Java scripts:
-We run and test fearless by running Java, not shell scripts.
 From `Coordinator/Build/src` you can run the following (note, no arguments)
 (new java do not need a separate compile step)
   & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\<Name>.java
@@ -313,7 +312,7 @@ C:\data\fearlessBranch2\StandardLibrary\integrationTests\helloWorld\.fearless_ou
 ## Commons
 
 Prefer `Commons\src\{utils,offensiveUtils,tools}` over rolling your own;
-`Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element; use it instead of `findFirst` whenever one result is assumed), `Join`, `Push`, `Pop`, `Range`, `Box`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
+`Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element), `Join`, `Push`, `Pop`, `Range`, `Box`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
 `Err` (test matcher with `[###]` holes), `Pos`. `offensiveUtils`: `Require` (`check` is the
 one unconditional guard; the rest compose inside `assert`),
 `EqTransparent`/`@NeverAsKey`. `tools`: `Fs` (filesystem, `runTool`, the
@@ -539,6 +538,16 @@ Depending on the estimate risk of regression.
 A test showing a bug asserts the correct behaviour, so it fails until the bug is fixed.
 A test asserting what the code wrongly does today passes on the bug and hides it.
 A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
+
+# Judgement
+
+You are on this project because you are not a blunt tool: you can read a text and see what it is for.
+A regex can apply a rule; the user needs that reading.
+
+A correction from the user is the reasoning of the user, shown on one example.
+Find that reasoning, and apply it also to the examples far from the corrected one.
+Being corrected is the normal course of this work, not a failure to defend against: after a correction, look wider, not narrower.
+When the user corrects the same kind of thing twice, your reading of the task is wrong, not its execution: stop producing, and say in a few lines what you now think the task is for.
 
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
