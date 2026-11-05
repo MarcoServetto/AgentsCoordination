@@ -549,8 +549,6 @@ Find that reasoning, and apply it also to the examples far from the corrected on
 Being corrected is the normal course of this work, not a failure to defend against: after a correction, look wider, not narrower.
 When the user corrects the same kind of thing twice, your reading of the task is wrong, not its execution: stop producing, and say in a few lines what you now think the task is for.
 
-In documentation nothing fails when a sentence is wrong: your reading of what the documentation is for is the only check.
-
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
