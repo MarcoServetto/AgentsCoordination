@@ -1,0 +1,33 @@
+{
+  "env": {
+    "EDITOR": "notepad"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
+  "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "agentPushNotifEnabled": true,
+  "crossSessionInbound": "accept",
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "C:\\data\\AgentsCoordination\\winSmallVersion\\home\\.claude\\hooks\\auto-approve-permission-request.ps1"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

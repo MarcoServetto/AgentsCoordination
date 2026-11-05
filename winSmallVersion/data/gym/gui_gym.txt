@@ -1,0 +1,14 @@
+Findings on operating this machine's GUI like a human would: only what holds across
+GUIs in general (screen, pointer, windows, the OS menus). What is about one application
+goes in gui_<app>_gym.txt next to this file.
+
+= System tray icon in the Windows 11 "show hidden icons" flyout =
+
+Clicking the taskbar corner chevron ("^" near the clock) opens a flyout of
+the hidden tray icons; find the icon in a screenshot. Controllers'
+agentTools.Pilot operates it like any other window: glide the pointer onto
+the icon, pause, then doubleClick it (or press and release the right button
+for its menu); the flyout needs the pointer to arrive and hover before the
+press, so a click delivered at a point the pointer jumped to is swallowed.
+A tray icon menu item is reached by gliding from the icon into the menu, not
+by jumping to it.
