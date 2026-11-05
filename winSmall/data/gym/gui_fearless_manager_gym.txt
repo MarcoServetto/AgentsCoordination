@@ -1,0 +1,13 @@
+Findings on operating the Fearless manager (the managed app built by DeployManagedFearless) like a human would. General GUI findings are in gui_gym.txt, Swing ones in gui_swing_gym.txt.
+
+= Bringing the hidden window back =
+
+Its tray icon sits in the Windows 11 "show hidden icons" flyout (see gui_gym.txt):
+a double click on it shows the window, and its right-click menu holds "Show manager"
+and "Quit manager".
+
+= Rebuilding while the app is running =
+
+Before DeployPortableFearless/DeployManagedFearless rebuilds the app, quit the app
+(its Quit menu item / tray Quit, not just closing the window, which only hides it) and
+confirm the process is gone (tasklist).

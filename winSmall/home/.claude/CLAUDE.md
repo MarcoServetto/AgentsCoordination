@@ -1,0 +1,566 @@
+This Windows machine is dedicated to Claude: remote-controlled, nobody at the keyboard. Four agents run here,
+each in its own folder: winSmall1 in `C:\data\fearlessBranch1`, winSmall2 in
+`fearlessBranch2`, winSmall3 in `fearlessBranch3`, winSmallCoordinator in
+`C:\data\winSmallCoordinator`.
+Every instruction, skill and script on this machine originally comes from the `winSmall\` folder of the checkout of
+https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination` (`windowsVersion\` describes the other Windows machine, `linuxVersion\` describes the Linux machine).
+The checkout has `origin` = MarcoServetto/AgentsCoordination itself; the marcoautomation2 fork is the remote `fork` and is only a
+place to push branches from which PRs to `origin` are opened.
+The checkout is the reference. What agents read and edit are the working copies that reset writes from it:
+`winSmall\data\` lands in `C:\data` (the gym files in `C:\data\gym`) and `winSmall\home\` lands in `%USERPROFILE%`.
+The scripts in `winSmall\autoScripts\` run from the checkout.
+
+The working copies can deviate from it, sometimes for months: an experiment is a working copy edited in place.
+At regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
+
+# Never include history of events in skills and CLAUDE.md files
+
+Describe the current desired behaviour only.
+The text should read as if the current version was the only version it ever existed.
+Rationale, when needed, is a timeless
+present-tense constraint ("jars aren't byte-reproducible"), never a story.
+The ways to go wrong are without number. A specific thing that went wrong,
+written down as a thing not to repeat, is history, and a list of wrong
+behaviours is not a fix: describe the correct behaviour instead. When the
+correct behaviour is already described and is still not followed, the
+problem is the sentence describing it: rephrase it until it is understood.
+
+# Never include history of events in code or code comments.
+
+The code should read as if the current version was the only version it ever existed.
+
+# Repositories:
+While working with the user, you are going to fork and branch all of those repositories and suggest changes by opening PRs.
+
+https://github.com/MarcoServetto/AgentsCoordination
+We keep all the agents configurations and instructions.
+
+https://github.com/FearlessLang/Frontend
+https://github.com/FearlessLang/Coordinator
+https://github.com/FearlessLang/Commons
+https://github.com/FearlessLang/StandardLibrary
+The four main Fearless repositories.
+
+https://github.com/FearlessLang/Controllers
+A system to manage multiple fearless projects interacting; it also includes an eclipse plugin.
+
+https://github.com/MarcoServetto/FearlessTour
+https://github.com/MarcoServetto/ZeroToHero
+Fearless guide and game to teach fearless.
+
+# Fearless paper
+
+`C:\data\fearlessPaper\Fearless_TOPLAS\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
+Its type system and `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
+
+# Scripts
+
+Building, testing and packaging Fearless is done only by the Java programs
+in `Coordinator/Build/src/scripts/` (see "Fearless" below).
+Whitelisted scripts:
+- the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
+- `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\winSmall\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\winSmall\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
+- `C:\data\AgentsCoordination\winSmall\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
+- `C:\data\AgentsCoordination\winSmall\reset.ps1` and the `reset-body.ps1` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
+- `C:\data\AgentsCoordination\winSmall\home\.claude\hooks\auto-approve-permission-request.ps1` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
+
+Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
+Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
+
+# Character set:
+When possible only use those characters
+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/=<>,.;:()[]{}`'"!?@#$%^&_|~\
+space and new line (\n only)
+This includes any text you write anywhere, any file name etc.
+This is a soft rule and there are plenty of reasons a task may require to use other characters; one obvious exception is "you are reporting verbatim something that already exists" or "you are updating a part of a document and you should leave the rest alone"
+
+
+# File names:
+Folders and files we create respect the Fearless folder rule when possible:
+only lowercase letters a-z, digits 0-9 and underscore _, starting with a letter or underscore; a file has at most one dot, followed by an extension of lowercase letters and digits.
+Java source code follows the Java conventions: a file is named after its public class, in CamelCase.
+Any parameter for command line tool should respect the file name convention too. Parameters with - @ space or other strange symbols should not be used.
+
+# Accounts
+
+We keep the description of your email and github accounts in 'C:\data\accounts.txt'
+
+These are yours: commit, push, open issues and PRs as this identity without
+asking. Password, token and 2FA all live in 'C:\data\accounts.txt'
+
+# PRs:
+When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto).
+When considering making a new PR: look if we can just amend the existing PR instead.
+Hard rule: before amending a PR check that it is still open (`gh pr view <n> --repo <PARENT> --json state`), else open a new one instead; a push to the branch of a merged PR reaches nobody.
+Before closing any PR, comment why.
+There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
+A PR to AgentsCoordination that changes a file with a working copy (`winSmall\data\` lands in `C:\data`, `winSmall\home\` lands in `%USERPROFILE%`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
+The checkout stays on `main`; once the user merges a PR to AgentsCoordination, run `git -C C:\data\AgentsCoordination pull --ff-only origin main`.
+Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
+(both the --repo and the marcoautomation2: prefix are required)
+`gh pr view <n> --repo <PARENT> --json state,mergedAt`
+
+# Managing Disk:
+
+`C:\marco_leftovers` holds Marco's own files. Never move, modify or delete anything in it.
+Everything else on the machine is fair game; prefer `C:\data` (short paths, no spaces).
+
+Everything on this machine is disposable, all the important data is kept on the original repositories.
+
+# Elevation
+
+Every agent session runs elevated (the logon tasks are RunLevel Highest).
+Install, uninstall, write HKLM and Program Files, manage services, register
+tasks; directly, without asking. Anything writing to an agent's
+`\\.\pipe\LOCAL\cc-msg-*` pipe must itself run at high integrity.
+
+# Shared memory and shared CLAUDE.md
+
+winSmall1,winSmall2,winSmall3 and winSmallCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
+winSmall1,winSmall2,winSmall3 and winSmallCoordinator local memory should only report:
+"Do not use this local memory, all the data is in 'C:\data\global_memory.txt'; add and remove from there when/if needed"
+Those files are the ones under `winSmall\data\` and `winSmall\home\` of AgentsCoordination; reset-body.ps1 writes them.
+Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
+A reset deletes and re-clones the AgentsCoordination checkout from MarcoServetto/AgentsCoordination before anything else, so
+everything the repository tracks goes back to what it says. `global_memory.txt` is committed empty
+in `winSmall\data\`: a reset writes it empty to `C:\data`, where the agents edit it.
+
+
+# Inter agent messaging
+
+winSmall1,winSmall2,winSmall3 and winSmallCoordinator should not talk with each other.
+winSmall1,winSmall2,winSmall3 and winSmallCoordinator can talk with their sub agents and those can of course reply back.
+(The startup script is not an agent: the messages it delivers at their
+scheduled time are normal user input, and answering one is not talking to
+another agent)
+Occasionally the user will explicitly ask to message another winSmall1,winSmall2,winSmall3 and winSmallCoordinator agent to delegate a specific task.
+This is ok when asked but:
+- provide full context on the task in one shot
+- do not ask anything back
+- the other agent will take up the task and only discuss the results with the user, not with other agents
+
+
+# Overnight tasks
+
+winSmall3 takes care of overnight tasks.
+When woken up with run_overnight_tasks:
+- The user is asleep, asking anything to the user blocks the whole night.
+- read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksWinSmall/LongHorizonTasks.txt
+- if that file does not exist or lists no tasks, do no tasks and stop.
+Repeat the following until no task is left or the user says to stop:
+- Use the check-claude-usage skill
+If the "Current session" is less than 70%, start a task;
+else sleep until the "Current session" is over.
+
+Starting a task:
+Each task starts with a line saying how it runs:
+- `in-session task: <name>`: winSmall3 does the task itself, in this session.
+  A task that starts agents of its own is an in-session task: an agent started by another agent cannot start agents.
+- `delegated task: <name> (<model>, <effort>)`: winSmall3 starts a sub agent with that model and effort and gives it the text of the task.
+  winSmall3 does not try to understand a delegated task; it only collects compacted information about the results.
+The text of the task says what it logs and how its results reach the user.
+Whoever does a task respects `ZeroToHero/tasks/readBeforeChanging/<Repo>*.txt` of every repository it changes.
+
+After stopping, do a PR to ZeroToHero moving the done tasks into the done file; the text of the PR is a report on what happened in the night.
+
+
+# Machine-health review (winSmallCoordinator)
+
+When you receive run_daily_check_up
+check the general machine health.
+Check for the activities of `cleanup-watchdog.ps1` in `C:\data\winSmallCoordinator\logs\diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files.
+Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
+- Step 1: run
+  `git -C C:\data\AgentsCoordination fetch origin`
+  `git -C C:\data\AgentsCoordination checkout -f -B main origin/main`
+  `git -C C:\data\AgentsCoordination clean -fdx`
+- Step 2: compare
+  `C:\data\AgentsCoordination\winSmall\data\gym\` with `C:\data\gym\`, file by file;
+  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch1\CLAUDE.md` with `C:\data\fearlessBranch1\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch2\CLAUDE.md` with `C:\data\fearlessBranch2\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch3\CLAUDE.md` with `C:\data\fearlessBranch3\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmall\data\winSmallCoordinator\CLAUDE.md` with `C:\data\winSmallCoordinator\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\CLAUDE.md` with `%USERPROFILE%\.claude\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\settings.json` with `%USERPROFILE%\.claude\settings.json`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\hooks\auto-approve-permission-request.ps1` with `%USERPROFILE%\.claude\hooks\auto-approve-permission-request.ps1`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-claude-usage\` with `%USERPROFILE%\.claude\skills\check-claude-usage\`, file by file;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md`.
+- Step 3: if the first elements of the pairs of Step 2 are clearly just richer than the second elements, align each second element with its first element without asking. Do not report this alignment.
+- Step 4: write a numbered bullet point list of what you propose to do with each difference that Step 3 leaves, and wait for the user to give instructions; beyond Step 3, do not act, just monitor.
+
+A bare `scheduler_failed` message means the polling loop of `agent-supervisor.ps1` has died: nothing in `scheduledTasks.txt` fires again until the next logon. Assume the user is asleep or away: investigate what needs fixing, apply whatever temporary fix gets it running again, restart `agent-supervisor.ps1` yourself, and report to the user only afterward.
+
+# Remote
+
+The user is always remote: nobody is at this machine's keyboard. Anything
+the session offers that assumes a person sitting here does not apply -
+never suggest `! <cmd>` for the user to run, and never hand over a result
+as a local file. Put what the user needs to see in the chat reply.
+
+# Fearless
+
+Seven sibling repos per working copy, each with `origin` = the
+marcoautomation2 fork and `upstream` = the parent org: `FearlessLang/<name>`
+for Commons, Frontend, Coordinator, StandardLibrary, Controllers;
+`MarcoServetto/<name>` for ZeroToHero, FearlessTour. Never commit a
+CLAUDE.md or any Claude-local config into them.
+
+Fearless has zero users: breaking existing code is never a concern when discussing a design.
+
+At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
+
+`Coordinator\Build\src\resources\LocalResources.java` (gitignored) is the copy of `winSmall\LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `C:\data\tools\eclipse`. The align-branches skill fills `FearlessTour\externalJars` from `C:\data\tools\flexmark`.
+Details:
+
+Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.
+Frontend         the Fearless language frontend (parser, name resolution, type inference). Depends on Commons.
+Coordinator      the compiler backend and CLI (the portable Fearless). Depends on Commons and Frontend.
+StandardLibrary  Fearless SOURCE code, not Java: the language's own base library ("base"), its runtime ("rt"), and a folder of integration-test Fearless projects. This is compiled and run BY Coordinator, not built with javac.
+Controllers      a system to manage multiple fearless projects interacting; it also includes an eclipse plugin. Depends on Coordinator.
+ZeroToHero       Game to teach fearless and overall scratch pad for a lot of stuff.
+FearlessTour     a guide to teach fearless (including tests to run to check consistency with the current state of the language)
+
+Line endings matter: the repositories carry LF-committed sources, and some
+tests compare generated output against expected text byte for byte. All the repos should be set up to enforce this.
+
+
+The Java scripts:
+From `Coordinator/Build/src` you can run the following (note, no arguments)
+(new java do not need a separate compile step)
+  & "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\<Name>.java
+`Coordinator/Build` is the build tool for all the repos, written in Java and
+compiled by nothing but this source launcher; `Build/src/resources` is also
+compiled into Coordinator's tests, which read paths from it.
+
+`Commons.jar` is committed to the Commons repository itself specifically so
+it is present and ready immediately after cloning or updating.
+`Commons.jar` is regenerated only for a semantic change: a change of what a caller of Commons can observe (a signature, a result, an error text that reaches the caller).
+Comments, formatting, the texts of `Bug` and assert messages, and code rewritten to behave the same (a minimization, a rename) are not semantic changes: a PR made only of those leaves `Commons.jar` as it is.
+For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over `Commons/Commons.jar` yourself and commit it as part of the PR.
+
+  TestAllCommons.java
+    Builds Commons and runs its test suite, the module
+    `Frontend/commons_tests`. Fast - seconds, not minutes.
+
+  TestAllFrontend.java
+    Runs everything TestAllCommons.java does, then builds Frontend and runs
+    Frontend's test suite. Fast - seconds, not minutes.
+
+  TestAllFrontendCoordinator.java
+    Runs everything TestAllFrontend.java does, then builds Coordinator and
+    runs Coordinator's test suite EXCLUDING its slow `integrationTests` package (which would compile
+    and actually runs whole example Fearless programs, one JVM launch per
+    project). Fast. Test `testBuildBase.TestBuildBase` builds the standard library 'base' but does not save it in the cache for integration tests.
+
+  TestAllFrontendCoordinatorIntegration.java
+    Builds and runs everything the previous two programs do, PLUS
+    Coordinator's `integrationTests` package. Slow - minutes, not seconds.
+
+  TestAllController.java
+    Builds Commons, Frontend, Coordinator, and Controllers (the `Controller`
+    module, which depends on Coordinator), and runs Controllers' JUnit test
+    suite except its `agentTools` package. Fast.
+
+  TestAgentTools.java <desk> <agent> [<TestClassName>] <channelFolder> <filesIOFolder>
+    Same build, then Controllers' `agentTools` tests (one, or the whole
+    package) on one desk: they drive the desk through `agentTools.Pilot`
+    (pointer, keys, screenshots) with the recordings of that desk, and take
+    the pointer and keyboard away from every agent on this shared desktop:
+    run it only when asked.
+
+  DeployPortableFearless.java
+    Builds a self-contained, runnable application image of the Fearless
+    compiler/runner (the "portable" build).
+  (When testing, note that the portable binary needs a project folder as its argument; with none it opens a welcome GUI and never exits)
+
+  DeployManagedFearless.java
+    Builds Commons, Frontend, Coordinator and Controllers, then packages
+    them into a self-contained, runnable application image of the Managed
+    Fearless GUI (entry point `Controller/controller.Main`).
+
+Every dependency jar they need is already checked in, nothing needs a separate download - but from two different folders, kept deliberately separate:
+`Coordinator/externalJars/` (what a *running* Fearless program needs, ends up bundled inside DeployPortableFearless/DeployManagedFearless's
+built application image)
+`Coordinator/testJars/` (JUnit and jspecify, needed only to compile and run the test suite, and not bundled into anything shipped).
+
+
+## Java
+
+JDK 26 is the folder `C:\Program Files\Java\jdk-26.0.2`, unpacked by hand;
+never install a JDK (no winget, no installer) and never rely on `java` from
+the PATH: call this one by its full path, quoting it and using the call
+operator: `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea ...`.
+`JAVA_HOME` is unset. Assertions are always on: always pass `-ea`.
+
+
+## StandardLibrary API docs
+
+Compiling a Fearless package writes `<pkg>.txt`: a plain-text rendering of types, signatures and doc comments meant for agents.
+Example locations:
+C:\data\fearlessBranch1\StandardLibrary\dbgOut\baseCache\base.txt
+C:\data\fearlessBranch2\StandardLibrary\fearlessArtefact\fearlessBin0_001\app\stdLib\baseCache\base.txt
+C:\data\fearlessBranch2\StandardLibrary\integrationTests\helloWorld\.fearless_out\gen_java\hello.txt
+
+
+## Commons
+
+Prefer `Commons\src\{utils,offensiveUtils,tools}` over rolling your own;
+`Bug` (`unreachable`/`todo`/`of`/`err`), `OneOr` (exactly one stream element), `Join`, `Push`, `Pop`, `Range`, `Box`, `DistinctBy`, `Streams`/`Zipper2`/`Zipper3` (same-length asserted zips),
+`Err` (test matcher with `[###]` holes), `Pos`. `offensiveUtils`: `Require` (`check` is the
+one unconditional guard; the rest compose inside `assert`),
+`EqTransparent`/`@NeverAsKey`. `tools`: `Fs` (filesystem, `runTool`, the
+`allowed` character set), `JavacTool`, `JavaTool` (child JVM),
+`PortableApp`, `SourceOracle`, `ReadZip`, `UriSort`.
+
+# Coding rules
+
+## Offensive programming
+
+Offensive programming is good, defensive programming is bad; including
+implicit offensive programming (letting a bad input fail loudly on its own
+rather than guarding against it).
+
+Expect non-null: call methods on it directly.
+
+You need a positive number where a negative one would only produce nonsense? do `assert x>=0;`, with no message.
+
+All code that can't reliably be made to run shouldn't exist;
+bad attitude: "This may be A or B, I'll handle both so the code flexibly adapts". This causes one branch to be dead, untested code.
+The exceptions are `Bug.unreachable()` and checks inside `assert consistent()` that may accept early.
+
+Functional programming is full of those bad defensive patterns: A `zip` that silently ignores elements past the shorter input hides errors.
+Instead we should assert equal length first.
+`stream.findFirst()` often hides an assumption of a single result; use `OneOr`.
+
+Offensive assertions need no message: `return Objects.requireNonNull(image);`
+or just `return image;`, not `assert image != null: "load() runs first"`. 
+
+`assert x!=null;`, `Objects.requireNonNull(x)` and `Require.nonNull(x)` are all correct offensive checks; good to use in different roles (requireNonNull returns the value, Require.nonNull allows for multiple checks all together).
+
+Graceful degradation is the enemy: immediate hard failures, via assertions when reasonable.
+When designing or fixing the Fearless standard library, favor designs that fail consistently over designs that 'occasionally' may allow success.
+
+Design files can assume the following, and code can simply fail with 
+'new Error("Broken Environment")' when it detects that an Acceptable assumption does not hold,
+and the code does no work to check those assumptions. If a place of code could get simplified (or can be written simpler to begin with) by integrating one of those 'Acceptable assumptions' do simplify that code and add a comment in place about the specific assumption.
+
+Acceptable assumptions under our offensive behaviour style:
+- Storage is reliable: a file system operation reported as successful has changed the drive as it should. Failures come from the input, never from the drive or from other programs using the drive.
+- Platform primitives do what their specification says: OS calls, the runtime, the standard library.
+- The program's own installation is intact: not half deleted or tampered with.
+- Resources are sufficient for normal operation: memory, disk, handles.
+- Time on one machine moves forward, enough to order events.
+- The environment is live: what is requested eventually happens.
+- There is no adversary on the local machine: protecting private files from an attacker is out of scope.
+- Inputs are within reasonable sizes enough to allow for recursive implementations to work.
+
+This following list is counterexamples: cases where we can not relax our offensive behaviour style:
+- Storage is persistent: a file may not hold what was written to it, even in a dedicated app folder; the design/code must decide what happens when a file is corrupted.
+- Random identifiers do not collide.
+- File paths are valid Unicode: on most systems they need not be.
+- Coding for the current machine instead of in ways that are OS an FS portable; this include locale, screen and keyboard layout.
+- Rare user interactions: misclicks, cancelling halfway, editing a file by hand.
+
+## Style
+
+If a condition is longish, pull it into a local variable. Always brace
+`if`/`for`/`while`; keep short ifs on one line: `if (toBeCut){ cutIt(); return; }`.
+
+No blank lines splitting a method into sections. No ALL_CAPS names;
+CamelCase for constants and enums too. Only these characters:
+```java
+public static final String allowed=
+  "0123456789" +
+  "abcdefghijklmnopqrstuvwxyz" +
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+  "+-*/=<>,.;:()[]{}" +
+  "`'\"!?@#$%^&_|~\\" +
+  " \n";
+```
+(mirrored in `Fs.allowed`). Modern Java: streams, lambdas, optionals; no
+long inline lambdas; declare a method (`this::foo`, or
+`(a, b) -> foo(a, b, c, d)`); a lambda needing several statements or returns is
+too big.
+Switch expressions are good, but factor out a sub-method instead of using `yield`.
+
+- Java collections are either shallow immutable or updatable.
+  We use the static type system to hint what is the nature of a collection object. When possible, use ArrayList<T> or other concrete collection types to indicate that we do know the object is updatable, and use List<T> when we can assume is not. In many points we do wrap an ArrayList into List.copyOf or Collections.unmodifiableList to make the transition clear; we may occasionally avoid it for performance in crucial places.
+
+English style, for design documents, PR descriptions, chat replies and comments:
+-Never keep the context implicit. A pronoun ('it', 'its', 'they', 'them', 'this', 'both') stands for a noun only when that noun is in the same clause; otherwise repeat the noun.
+Example Good: new Foo().bar and new Beer() are two expressions. Both compile and run without error.
+Example Bad: new Foo().bar and new Beer() are two expressions. They are to be understood as Java code and under the class table in figure 3. Both compile and run without error.
+This is Bad because 'Both' is now too far from the two expressions. Instead, repeat the two elements.
+Same for 'It' 'The bug' 'This solution' 'The idea'
+If they are not extraordinarily clearly connected to the linked concept, repeat the concept.
+
+-Use consistent terms: one term per concept, one concept per term. A term is defined once, in quotes at the definition only (the 'single' manager, a 'collapsible area'), and then used verbatim everywhere: never a synonym, never a shortened form ('the run' for 'a run of the manager program'), never a word that is already a term for something else ('the message' for the text of an error, when a message is a file). If you use different terms, it must mean different things.
+
+-Say what happens, not that something happens. 'Saying why', 'the appropriate error', 'handles the error', 'as usual', 'the right one' are placeholders for a sentence that is missing: write what the text of the error holds, which action is taken, which file is written.
+
+-A sentence whose removal changes no implementation and no test is redundant: a restatement of a rule given elsewhere, an example that only repeats the rule, a rationale the rule already carries, a goal with nothing to check ('designed with discoverability in mind'). Remove the sentence, or move the sentence to the chat reply or the PR description.
+
+-Use simple English when possible: avoid words like 'wherever'. Make short sentences. When possible, go new line after each sentence.
+
+-The reader is an expert in Theoretical computer science, programming language design, metarules, type systems, Java. When using technical terms outside of this area of expertise, you have to explain them, and if they are not needed, avoid them.
+For example, 'host' and 'guest' are terms of virtual machines.
+Terms specific to an area often clash with the same words in other areas.
+
+Example Bad: The terminal may use a parallel strategy only where the flow has no .hintSequential. .hintParallel asks the terminal to use a parallel strategy wherever it can run one that returns what the sequential strategy returns.
+Example Good:
+The flow terminal may choose to use a parallel strategy only when the flow has no `.hintSequential`.
+The presence of `.hintParallel` further incentivizes the flow terminal to apply a parallel strategy.
+Why: 'flow' specifies what this 'terminal' is.
+The Good version has two separate lines.
+The Bad English is contorted and indirect: 'wherever it can run one that returns what'.
+
+-Editing an existing document: one small change at a time, so that a word diff shows each change, and a PR description listing each change as old -> new. A sentence is rephrased only where a word changes the meaning; a sentence that already says the right thing is left alone. When a duplicate is removed, the PR description names the line that keeps the statement.
+
+## No adding comments
+Do not add comments to generated code. Preserve existing comments literally.
+
+Rationale goes in the chat reply or the PR description, never in the deliverable.
+
+The user will be responsible for adding and removing comments, often to flag something LLMs keep misreading. The one exception is a comment capturing something that took real thinking to work out. As a rule of thumb, if by reading the code you can understand what it does enough to add an explanatory comment, that comment is by definition redundant.
+
+## Minimality
+
+Code must be as small as possible; readability is not a concern. Small code
+means the whole codebase can be read; when reasonable, read all of it
+before a task. 
+
+Don't pass extracted/generated data across chains of method calls: pass one unit of information and
+regenerate locally the needed parts.
+
+Invert ifs to favour early returns and errors, thus erasing `else` branches.
+
+After code is generated and tested, do a second pass purely to shrink it: remove abstractions and indirections that didn't earn
+their place; a generalization is worth it only if the current codebase gets
+smaller in actual lines. Duplication is far cheaper than the wrong
+abstraction; a new concept (a type, an interface method) must earn its
+value. 
+Not all lines of code are expensive.
+Actual code logic in the code that get deployed is expensive.
+Testing code is very cheap, and occasionally it is ok if some duplication is present.
+Imports at the start of files are free.
+
+Duplication between fearlessPortable and fearlessManager is fine.
+
+Avoid methods that could be easily inlined, for example
+ `public static boolean hasConsoleFlag(){ return LauncherProps.hasConsoleFlag(); }`
+
+During testing, when possible check if a string matches the expected result using utils.Err. Do not "assertTrue(text.contains(expected));"
+
+## Refactoring a PR while guided by the user
+
+Accepting a PR will often require a direct chat with the user.
+You need to distinguish two kinds of request:
+Explain: 'Why this local variable exists' Here the user is asking a question, not providing a suggestion
+Amend: 'Remove this local variable' Here the user is giving a direct command.
+
+If your interpretation of a user request ends up growing the code base, probably you misunderstood. Clarify instead of acting.
+"Move X into Y, this removes the need for Z".
+This is an example of a request that must shrink the diff and remove Z. If your answer adds a type, wrapper record, parameter, boolean flag or file, you have misread it. If the literal request would grow the
+code, stop and ask, stating the tradeoff plainly. If it cannot be done without breaking a constraint you weren't told to relax, say exactly what blocks it and ask. Never invent an abstraction during PR reviews in order to somehow match the user request.
+
+## Conventions
+
+Most code out there is bad code; conventions are only sometimes right. In
+those projects going against convention is deliberate; embrace the
+unconventional setup rather than drifting toward "normal" code. Java is a
+tool: rely on its formal semantics, not on its recommended usage.
+
+## Names, messages, tests
+
+- Never put Marco's name or any real person's in code, tests, mock data
+  or commit messages; Try to avoid examples requiring person names.
+- When reasonable, avoid naming tools that just so happens to be used, like 'eclipse', 'windows', 'firefox' etc. For example `junit_xml` is good, `eclipse_junit_xml` is bad.
+
+- Frontend does a lot of careful work to generate good errors.
+  Try to copy that style when possible.
+  Many errors in coordinator have been generated by agents and are not as good.
+  Overall, accept the fact that you, as an agent, are still pretty bad at generating good error messages and rely on the guidance from the user and the examples in Frontend. Feel free to add <HELP ME WITH WORDING> when you struggle to make a good error.
+  Two crucial guidelines: (1)avoid being vague:
+  `this type is ill formed` is pointless.
+  `The type "A[B,mut C]" is ill formed because A[_,_] second generic argument can not be "mut"; only "imm" and read are accepted.` 
+  Note the details; A single line contains:
+  the type verbatim instead of general references like 'the type, such type, that type, the type in that position'.
+  the technical term (ill formed) the explanation of what is wrong, the list of what is good.
+  (2)omitting is ok: limit the information to what is truly useful for the user. Naming what has gone wrong in an internal algorithm is pointless. If something can not be discovered, omitting any mention of that thing is better then being vague.
+
+## Testing GUIs.
+
+One of the core way you are useful is that you can control the PC directly and test guis.
+We are keeping a 'C:\data\gym\gui_gym.txt' (the working copy of `winSmall\data\gym\gui_gym.txt` in AgentsCoordination; edit the working copy, never the checkout) where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
+A gym file holds only what a person at the keyboard, with the design of
+the application in hand, would still need to be told: what the screen does
+not show and the design does not say. Saving anything else there (what is
+visible, what the design or the code says, a key that reaches a place
+without the pointer, what happened one day on one machine) teaches the
+next agent to operate the GUI in ways no person does.
+A GUI test acts as a person acts and checks what a person sees. A program
+behaving in a way the design does not describe is a bug to report (or to
+fix, when asked), never something a test steps around: a test that reaches
+a stable state through a trick (a keyboard binding, a wait, an extra click)
+so that the bug stops showing hides the bug and passes for the wrong
+reason.
+An agent answering a test in agent mode is the person at the desk.
+It answers each action from what the screen shows.
+Its finding is whether each step of the test is something that person does on this desk, and whether the screen then shows what the design says.
+A test passing is not the goal.
+A step that does nothing on this desk, or that a person does differently, is a finding: the agent stops and reports it.
+`Controllers\src\agentTools` (`Pilot`: `glide`, `click`, `drag`, `chord`, `shot`, `seen`, `changed`; `java agentTools.Pilot seen|shot <file.png>` saves the screen) drives the desk the way a person does. It is a general purpose API for any agentic harness on any machine: pure Java (`java.awt.Robot`), the same code on windows, X11 and wayland, depending on nothing installed or configured here. The agents on this machine are just one of its users: never add to it anything that assumes this setup (windows, our installation); what a platform needs from the machine (accepting the wayland consent dialog, keeping the screen from blanking) is documented, never coded around.
+
+
+## The desks
+
+This machine is the desk winSmall. The other Windows machine is the desk windows. The linux machine is the desk
+ubuntu_gnome (GNOME on wayland) and runs 12 libvirt VMs, one desktop each:
+arch_sway, debian_cinnamon, debian_gnome_x11, debian_mate, fedora_cosmic,
+fedora_gnome, kubuntu_plasma, lubuntu_lxqt, omarchy_hyprland,
+opensuse_plasma, void_i3, xubuntu_xfce: the desks Fearless users have, so
+the manager and its agentTools tests run on every one of them.
+
+## Automated tests.
+
+Run (only) one of TestAllCommons.java, TestAllFrontend.java, TestAllFrontendCoordinator.java, TestAllFrontendCoordinatorIntegration.java, TestAllController.java
+Depending on the estimate risk of regression.
+
+## Tests showing a bug
+
+A test showing a bug asserts the correct behaviour, so it fails until the bug is fixed.
+A test asserting what the code wrongly does today passes on the bug and hides it.
+A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
+
+# Judgement
+
+You are on this project because you are not a blunt tool: you can read a text and see what it is for.
+A regex can apply a rule; the user needs that reading.
+
+A correction from the user is the reasoning of the user, shown on one example.
+Find that reasoning, and apply it also to the examples far from the corrected one.
+Being corrected is the normal course of this work, not a failure to defend against: after a correction, look wider, not narrower.
+When the user corrects the same kind of thing twice, your reading of the task is wrong, not its execution: stop producing, and say in a few lines what you now think the task is for.
+
+# Think, do not jump to probing
+You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
+
+# Running commands
+
+The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
+- Under `$ErrorActionPreference = 'Stop'`, every stderr line of a native command whose stderr is redirected (`2>$null`, `2>file`) is a terminating error; leave a native command's stderr alone.
+- An argument to a native executable holding both spaces and double quotes is split at the quotes: ask `gh` for `--json` and parse with `ConvertFrom-Json` rather than passing a `--jq` expression with quotes in it.
+- Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
+- The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
+- Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
+- Temporary files go in the session scratchpad directory, never in a bare `/tmp` or `$env:TEMP` path: those are outside `C:\data`.
+- A long command runs itself in the background (the `run_in_background` option of the PowerShell tool). The harness tells the agent when that command ends, and the output file of that command holds what it printed. Nothing else waits for it: no second command polls for the end of the first one.
+  Example Good: from `Coordinator\Build\src`, run `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\TestAllFrontendCoordinatorIntegration.java` with `run_in_background`, then do other work or end the turn; when the notice that the command ended arrives, read its output file.
+  Example Bad: run the same command in the background, then run `while (Get-CimInstance Win32_Process | Where-Object CommandLine -like '*TestAllFrontendCoordinatorIntegration*') { Start-Sleep 20 }` to wait for it. `CommandLine` is the whole command line, and the command line of the PowerShell running this `while` holds the text `TestAllFrontendCoordinatorIntegration` too, so the filter always finds a process and the loop never ends.

@@ -1,0 +1,16 @@
+Findings on operating Eclipse like a human would. General GUI findings are in gui_gym.txt.
+
+= Folder pickers =
+
+The Windows folder picker (SWT DirectoryDialog) accepts a full path typed into its
+Folder field followed by the Select Folder button.
+
+= Views already present but minimized =
+
+A fresh workbench window can have views (Package Explorer, Project Explorer, JUnit)
+already opened but minimized to a thin icon-only rail at the far left edge of the window
+(distinct from the taskbar). Window > Show View > X does not always bring the view to the
+front if a same-named or stacked view tab exists; check that rail (click each small icon)
+before assuming a view must be added from Show View. Show View can also add a view as a
+new background tab in an existing stack rather than switching to it - click the newly
+added tab explicitly.

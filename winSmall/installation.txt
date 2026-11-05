@@ -1,0 +1,52 @@
+How an agent running on this machine resets it to the state the
+winSmall\ folder of this repository describes.
+
+Preconditions:
+C:\data\accounts.txt is present.
+Display 1920x1200 at 150% scaling.
+Windows logs servetto in at boot; Brave is logged in to claude.ai.
+Windows logs in automatically only at boot, so a session that ends leaves the machine at the
+logon screen waiting for a typed password, out of reach: the scheduled task ClaudeSessionGuard
+(SYSTEM, every minute, registered by reset-body.ps1 with no script file) waits 3 minutes and reboots when
+servetto has no explorer.exe, never within 5 minutes of boot. Switching user and locking the
+workstation are disabled by policy (HideFastUserSwitching, DisableLockWorkstation), and the audit
+of "Other Logon/Logoff Events" is on, so a disconnect leaves a trace in the Security log.
+Claude Code is installed at %USERPROFILE%\.local\bin\claude.exe and logged in to claude.ai.
+
+Needed Tools, each at its default install path; only install if not present.
+  winget install Git.Git
+  winget install GitHub.cli
+  winget install Brave.Brave
+  winget install Notepad++.Notepad++
+  winget install MiKTeX.MiKTeX (scope machine, then initexmf --admin --set-config-value="[MPM]AutoInstall=1")
+  winget install StrawberryPerl.StrawberryPerl (latexmk needs perl)
+  winget install oschwartz10612.Poppler (pdftoppm: lets the Read tool render PDF pages)
+  JDK 26 unpacked by hand at C:\Program Files\Java\jdk-26.0.2 (never installed: no winget, no installer), no JAVA_HOME
+  git config --global user.name marcoautomation2
+  git config --global user.email marcoautomation2@outlook.com
+  git config --global core.autocrlf false
+
+The desk of this machine has a fixed shape, the one the agentTools tests are recorded on; Explorer and the manager of Fearless keep what a run changes, so an agent checks every item before a test and brings the desk back to that shape by hand:
+  no window is open: no Explorer window, no fearlessManaged* process, no other window with a title except the Settings windows (a window with a taskbar button moves the buttons of the taskbar, and with them every recorded click on it);
+  the Quick access of Explorer pins C:\data\pilotio and no other folder: a pinned folder moves the sidebar of every Explorer window, and with it every recorded click on it (the other entries of Quick access are frequent folders: they are not pinned and stay);
+  the tray icon of the manager is always visible in the notification area: HKCU:\Control Panel\NotifyIconSettings\<id> has IsPromoted=1 for C:\data\pilotio\fearlessManaged0_001\fearlessManaged0_001w.exe and for fearlessManaged0_001.exe (the entries exist once the manager has run);
+  the display is 1920x1200 at 150% scaling: 1280x800 pixels for a java program, the unit of the recorded values.
+  The checks, in PowerShell:
+    (New-Object -ComObject shell.application).Windows().Count is 0
+    Get-Process | Where-Object { $_.MainWindowTitle } lists only ApplicationFrameHost and SystemSettings
+    Get-Process fearlessManaged* prints nothing
+    (New-Object -ComObject shell.application).Namespace('shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}').Items() | Where-Object IsFolder | ForEach-Object { $_.Path + ' ' + $_.ExtendedProperty('System.Home.IsPinned') } shows True only for C:\data\pilotio
+    Get-ChildItem 'HKCU:\Control Panel\NotifyIconSettings' | ForEach-Object { Get-ItemProperty $_.PSPath } | Where-Object { $_.ExecutablePath -like 'C:\data\pilotio\*' } | Select-Object ExecutablePath, IsPromoted shows 1 for both exe files
+  The commands bringing the desk back to that shape:
+    Get-Process fearlessManaged* | Stop-Process -Force
+    (New-Object -ComObject shell.application).Windows() | ForEach-Object { $_.Quit() }
+    for each folder of the Quick access namespace that is pinned and is not C:\data\pilotio: $_.InvokeVerb('unpinfromhome')
+    when C:\data\pilotio is not pinned: (New-Object -ComObject shell.application).Namespace('C:\data\pilotio').Self.InvokeVerb('pintohome')
+    for each of those registry entries: Set-ItemProperty -Path $_.PSPath -Name IsPromoted -Value 1 -Type DWord
+
+Actions:
+  Once:
+    git clone https://github.com/MarcoServetto/AgentsCoordination C:\data\AgentsCoordination
+    git -C C:\data\AgentsCoordination remote add fork https://github.com/marcoautomation2/AgentsCoordination
+  Every reset:
+    & C:\data\AgentsCoordination\winSmall\reset.ps1
