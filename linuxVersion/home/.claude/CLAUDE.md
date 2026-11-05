@@ -247,7 +247,7 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
 
   TestAllFrontend.java
     Runs everything TestAllCommons.java does, then builds Frontend and runs
-    Frontend's test suite. Fast - seconds, not minutes.
+    Frontend's test suite EXCLUDING its slow `fuzz` package. Fast - seconds, not minutes.
 
   TestAllFrontendCoordinator.java
     Runs everything TestAllFrontend.java does, then builds Coordinator and
@@ -258,6 +258,12 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
   TestAllFrontendCoordinatorIntegration.java
     Builds and runs everything the previous two programs do, PLUS
     Coordinator's `integrationTests` package. Slow - minutes, not seconds.
+
+  TestFuzz.java
+    Builds Commons and Frontend and runs only Frontend's `fuzz` package.
+    Slow - minutes, not seconds. To run all the tests, run it after
+    TestAllFrontendCoordinatorIntegration.java. Its main use is the DeltaHunt
+    task of `Frontend/compact_frontend/readme.txt`, with the argument `compact`.
 
   TestAllController.java
     Builds Commons, Frontend, Coordinator, and Controllers (the `Controller`
