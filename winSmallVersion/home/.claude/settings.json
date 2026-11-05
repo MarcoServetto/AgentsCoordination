@@ -23,7 +23,7 @@
               "-ExecutionPolicy",
               "Bypass",
               "-File",
-              "C:\\data\\AgentsCoordination\\winSmall\\home\\.claude\\hooks\\auto-approve-permission-request.ps1"
+              "C:\\data\\AgentsCoordination\\winSmallVersion\\home\\.claude\\hooks\\auto-approve-permission-request.ps1"
             ]
           }
         ]
