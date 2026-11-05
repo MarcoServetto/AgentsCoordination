@@ -1,16 +1,16 @@
 ---
 name: check-drift
-description: List how this machine deviates from the state described by C:\data\AgentsCoordination\winSmallVersion, which is what reset.ps1 would delete or overwrite, so the user can decide what to keep, what to revert and what to add to the repository. Read-only.
+description: List how this machine deviates from the state described by C:\data\AgentsCoordination\winSmall, which is what reset.ps1 would delete or overwrite, so the user can decide what to keep, what to revert and what to add to the repository. Read-only.
 ---
 
 # Checking the drift
 
-The drift is what `C:\data\AgentsCoordination\winSmallVersion\reset.ps1` would delete or
+The drift is what `C:\data\AgentsCoordination\winSmall\reset.ps1` would delete or
 overwrite. Collect it with the commands below, then report a numbered list,
 one line per deviation (the path and what differs); change nothing.
 
 ```powershell
-$repo = 'C:\data\AgentsCoordination\winSmallVersion'
+$repo = 'C:\data\AgentsCoordination\winSmall'
 git -C C:\data\AgentsCoordination status --short
 git -C C:\data\AgentsCoordination fetch origin
 git -C C:\data\AgentsCoordination merge --ff-only origin/main

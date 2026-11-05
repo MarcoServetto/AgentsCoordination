@@ -1,5 +1,5 @@
 How an agent running on this machine resets it to the state the
-winSmallVersion\ folder of this repository describes.
+winSmall\ folder of this repository describes.
 
 Preconditions:
 C:\data\accounts.txt is present.
@@ -49,4 +49,4 @@ Actions:
     git clone https://github.com/MarcoServetto/AgentsCoordination C:\data\AgentsCoordination
     git -C C:\data\AgentsCoordination remote add fork https://github.com/marcoautomation2/AgentsCoordination
   Every reset:
-    & C:\data\AgentsCoordination\winSmallVersion\reset.ps1
+    & C:\data\AgentsCoordination\winSmall\reset.ps1
