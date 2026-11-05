@@ -83,3 +83,43 @@ cowork-svc
 
 # --- Eclipse (Fearless plugin testing) ---
 eclipse
+
+# --- Windows core / shell, further parts on this machine ---
+LsaIso
+Secure System
+LockApp
+ShellExperienceHost
+unsecapp
+WUDFHost
+WUDFCompanionHost
+wlanext
+backgroundTaskHost
+AppActions
+ClickToDo
+Widgets
+PhoneExperienceHost
+WorkloadsSessionHost
+WorkloadsSessionManager
+DefenderAiPlatformHost
+CsGMMuteSrv
+
+# --- university management of this machine ---
+ecsvuwsvc
+ms-teams
+
+# --- hardware / driver vendor on this machine (Intel, Waves, iGo) ---
+IntelAudioService
+IntelDisplayUMService
+IntelGraphicsSoftware.Service
+PresentMonService
+ipf_helper
+ipf_uf
+ipfsvc
+jhi_service
+OffloadItemService
+WMIRegistrationService
+IgoAudioService_x64
+iGoSwServer
+WavesAudioService
+WavesSvc64
+WavesSysSvc64
