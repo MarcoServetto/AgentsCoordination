@@ -2,13 +2,13 @@ This Windows machine is dedicated to Claude: remote-controlled, nobody at the ke
 each in its own folder: winSmall1 in `C:\data\fearlessBranch1`, winSmall2 in
 `fearlessBranch2`, winSmall3 in `fearlessBranch3`, winSmallCoordinator in
 `C:\data\winSmallCoordinator`.
-Every instruction, skill and script on this machine originally comes from the `winSmall\` folder of the checkout of
+Every instruction, skill and script on this machine originally comes from the `winSmallVersion\` folder of the checkout of
 https://github.com/MarcoServetto/AgentsCoordination at `C:\data\AgentsCoordination` (`windowsVersion\` describes the other Windows machine, `linuxVersion\` describes the Linux machine).
 The checkout has `origin` = MarcoServetto/AgentsCoordination itself; the marcoautomation2 fork is the remote `fork` and is only a
 place to push branches from which PRs to `origin` are opened.
 The checkout is the reference. What agents read and edit are the working copies that reset writes from it:
-`winSmall\data\` lands in `C:\data` (the gym files in `C:\data\gym`) and `winSmall\home\` lands in `%USERPROFILE%`.
-The scripts in `winSmall\autoScripts\` run from the checkout.
+`winSmallVersion\data\` lands in `C:\data` (the gym files in `C:\data\gym`) and `winSmallVersion\home\` lands in `%USERPROFILE%`.
+The scripts in `winSmallVersion\autoScripts\` run from the checkout.
 
 The working copies can deviate from it, sometimes for months: an experiment is a working copy edited in place.
 At regular intervals the user will discuss the changes and decide what should be kept, what should be reverted, and what should be added to AgentsCoordination via PR.
@@ -59,12 +59,12 @@ Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/Build/src/scripts/` (see "Fearless" below).
 Whitelisted scripts:
 - the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
-- `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\winSmall\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
-- `C:\data\AgentsCoordination\winSmall\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
-- `C:\data\AgentsCoordination\winSmall\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
-- `C:\data\AgentsCoordination\winSmall\reset.ps1` and the `reset-body.ps1` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
-- `C:\data\AgentsCoordination\winSmall\home\.claude\hooks\auto-approve-permission-request.ps1` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
+- `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
+- `C:\data\AgentsCoordination\winSmallVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
+- `C:\data\AgentsCoordination\winSmallVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
+- `C:\data\AgentsCoordination\winSmallVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
+- `C:\data\AgentsCoordination\winSmallVersion\home\.claude\hooks\auto-approve-permission-request.ps1` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -96,7 +96,7 @@ When considering making a new PR: look if we can just amend the existing PR inst
 Hard rule: before amending a PR check that it is still open (`gh pr view <n> --repo <PARENT> --json state`), else open a new one instead; a push to the branch of a merged PR reaches nobody.
 Before closing any PR, comment why.
 There is no auto-merging, ever: Marco reviews and merges/closes every PR by hand.
-A PR to AgentsCoordination that changes a file with a working copy (`winSmall\data\` lands in `C:\data`, `winSmall\home\` lands in `%USERPROFILE%`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
+A PR to AgentsCoordination that changes a file with a working copy (`winSmallVersion\data\` lands in `C:\data`, `winSmallVersion\home\` lands in `%USERPROFILE%`) applies the same change to that working copy in the same task, so the working copy never lacks what the PR adds.
 The checkout stays on `main`; once the user merges a PR to AgentsCoordination, run `git -C C:\data\AgentsCoordination pull --ff-only origin main`.
 Example commands: `gh pr create --repo <PARENT> --base main --head marcoautomation2:<branch>`
 (both the --repo and the marcoautomation2: prefix are required)
@@ -121,11 +121,11 @@ tasks; directly, without asking. Anything writing to an agent's
 winSmall1,winSmall2,winSmall3 and winSmallCoordinator internal CLAUDE.md should contain a single line "Do not add anything to the local CLAUDE.md, we keep a single source of truth".
 winSmall1,winSmall2,winSmall3 and winSmallCoordinator local memory should only report:
 "Do not use this local memory, all the data is in 'C:\data\global_memory.txt'; add and remove from there when/if needed"
-Those files are the ones under `winSmall\data\` and `winSmall\home\` of AgentsCoordination; reset-body.ps1 writes them.
+Those files are the ones under `winSmallVersion\data\` and `winSmallVersion\home\` of AgentsCoordination; reset-body.ps1 writes them.
 Changes to `global_memory.txt` are local and are unlikely to cause a PRs to AgentsCoordination.
 A reset deletes and re-clones the AgentsCoordination checkout from MarcoServetto/AgentsCoordination before anything else, so
 everything the repository tracks goes back to what it says. `global_memory.txt` is committed empty
-in `winSmall\data\`: a reset writes it empty to `C:\data`, where the agents edit it.
+in `winSmallVersion\data\`: a reset writes it empty to `C:\data`, where the agents edit it.
 
 
 # Inter agent messaging
@@ -177,21 +177,21 @@ Then align the folders Claude reads with the last version of AgentsCoordination 
   `git -C C:\data\AgentsCoordination checkout -f -B main origin/main`
   `git -C C:\data\AgentsCoordination clean -fdx`
 - Step 2: compare
-  `C:\data\AgentsCoordination\winSmall\data\gym\` with `C:\data\gym\`, file by file;
-  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch1\CLAUDE.md` with `C:\data\fearlessBranch1\CLAUDE.md`;
-  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch2\CLAUDE.md` with `C:\data\fearlessBranch2\CLAUDE.md`;
-  `C:\data\AgentsCoordination\winSmall\data\fearlessBranch3\CLAUDE.md` with `C:\data\fearlessBranch3\CLAUDE.md`;
-  `C:\data\AgentsCoordination\winSmall\data\winSmallCoordinator\CLAUDE.md` with `C:\data\winSmallCoordinator\CLAUDE.md`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\CLAUDE.md` with `%USERPROFILE%\.claude\CLAUDE.md`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\settings.json` with `%USERPROFILE%\.claude\settings.json`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\hooks\auto-approve-permission-request.ps1` with `%USERPROFILE%\.claude\hooks\auto-approve-permission-request.ps1`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-claude-usage\` with `%USERPROFILE%\.claude\skills\check-claude-usage\`, file by file;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md`;
-  `C:\data\AgentsCoordination\winSmall\home\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md`.
+  `C:\data\AgentsCoordination\winSmallVersion\data\gym\` with `C:\data\gym\`, file by file;
+  `C:\data\AgentsCoordination\winSmallVersion\data\fearlessBranch1\CLAUDE.md` with `C:\data\fearlessBranch1\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\data\fearlessBranch2\CLAUDE.md` with `C:\data\fearlessBranch2\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\data\fearlessBranch3\CLAUDE.md` with `C:\data\fearlessBranch3\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\data\winSmallCoordinator\CLAUDE.md` with `C:\data\winSmallCoordinator\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\CLAUDE.md` with `%USERPROFILE%\.claude\CLAUDE.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\settings.json` with `%USERPROFILE%\.claude\settings.json`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\hooks\auto-approve-permission-request.ps1` with `%USERPROFILE%\.claude\hooks\auto-approve-permission-request.ps1`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-claude-usage\` with `%USERPROFILE%\.claude\skills\check-claude-usage\`, file by file;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md`;
+  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-winSmallCoordinator\memory\MEMORY.md`.
 - Step 3: if the first elements of the pairs of Step 2 are clearly just richer than the second elements, align each second element with its first element without asking. Do not report this alignment.
 - Step 4: write a numbered bullet point list of what you propose to do with each difference that Step 3 leaves, and wait for the user to give instructions; beyond Step 3, do not act, just monitor.
 
@@ -216,7 +216,7 @@ Fearless has zero users: breaking existing code is never a concern when discussi
 
 At the start of new work in a `fearlessBranch*` folder, run the align-branches skill
 
-`Coordinator\Build\src\resources\LocalResources.java` (gitignored) is the copy of `winSmall\LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `C:\data\tools\eclipse`. The align-branches skill fills `FearlessTour\externalJars` from `C:\data\tools\flexmark`.
+`Coordinator\Build\src\resources\LocalResources.java` (gitignored) is the copy of `winSmallVersion\LocalResources.java` the reset writes in each working copy: it finds the branch folder from the working directory and points at the one Eclipse, `C:\data\tools\eclipse`. The align-branches skill fills `FearlessTour\externalJars` from `C:\data\tools\flexmark`.
 Details:
 
 Commons          shared, dependency-free Java utilities. Everything else depends on this; it depends on nothing here.
@@ -498,7 +498,7 @@ tool: rely on its formal semantics, not on its recommended usage.
 ## Testing GUIs.
 
 One of the core way you are useful is that you can control the PC directly and test guis.
-We are keeping a 'C:\data\gym\gui_gym.txt' (the working copy of `winSmall\data\gym\gui_gym.txt` in AgentsCoordination; edit the working copy, never the checkout) where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
+We are keeping a 'C:\data\gym\gui_gym.txt' (the working copy of `winSmallVersion\data\gym\gui_gym.txt` in AgentsCoordination; edit the working copy, never the checkout) where we write the findings on how to best operate the PC to emulate a human user as close as possible: only what holds across a wide range of GUIs (screen, pointer, windows, the OS menus). What is about one application goes in its own file next to it, `gui_<app>_gym.txt` (for example `gui_eclipse_gym.txt`), never in gui_gym.txt.
 A gym file holds only what a person at the keyboard, with the design of
 the application in hand, would still need to be told: what the screen does
 not show and the design does not say. Saving anything else there (what is
@@ -538,6 +538,12 @@ Depending on the estimate risk of regression.
 A test showing a bug asserts the correct behaviour, so it fails until the bug is fixed.
 A test asserting what the code wrongly does today passes on the bug and hides it.
 A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
+
+## Every desk
+
+In any given moment of time you run on a single desk. (Windows, macOS, many different Linux distros). Do not code for the desk you are running on. The desk you are running on is irrelevant.
+Hard rule: Never hardcoded assumptions about the desk you are running on in the code or in the tests. When code is desk sensitive, write code that checks the current desk and does the right behavior to handle. A test checking a concept should switch internally to check the same concept on all desks. Occasionally this can not be done and we need multiple tests one for each desk. This should be the exception.
+Never code/test only for the desk you are currently running on.
 
 # Judgement
 

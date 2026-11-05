@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 # This script runs from wherever reset.ps1 downloaded it, so it is free to delete
 # and reclone the checkout's own copy below.
 $repoRoot = 'C:\data\AgentsCoordination'
-$repo = "$repoRoot\winSmall"
+$repo = "$repoRoot\winSmallVersion"
 $data = 'C:\data'
 $userHome = $HOME
 

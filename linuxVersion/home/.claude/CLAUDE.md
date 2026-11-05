@@ -537,13 +537,11 @@ A test showing a bug asserts the correct behaviour, so it fails until the bug is
 A test asserting what the code wrongly does today passes on the bug and hides it.
 A known bug with no fix yet keeps its failing test: the failing tests are the list of the known bugs.
 
-## Every OS
+## Every desk
 
-Fearless runs on Windows, Linux and macOS.
-Every change is for all three, whatever the OS of the desk the agent works on.
-Code with one version per OS changes on every OS in the same PR: a bug found in the version of one OS is looked for in the versions of the other OSs, and fixed there too.
-A test that runs only on another OS is still written, in the same PR.
-When a change can not be checked on this desk, the chat reply asks the user to run the tests of that change on a desk of that OS once the PRs are merged.
+In any given moment of time you run on a single desk. (Windows, macOS, many different Linux distros). Do not code for the desk you are running on. The desk you are running on is irrelevant.
+Hard rule: Never hardcoded assumptions about the desk you are running on in the code or in the tests. When code is desk sensitive, write code that checks the current desk and does the right behavior to handle. A test checking a concept should switch internally to check the same concept on all desks. Occasionally this can not be done and we need multiple tests one for each desk. This should be the exception.
+Never code/test only for the desk you are currently running on.
 
 # Judgement
 
