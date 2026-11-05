@@ -4,7 +4,6 @@ winSmall\ folder of this repository describes.
 Preconditions:
 C:\data\accounts.txt is present.
 Display 1920x1200 at 150% scaling.
-Brave is logged in to claude.ai.
 Windows does not log in automatically: servetto is a domain account, and the domain shows a logon notice.
 After every boot (the end of a reset, a Windows Update reboot) the user types the password of servetto at the logon screen;
 until then no agent runs. Switching user and locking the
