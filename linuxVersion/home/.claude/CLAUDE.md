@@ -567,6 +567,8 @@ You know Java, the JDK and these tools well; rely on that. Explain from the mech
 The Bash tool is bash, with no stdin, and each call starts in the session's working directory:
 - Shell state (variables, functions, `cd`) does not persist between calls; use absolute paths.
 - Multi-line text for a command goes through a file or a heredoc (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
+- Programs between the tool and the shell (a sandbox, a wrapper) can rewrite `$`, `%`, quotes and backslashes in a command.
+  Write file content with the Write tool, not from the text of a command; a command testing such rewriting reads its text from a file written that way.
 - Ask `gh` for `--json` and parse with `jq` or `python3 -c`.
 - The desktop session is GNOME on Wayland: `DISPLAY`, `WAYLAND_DISPLAY` and `XDG_RUNTIME_DIR` are set in every agent session, so GUI programs started from Bash open on the display.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
