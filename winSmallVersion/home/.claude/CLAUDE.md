@@ -570,6 +570,9 @@ The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
 - Under `$ErrorActionPreference = 'Stop'`, every stderr line of a native command whose stderr is redirected (`2>$null`, `2>file`) is a terminating error; leave a native command's stderr alone.
 - An argument to a native executable holding both spaces and double quotes is split at the quotes: ask `gh` for `--json` and parse with `ConvertFrom-Json` rather than passing a `--jq` expression with quotes in it.
 - Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
+- The text of a command passes through other programs before the shell reads it (the tool, a sandbox, a wrapper), and any of them can rewrite `$`, `%`, quotes and backslashes in it.
+  So a file that a command writes from its own text (a here-string, a quoted string, an in-place substitution) can hold a different text: write file content with the Write and Edit tools, and read back a file that a command wrote before using it.
+  A command that tests how these programs rewrite a text holds that text, so the test is rewritten too: write the text to test into a file with the Write tool, and give the file to the command.
 - The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
 - Temporary files go in the session scratchpad directory, never in a bare `/tmp` or `$env:TEMP` path: those are outside `C:\data`.

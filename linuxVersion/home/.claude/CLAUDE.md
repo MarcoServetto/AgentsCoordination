@@ -567,6 +567,9 @@ You know Java, the JDK and these tools well; rely on that. Explain from the mech
 The Bash tool is bash, with no stdin, and each call starts in the session's working directory:
 - Shell state (variables, functions, `cd`) does not persist between calls; use absolute paths.
 - Multi-line text for a command goes through a file or a heredoc (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
+- The text of a command passes through other programs before the shell reads it (the tool, a sandbox, a wrapper), and any of them can rewrite `$`, `%`, quotes and backslashes in it.
+  So a file that a command writes from its own text (a heredoc, a quoted string, an in-place substitution) can hold a different text: write file content with the Write and Edit tools, and read back a file that a command wrote before using it.
+  A command that tests how these programs rewrite a text holds that text, so the test is rewritten too: write the text to test into a file with the Write tool, and give the file to the command.
 - Ask `gh` for `--json` and parse with `jq` or `python3 -c`.
 - The desktop session is GNOME on Wayland: `DISPLAY`, `WAYLAND_DISPLAY` and `XDG_RUNTIME_DIR` are set in every agent session, so GUI programs started from Bash open on the display.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
