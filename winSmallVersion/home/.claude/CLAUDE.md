@@ -572,6 +572,7 @@ The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
 - Multi-line text for a native command goes through a file (`git commit -F <file>`, `gh pr create --body-file <file>`); `-F -` reads stdin, which is not there.
 - Programs between the tool and the shell (the sandbox) can rewrite the quotes in a command.
   Write file content with the Write tool, not from the text of a command; a command testing such rewriting reads its text from a file written that way.
+- The comma operator binds tighter than `+`: `@('a'+$x, 'b'+$y)` is `@('a' + ($x, 'b') + $y)`. Put each element built with an operator in parentheses: `@(('a'+$x), ('b'+$y))`.
 - The sandbox refuses some `Remove-Item` and `rmdir /s` command lines outright (a path built from a variable reads as `/c` or `/s` to it); delete with `[IO.File]::Delete(path)` and `[IO.Directory]::Delete(path, $true)`, which also removes a junction without following it, where `Remove-Item -Recurse` follows it into the target.
 - Changing `core.autocrlf` on an existing worktree makes every file look modified: the global setting is `false` (installation.txt), so clone rather than flip it.
 - Temporary files go in the session scratchpad directory, never in a bare `/tmp` or `$env:TEMP` path: those are outside `C:\data`.
