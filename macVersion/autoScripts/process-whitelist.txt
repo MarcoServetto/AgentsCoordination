@@ -1,0 +1,37 @@
+# Process whitelist for cleanup-watchdog.sh: one process name per line, the
+# file name of the executable (the last part of the path ps shows) or the
+# file name of the second command line word (so an interpreter's script name
+# counts), case-insensitive, # for comments. Any process of this user NOT listed
+# that has been alive for more than 1 hour is killed by the hourly sweep,
+# except the programs of macOS itself: an executable under /System, /usr/libexec,
+# /usr/sbin or /Library/Apple is never killed.
+# Build tools (git, java, ...) are deliberately absent: add one here before
+# a run that may exceed an hour. Takes effect on the next sweep.
+
+# --- the 4 always-on agents (macCoordinator, mac1, mac2, mac3) ---
+claude
+bash
+sh
+zsh
+-zsh
+tmux
+agent-supervisor.sh
+sleep
+caffeinate
+
+# --- a session started by hand from a terminal or ssh ---
+login
+
+# --- Tailscale (remote access) ---
+Tailscale
+
+# --- university management of this machine (Jamf, Microsoft, uniFLOW) ---
+Jamf Connect
+Self Service+ Agent
+jamfRemoteAssist
+jamfRemoteAssistConnectorUI
+OneDrive Sync Service
+PostUpdateLaunchAgent
+
+# --- Eclipse (Fearless plugin testing) ---
+eclipse

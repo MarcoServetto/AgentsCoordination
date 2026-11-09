@@ -1,0 +1,2 @@
+The Fearless manager is the app produced by Coordinator/Build/src/scripts/DeployManagedFearless.java.
+The design of the Fearless manager is in ZeroToHero/tasks/ControllersDesign.

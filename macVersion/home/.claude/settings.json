@@ -1,0 +1,26 @@
+{
+  "env": {
+    "EDITOR": "nano"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
+  "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "agentPushNotifEnabled": true,
+  "crossSessionInbound": "accept",
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/hooks/auto-approve-permission-request.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
