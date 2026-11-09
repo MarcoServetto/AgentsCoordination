@@ -1,0 +1,3 @@
+Findings on operating this machine's GUI like a human would: only what holds across
+GUIs in general (screen, pointer, windows, the OS menus). What is about one application
+goes in gui_<app>_gym.txt next to this file.

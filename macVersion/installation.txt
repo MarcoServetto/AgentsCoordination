@@ -1,0 +1,42 @@
+How an agent running on this machine resets it to the state the
+macVersion/ folder of this repository describes.
+
+Preconditions:
+/Users/Shared/data/accounts.txt is present.
+Display: the built-in 2560x1600 Retina screen at the default scaling, which looks like 1440x900: 1440x900 pixels for a java program, the unit of the recorded values.
+macOS does not log in automatically: FileVault is on, and the work organization of the user manages the machine (Jamf).
+After every boot (the end of a reset, a macOS update) the user types the password of servetto at the FileVault screen;
+until then no agent runs.
+servetto has passwordless sudo: /etc/sudoers.d/servetto (mode 0440) holds servetto ALL=(ALL) NOPASSWD: ALL.
+The laptop stays on the charger.
+The machine never sleeps, never turns the display off and never starts the screen saver, and closing the lid does nothing:
+  sudo pmset -a sleep 0 displaysleep 0 disksleep 0 standby 0 powernap 0
+  sudo pmset -a disablesleep 1
+  defaults -currentHost write com.apple.screensaver idleTime 0
+Claude Code is installed at ~/.local/bin/claude and logged in to claude.ai; ~/.zshrc puts ~/.local/bin on the PATH.
+The user reaches the desktop remotely over VNC through Tailscale: the machine is behind NAT, so Tailscale is the only way in.
+Tailscale: brew install --cask tailscale-app, logged in once to the user's tailnet as mac-agents
+(/Applications/Tailscale.app/Contents/MacOS/Tailscale up --hostname=mac-agents, the printed URL goes to the user),
+key expiry disabled in the Tailscale admin console.
+Screen Sharing and Remote Login are on (System Settings > General > Sharing; macOS lets no script turn them on).
+Screen Sharing has "VNC viewers may control screen with password" on, with a password of at most 8 characters chosen by the user:
+a viewer like TigerVNC knows only that password, not the sign in of macOS.
+
+Needed Tools, each at its default install path; only install if not present.
+  xcode-select --install (git, python3)
+  Homebrew at /opt/homebrew: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; ~/.zprofile runs eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+  brew install gh tmux poppler (pdftoppm: lets the Read tool render PDF pages)
+  JDK 26 unpacked by hand at /opt/jdk-26.0.2.jdk (never installed: no brew, no installer), no JAVA_HOME:
+    the tar.gz https://download.oracle.com/java/26/archive/jdk-26.0.2_macos-aarch64_bin.tar.gz, checked against its .sha256, extracted with sudo tar -xzf into /opt
+  git config --global user.name marcoautomation2
+  git config --global user.email marcoautomation2@outlook.com
+  git config --global core.autocrlf false
+  git config --global http.version HTTP/1.1
+  gh auth login --with-token < (the GitHub token line of /Users/Shared/data/accounts.txt); gh auth setup-git
+
+Actions:
+  Once:
+    git clone https://github.com/MarcoServetto/AgentsCoordination /Users/Shared/data/AgentsCoordination
+    git -C /Users/Shared/data/AgentsCoordination remote add fork https://github.com/marcoautomation2/AgentsCoordination
+  Every reset:
+    /Users/Shared/data/AgentsCoordination/macVersion/reset.sh
