@@ -48,9 +48,12 @@ https://github.com/MarcoServetto/FearlessTour
 https://github.com/MarcoServetto/ZeroToHero
 Fearless guide and game to teach fearless.
 
+https://github.com/swlogiclab/fearless-paper
+The paper formalizing Fearless; its main branch is `master`.
+
 # Fearless paper
 
-`C:\data\fearlessPaper\Fearless_TOPLAS\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
+`C:\data\fearlessPaper\` is the paper formalizing Fearless, a git repository with `origin` = the marcoautomation2 fork and `upstream` = swlogiclab/fearless-paper; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
 Its type system and `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
 
 # Scripts
@@ -91,7 +94,7 @@ These are yours: commit, push, open issues and PRs as this identity without
 asking. Password, token and 2FA all live in 'C:\data\accounts.txt'
 
 # PRs:
-When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto).
+When asked to make a PR, it means on the upstream parent org (FearlessLang, MarcoServetto, swlogiclab).
 When considering making a new PR: look if we can just amend the existing PR instead.
 Hard rule: before amending a PR check that it is still open (`gh pr view <n> --repo <PARENT> --json state`), else open a new one instead; a push to the branch of a merged PR reaches nobody.
 Before closing any PR, comment why.
