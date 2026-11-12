@@ -26,6 +26,15 @@ Needed Tools, each at its default install path; only install if not present.
   xcode-select --install (git, python3)
   Homebrew at /opt/homebrew: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; ~/.zprofile runs eval "$(/opt/homebrew/bin/brew shellenv zsh)"
   brew install gh tmux poppler (pdftoppm: lets the Read tool render PDF pages)
+  brew install lima, then the Linux VM fileserver, which serves the NFS share LocalResources.nfsShare to the tests:
+    macOS keeps on this share the file names that are not UTF-8, and mounts a folder of this share at a second place.
+    limactl start --name=fileserver --vm-type=vz --network=vzNAT --mount-none --cpus=2 --memory=2 --disk=20 --tty=false template:ubuntu
+    limactl autostart enable fileserver
+    in the VM (limactl shell fileserver): sudo apt-get install nfs-kernel-server; sudo mkdir /srv/fearless, owned by the user of the VM;
+      /etc/exports holds the line "/srv/fearless 192.168.64.0/24(rw,insecure,no_subtree_check,all_squash,anonuid=<uid>,anongid=<gid>)",
+      with the uid and gid of the user of the VM; sudo exportfs -ra
+    nfsShare in LocalResources.java is "<IPv4 address of the interface lima0 of the VM>:/srv/fearless".
+    The first mount of the share shows the dialog "tmux would like to access files on a network volume": answer Allow.
   JDK 26 unpacked by hand at /opt/jdk-26.0.2.jdk (never installed: no brew, no installer), no JAVA_HOME:
     the tar.gz https://download.oracle.com/java/26/archive/jdk-26.0.2_macos-aarch64_bin.tar.gz, checked against its .sha256, extracted with sudo tar -xzf into /opt
   git config --global user.name marcoautomation2
