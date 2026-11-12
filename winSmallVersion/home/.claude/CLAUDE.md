@@ -264,7 +264,9 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
     Coordinator's `integrationTests` package. Slow - minutes, not seconds.
 
   TestFuzz.java
-    Builds Commons and Frontend and runs only Frontend's `fuzz` package.
+    Builds Commons and Frontend and runs Frontend's `fuzz` package; with no
+    argument, it then builds Coordinator and Controllers and runs
+    Controllers' `fuzz` package.
     Slow - minutes, not seconds. To run all the tests, run it after
     TestAllFrontendCoordinatorIntegration.java. Its main use is the DeltaHunt
     task of `Frontend/compact_frontend/readme.txt`, with the argument `compact`.
@@ -272,7 +274,7 @@ For a semantic change, copy the regenerated `out/modular/mods/Commons.jar` over 
   TestAllController.java
     Builds Commons, Frontend, Coordinator, and Controllers (the `Controller`
     module, which depends on Coordinator), and runs Controllers' JUnit test
-    suite except its `agentTools` package. Fast.
+    suite except its `agentTools` and `fuzz` packages. Fast.
 
   TestAgentTools.java <desk> <agent> [<TestClassName>] <channelFolder> <filesIOFolder>
     Same build, then Controllers' `agentTools` tests (one, or the whole
