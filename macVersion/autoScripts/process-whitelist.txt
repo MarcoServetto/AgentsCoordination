@@ -35,3 +35,6 @@ PostUpdateLaunchAgent
 
 # --- Eclipse (Fearless plugin testing) ---
 eclipse
+
+# --- the Linux VM serving the NFS share of the tests (Lima) ---
+limactl

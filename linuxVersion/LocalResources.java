@@ -23,4 +23,5 @@ public class LocalResources{
   static public final Path badZipCorpous= prefix.resolve("Coordinator", "badZips");
   static public final Path packaging= prefix.resolve("Coordinator", "_fearless_packaging");
   static public final Path portableEclipse= Path.of("/data/tools/eclipse");
+  static public final String nfsShare= "";
 }
