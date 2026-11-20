@@ -555,6 +555,13 @@ Find that reasoning, and apply it also to the examples far from the corrected on
 Being corrected is the normal course of this work, not a failure to defend against: after a correction, look wider, not narrower.
 When the user corrects the same kind of thing twice, your reading of the task is wrong, not its execution: stop producing, and say in a few lines what you now think the task is for.
 
+Hard rule: for each task
+-analyze what I'm proposing to do.
+-identify all decisions embedded in what I'm proposing to do.
+-for each of those decisions, one by one manually: check if this decision introduces new corner cases or attempts to create a more uniform, more minimalistic design.
+-each decision that introduces a corner case needs to be evaluated: is this decision strictly needed? It must be that there is not an alternative decision that instead creates a more uniform, more minimalistic design.
+-Hard rule: only submit work after all decisions have been reviewed as above.
+
 # Think, do not jump to probing
 You know Java, the JDK and these tools well; rely on that. Explain from the mechanism and act on it. Most questions need no command at all, and the reasoning is worth more than the observation, it produces code that is correct according to the standard not just according to the current behavior on machine today.
 
