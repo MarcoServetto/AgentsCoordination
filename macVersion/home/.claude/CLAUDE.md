@@ -54,7 +54,6 @@ Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/Build/src/scripts/` (see "Fearless" below).
 Whitelisted scripts:
 - the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
-- `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/skills/check-claude-usage/check_usage.sh` (you can run it as part of the skill)
 - `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/skills/align-branches/align-branches.sh` (you can run it as part of the skill)
 - `/Users/Shared/data/AgentsCoordination/macVersion/autoScripts/agent-supervisor.sh` (runs automatically from logon, you can inspect it and fix it when asked)
 - `/Users/Shared/data/AgentsCoordination/macVersion/autoScripts/cleanup-watchdog.sh` (called hourly by the above)
@@ -142,10 +141,7 @@ When the user asks to run the overnight tasks:
 - The user is asleep, asking anything to the user blocks the whole night.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksMac/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
-Repeat the following until no task is left or the user says to stop:
-- Use the check-claude-usage skill
-If the "Current session" is less than 70%, start a task;
-else sleep until the "Current session" is over.
+Start the tasks one after the other, until no task is left or the user says to stop.
 
 Starting a task:
 Each task starts with a line saying how it runs:
@@ -180,7 +176,6 @@ Then align the folders Claude reads with the last version of AgentsCoordination 
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/settings.json` with `$HOME/.claude/settings.json`;
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/hooks/auto-approve-permission-request.sh` with `$HOME/.claude/hooks/auto-approve-permission-request.sh`;
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/skills/align-branches/` with `$HOME/.claude/skills/align-branches/`, file by file;
-  `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/skills/check-claude-usage/` with `$HOME/.claude/skills/check-claude-usage/`, file by file;
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/skills/check-drift/` with `$HOME/.claude/skills/check-drift/`, file by file;
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/projects/-Users-Shared-data-fearlessBranch1/memory/MEMORY.md` with `$HOME/.claude/projects/-Users-Shared-data-fearlessBranch1/memory/MEMORY.md`;
   `/Users/Shared/data/AgentsCoordination/macVersion/home/.claude/projects/-Users-Shared-data-fearlessBranch2/memory/MEMORY.md` with `$HOME/.claude/projects/-Users-Shared-data-fearlessBranch2/memory/MEMORY.md`;
