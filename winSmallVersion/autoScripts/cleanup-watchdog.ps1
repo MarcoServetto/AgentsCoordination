@@ -7,12 +7,16 @@ New-Item -ItemType Directory -Force -Path (Split-Path $log) | Out-Null
 $lines = New-Object System.Collections.Generic.List[string]
 function Log($msg) { $lines.Add("[$((Get-Date).ToString('yyyy-MM-dd HH:mm:ss'))] $msg") }
 
-$whitelist = Get-Content $whitelistFile | Where-Object { $_.Trim() -and -not $_.Trim().StartsWith('#') } | ForEach-Object { $_.Trim().ToLowerInvariant() }
+$limits = @{}
+Get-Content $whitelistFile | ForEach-Object { $_.Trim() } | Where-Object { $_ -and -not $_.StartsWith('#') } | ForEach-Object {
+  if ($_ -match '^(.*\S)\s+(\d+)$') { $limits[$Matches[1]] = [int]$Matches[2] } else { $limits[$_] = [double]::PositiveInfinity }
+}
 $killed = 0
 foreach ($p in Get-CimInstance Win32_Process) {
   if ($p.ProcessId -le 4 -or $p.ProcessId -eq $PID -or -not $p.CreationDate) { continue }
-  if ($whitelist -contains [IO.Path]::GetFileNameWithoutExtension($p.Name).ToLowerInvariant()) { continue }
-  if (((Get-Date) - $p.CreationDate).TotalHours -lt 1) { continue }
+  $minutes = $limits[[IO.Path]::GetFileNameWithoutExtension($p.Name)]
+  if (-not $minutes) { $minutes = 60 }
+  if (((Get-Date) - $p.CreationDate).TotalMinutes -lt $minutes) { continue }
   try { Stop-Process -Id $p.ProcessId -Force; Log "killed $($p.Name) (pid $($p.ProcessId)): $($p.CommandLine)" }
   catch { Log "ATTENTION: could not kill $($p.Name) (pid $($p.ProcessId)): $($_.Exception.Message)" }
   $killed++

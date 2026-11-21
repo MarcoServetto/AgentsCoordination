@@ -5,8 +5,9 @@
 # that has been alive for more than 1 hour is killed by the hourly sweep,
 # except the programs of macOS itself: an executable under /System, /usr/libexec,
 # /usr/sbin or /Library/Apple is never killed.
-# Build tools (git, java, ...) are deliberately absent: add one here before
-# a run that may exceed an hour. Takes effect on the next sweep.
+# A line may end with a number of minutes: a process of that name is killed
+# only once it has been alive for more than that many minutes.
+# Takes effect on the next sweep.
 
 # --- the 4 always-on agents (macCoordinator, mac1, mac2, mac3) ---
 claude
@@ -38,3 +39,6 @@ eclipse
 
 # --- the Linux VM serving the NFS share of the tests (Lima) ---
 limactl
+
+# --- java (Fearless builds and tests) ---
+java 150

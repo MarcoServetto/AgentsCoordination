@@ -7,7 +7,8 @@ mkdir -p "$(dirname "$log")"
 lines=()
 logLine() { lines+=("[$(date '+%Y-%m-%d %H:%M:%S')] $1"); }
 
-whitelist=" $(grep -v '^\s*#' "$whitelistFile" | sed 's/^\s*//;s/\s*$//' | grep -v '^$' | tr '[:upper:]' '[:lower:]' | tr '\n' ' ') "
+entries=$(grep -v '^\s*#' "$whitelistFile" | sed 's/^\s*//;s/\s*$//;s/\s\+\([0-9]\+\)$/ \1/' | grep -v '^$' | tr '[:upper:]' '[:lower:]')
+whitelist=" $(printf '%s\n' "$entries" | grep -v ' [0-9]\+$' | tr '\n' ' ') "
 killed=0
 while read -r pid etimes comm; do
   [ "$pid" = "$$" ] && continue
@@ -15,10 +16,13 @@ while read -r pid etimes comm; do
   [ "$etimes" -lt 3600 ] && continue
   cmdline=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)
   set -- $cmdline
-  names="$comm ${1:+${1##*/}} ${2:+${2##*/}}"
+  names=" $(echo "$comm ${1:+${1##*/}} ${2:+${2##*/}}" | tr '[:upper:]' '[:lower:]') "
   listed=0
-  for n in $(echo "$names" | tr '[:upper:]' '[:lower:]'); do case "$whitelist" in *" $n "*) listed=1;; esac; done
+  for n in $names; do case "$whitelist" in *" $n "*) listed=1;; esac; done
   [ "$listed" -eq 1 ] && continue
+  limit=60
+  while read -r name minutes; do case "$names" in *" $name "*) limit=$minutes;; esac; done < <(printf '%s\n' "$entries" | grep ' [0-9]\+$')
+  [ "$etimes" -lt $(( limit * 60 )) ] && continue
   kill -9 "$pid" 2>/dev/null || continue
   logLine "killed $comm (pid $pid): $cmdline"
   killed=$((killed + 1))
