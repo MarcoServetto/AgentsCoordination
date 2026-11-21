@@ -59,7 +59,6 @@ Building, testing and packaging Fearless is done only by the Java programs
 in `Coordinator/Build/src/scripts/` (see "Fearless" below).
 Whitelisted scripts:
 - the java scripts in `Coordinator/Build/src/scripts/` (you can run them)
-- `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-claude-usage\check_usage.ps1` (you can run it as part of the skill)
 - `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\align-branches\align-branches.ps1` (you can run it as part of the skill)
 - `C:\data\AgentsCoordination\winSmallVersion\autoScripts\agent-supervisor.ps1` (runs automatically from logon, you can inspect it and fix it when asked)
 - `C:\data\AgentsCoordination\winSmallVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
@@ -149,10 +148,7 @@ When the user asks to run the overnight tasks:
 - The user is asleep, asking anything to the user blocks the whole night.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksWinSmall/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
-Repeat the following until no task is left or the user says to stop:
-- Use the check-claude-usage skill
-If the "Current session" is less than 70%, start a task;
-else sleep until the "Current session" is over.
+Start the tasks one after the other, until no task is left or the user says to stop.
 
 Starting a task:
 Each task starts with a line saying how it runs:
@@ -187,7 +183,6 @@ Then align the folders Claude reads with the last version of AgentsCoordination 
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\settings.json` with `%USERPROFILE%\.claude\settings.json`;
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\hooks\auto-approve-permission-request.ps1` with `%USERPROFILE%\.claude\hooks\auto-approve-permission-request.ps1`;
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
-  `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-claude-usage\` with `%USERPROFILE%\.claude\skills\check-claude-usage\`, file by file;
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
   `C:\data\AgentsCoordination\winSmallVersion\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
