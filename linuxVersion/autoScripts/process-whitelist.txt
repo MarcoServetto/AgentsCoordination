@@ -63,6 +63,7 @@ sd_espeak-ng
 sd_espeak-ng-mb
 bwrap
 glycin-svg
+glycin-image-rs
 
 # --- gnome-settings-daemon plugins ---
 gsd-a11y-settin
