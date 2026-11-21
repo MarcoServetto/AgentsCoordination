@@ -2,19 +2,26 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 log=/Users/Shared/data/macCoordinator/logs/diagnostic.log
-whitelist=$(grep -v '^[[:space:]]*#' "$here/process-whitelist.txt" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$')
+entries=$(grep -v '^[[:space:]]*#' "$here/process-whitelist.txt" | sed -E 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]+([0-9]+)$/ \1/' | grep -v '^$')
+whitelist=$(printf '%s\n' "$entries" | grep -Ev ' [0-9]+$')
 mkdir -p "$(dirname "$log")"
 lines=()
 logLine() { lines+=("[$(date '+%Y-%m-%d %H:%M:%S')] $1"); }
 
 killed=0
-while IFS=$'\t' read -r pid exe; do
+while IFS=$'\t' read -r pid age exe; do
   [ "$pid" = "$$" ] && continue
   [ "$pid" = "$PPID" ] && continue
   case $exe in /System/*|/usr/libexec/*|/usr/sbin/*|/Library/Apple/*) continue;; esac
   cmdline=$(ps -o args= -p "$pid" 2>/dev/null || true)
   set -- $cmdline
-  printf '%s\n%s\n%s\n' "${exe##*/}" "${1:+${1##*/}}" "${2:+${2##*/}}" | grep -Fxqi "$whitelist" && continue
+  names=$(printf '%s\n%s\n%s\n' "${exe##*/}" "${1:+${1##*/}}" "${2:+${2##*/}}")
+  printf '%s\n' "$names" | grep -Fxqi "$whitelist" && continue
+  limit=60
+  while read -r entry; do
+    if printf '%s\n' "$names" | grep -Fxqi "${entry% *}"; then limit=${entry##* }; fi
+  done < <(printf '%s\n' "$entries" | grep -E ' [0-9]+$')
+  [ "$age" -lt $(( limit * 60 )) ] && continue
   kill -9 "$pid" 2>/dev/null || continue
   logLine "killed $exe (pid $pid): $cmdline"
   killed=$((killed + 1))
@@ -28,10 +35,11 @@ def seconds(etime):
     return int(days or 0) * 86400 + parts[0] * 3600 + parts[1] * 60 + parts[2]
 for line in subprocess.run(['ps', '-u', sys.argv[1], '-o', 'pid=,etime='], capture_output=True, text=True).stdout.splitlines():
     pid, etime = line.split()
-    if seconds(etime) < 3600: continue
+    age = seconds(etime)
+    if age < 3600: continue
     path = ctypes.create_string_buffer(4096)
     if libproc.proc_pidpath(int(pid), path, 4096) <= 0: continue
-    print(f"{pid}\t{path.value.decode()}")
+    print(f"{pid}\t{age}\t{path.value.decode()}")
 PY
 )
 [ "$killed" -eq 0 ] && logLine "process sweep: clean"

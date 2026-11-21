@@ -21,6 +21,9 @@ key expiry disabled in the Tailscale admin console.
 Screen Sharing and Remote Login are on (System Settings > General > Sharing; macOS lets no script turn them on).
 Screen Sharing has "VNC viewers may control screen with password" on, with a password of at most 8 characters chosen by the user:
 a viewer like TigerVNC knows only that password, not the sign in of macOS.
+Privacy & Security > Full Disk Access is on for /bin/bash, the program of the launch agent com.claude.agent-supervisor, so that cleanup-watchdog.sh empties ~/.Trash,
+and for /opt/homebrew/Cellar/tmux/<version>/bin/tmux, the responsible process of the agents, so that the agents read ~/.Trash; a tmux upgrade changes that path and needs the grant again.
+macOS lets no script grant it: the user types the password of servetto in System Settings.
 
 Needed Tools, each at its default install path; only install if not present.
   xcode-select --install (git, python3)

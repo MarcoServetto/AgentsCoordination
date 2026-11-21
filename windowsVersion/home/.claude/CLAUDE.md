@@ -171,6 +171,7 @@ After stopping, do a PR to ZeroToHero moving the done tasks into the done file; 
 When you receive run_daily_check_up
 check the general machine health.
 Check for the activities of `cleanup-watchdog.ps1` in `C:\data\winCoordinator\logs\diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files.
+`$HOME\.claude\skills\synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date: it is never a finding of this review.
 Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
 - Step 1: run
   `git -C C:\data\AgentsCoordination fetch origin`
@@ -588,3 +589,5 @@ The PowerShell tool is Windows PowerShell 5.1, with no stdin, inside a sandbox:
 - A long command runs itself in the background (the `run_in_background` option of the PowerShell tool). The harness tells the agent when that command ends, and the output file of that command holds what it printed. Nothing else waits for it: no second command polls for the end of the first one.
   Example Good: from `Coordinator\Build\src`, run `& "C:\Program Files\Java\jdk-26.0.2\bin\java.exe" -ea --module-path ..\..\..\Commons\Commons.jar --add-modules Commons scripts\TestAllFrontendCoordinatorIntegration.java` with `run_in_background`, then do other work or end the turn; when the notice that the command ended arrives, read its output file.
   Example Bad: run the same command in the background, then run `while (Get-CimInstance Win32_Process | Where-Object CommandLine -like '*TestAllFrontendCoordinatorIntegration*') { Start-Sleep 20 }` to wait for it. `CommandLine` is the whole command line, and the command line of the PowerShell running this `while` holds the text `TestAllFrontendCoordinatorIntegration` too, so the filter always finds a process and the loop never ends.
+- A long command that runs while nobody watches it (an overnight task, a run left in the background) gets a deadline that fits that command: `$p = Start-Process <program> -ArgumentList <arguments> -NoNewWindow -PassThru; if (-not $p.WaitForExit(2400000)) { taskkill /T /F /PID $p.Id }` ends `<program>`, and the processes `<program>` started, after 40 minutes (2400000 milliseconds).
+  `cleanup-watchdog.ps1` ends every `java` that has been alive for more than 150 minutes, whatever the deadline.

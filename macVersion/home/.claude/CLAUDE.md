@@ -164,6 +164,7 @@ After stopping, do a PR to ZeroToHero moving the done tasks into the done file; 
 When you receive run_daily_check_up
 check the general machine health.
 Check for the activities of `cleanup-watchdog.sh` in `/Users/Shared/data/macCoordinator/logs/diagnostic.log` (`ATTENTION` lines are what it noticed but did not act on), check the disk space and accumulated trash, check for the self consistency of all the scripts, memories and CLAUDE.md files.
+`$HOME/.claude/skills/synced` is the bundle of Anthropic skills that Claude Code itself keeps up to date: it is never a finding of this review.
 Then align the folders Claude reads with the last version of AgentsCoordination on GitHub:
 - Step 1: run
   `git -C /Users/Shared/data/AgentsCoordination fetch origin`
@@ -581,3 +582,5 @@ The Bash tool is zsh, the login shell of servetto, with no stdin, and each call 
 - A long command runs itself in the background (the `run_in_background` option of the Bash tool). The harness tells the agent when that command ends, and the output file of that command holds what it printed. Nothing else waits for it: no second command polls for the end of the first one.
   Example Good: from `Coordinator/Build/src`, run `/opt/jdk-26.0.2.jdk/Contents/Home/bin/java -ea --module-path ../../../Commons/Commons.jar --add-modules Commons scripts/TestAllFrontendCoordinatorIntegration.java` with `run_in_background`, then do other work or end the turn; when the notice that the command ended arrives, read its output file.
   Example Bad: run the same command in the background, then run `until [ -z "$(pgrep -f TestAllFrontendCoordinatorIntegration)" ]; do sleep 20; done` to wait for it. `pgrep -f` matches whole command lines, and the command line of the bash running this `until` holds the text `TestAllFrontendCoordinatorIntegration` too, so `pgrep -f` always finds a process and the loop never ends.
+- A long command that runs while nobody watches it (an overnight task, a run left in the background) gets a deadline that fits that command: `timeout 40m <command>` ends `<command>` after 40 minutes.
+  `cleanup-watchdog.sh` ends every `java` that has been alive for more than 150 minutes, whatever the deadline.

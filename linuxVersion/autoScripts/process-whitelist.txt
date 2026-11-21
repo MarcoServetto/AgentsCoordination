@@ -3,8 +3,9 @@
 # basename of the first or second command line word (so an interpreter's
 # script name counts), case-insensitive, # for comments. Any process of this user NOT listed
 # that has been alive for more than 1 hour is killed by the hourly sweep.
-# Build tools (git, java, ...) are deliberately absent: add one here before
-# a run that may exceed an hour. Takes effect on the next sweep.
+# A line may end with a number of minutes: a process of that name is killed
+# only once it has been alive for more than that many minutes.
+# Takes effect on the next sweep.
 
 # --- the 4 always-on agents (linuxCoordinator, linux1, linux2, linux3) ---
 claude
@@ -126,3 +127,6 @@ eclipse
 # --- desk helpers that respawn on their own, harmless to leave running ---
 ydotoold
 dart:firmware-n
+
+# --- java (Fearless builds and tests) ---
+java 150

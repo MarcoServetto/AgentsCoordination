@@ -1,8 +1,9 @@
 # Process whitelist for cleanup-watchdog.ps1: one process name per line, no
 # .exe, case-insensitive, # for comments. Any process NOT listed that has
-# been alive for more than 1 hour is killed by the hourly sweep. Build tools
-# (git, java, ...) are deliberately absent: add one here before a run that
-# may exceed an hour. Takes effect on the next sweep.
+# been alive for more than 1 hour is killed by the hourly sweep. A line may
+# end with a number of minutes: a process of that name is killed only once
+# it has been alive for more than that many minutes. Takes effect on the next
+# sweep.
 
 # --- the 4 always-on agents (winCoordinator, win1, win2, win3) ---
 claude
@@ -83,3 +84,6 @@ cowork-svc
 
 # --- Eclipse (Fearless plugin testing) ---
 eclipse
+
+# --- java (Fearless builds and tests) ---
+java 150
