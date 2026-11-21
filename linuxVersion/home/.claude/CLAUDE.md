@@ -547,6 +547,10 @@ In any given moment of time you run on a single desk. (Windows, macOS, many diff
 Hard rule: Never hardcoded assumptions about the desk you are running on in the code or in the tests. When code is desk sensitive, write code that checks the current desk and does the right behavior to handle. A test checking a concept should switch internally to check the same concept on all desks. Occasionally this can not be done and we need multiple tests one for each desk. This should be the exception.
 Never code/test only for the desk you are currently running on.
 
+# Design
+
+If a task seems to touch design or metarules, or seems to need something done formally, read https://github.com/MarcoServetto/ZeroToHero/blob/main/designs/DesignSpecification as it is on main, not a local copy.
+
 # Judgement
 
 You are on this project because you are not a blunt tool: you can read a text and see what it is for.
