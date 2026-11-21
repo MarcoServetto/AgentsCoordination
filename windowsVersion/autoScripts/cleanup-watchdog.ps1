@@ -30,6 +30,7 @@ $freed = 0
 $stale = @(Get-ChildItem "$HOME\.local\bin" -Filter 'claude.exe.old.*' -ErrorAction SilentlyContinue) + @(Get-ChildItem $env:TEMP, 'C:\Windows\Temp', "$HOME\.local\share\claude\versions" -Force -ErrorAction SilentlyContinue)
 foreach ($item in $stale) {
   if ($item.LastWriteTime -ge $cutoff) { continue }
+  if ($item.PSIsContainer -and (Get-ChildItem $item.FullName -Recurse -Force -ErrorAction SilentlyContinue | Where-Object LastWriteTime -ge $cutoff | Select-Object -First 1)) { continue }
   $size = if ($item.PSIsContainer) { (Get-ChildItem $item.FullName -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum } else { $item.Length }
   Remove-Item $item.FullName -Recurse -Force -ErrorAction SilentlyContinue
   if (-not (Test-Path $item.FullName)) { $freed += $size }
