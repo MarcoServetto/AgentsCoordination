@@ -52,7 +52,7 @@ while IFS= read -r item; do
 done < <(
   find "$HOME/.local/bin" -maxdepth 1 -name 'claude.old.*' -mtime +7 2>/dev/null
   find /private/tmp /private/var/tmp -mindepth 1 -maxdepth 1 -user "$USER" -mtime +7 2>/dev/null
-  find "$HOME/.local/share/claude/versions" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null
+  find "$HOME/.local/share/claude/versions" -mindepth 1 -maxdepth 1 -mtime +7 -not -name "$(basename "$(readlink "$HOME/.local/bin/claude")")" 2>/dev/null
   find "$HOME/Downloads" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null
 )
 rm -rf "$HOME/.Trash/"* 2>/dev/null || true
