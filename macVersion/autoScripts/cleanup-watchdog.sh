@@ -51,7 +51,7 @@ while IFS= read -r item; do
   [ -e "$item" ] || freed=$((freed + size))
 done < <(
   find "$HOME/.local/bin" -maxdepth 1 -name 'claude.old.*' -mtime +7 2>/dev/null
-  find /private/tmp /private/var/tmp -mindepth 1 -maxdepth 1 -user "$USER" -mtime +7 2>/dev/null
+  find /private/tmp /private/var/tmp -mindepth 1 -maxdepth 1 -user "$USER" -mtime +7 -exec sh -c '[ -z "$(find "$1" -mtime -8 -print -quit)" ]' _ {} \; -print 2>/dev/null
   find "$HOME/.local/share/claude/versions" -mindepth 1 -maxdepth 1 -mtime +7 -not -name "$(basename "$(readlink "$HOME/.local/bin/claude")")" 2>/dev/null
   find "$HOME/Downloads" -mindepth 1 -maxdepth 1 -mtime +7 2>/dev/null
 )
@@ -63,6 +63,7 @@ logLine "disk free: ${freeGB}GB"
 [ "$freeGB" -lt 20 ] && logLine "ATTENTION: low disk space"
 agents=$({ pgrep -u "$USER" -f '^claude --remote-control' || true; } | wc -l | tr -d ' ')
 [ "$agents" -lt 4 ] && logLine "ATTENTION: only $agents claude running, expected 4"
+[ -e "$HOME/.local/bin/claude" ] || logLine "ATTENTION: $HOME/.local/bin/claude leads to no file (link target: '$(readlink "$HOME/.local/bin/claude")'): a new login shell finds no claude, so the agents do not start at the next logon"
 
 printf '%s\n' "${lines[@]}" >> "$log"
 if [ "$(wc -l < "$log")" -gt 8000 ]; then tail -n 4000 "$log" > "$log.tmp" && mv "$log.tmp" "$log"; fi
