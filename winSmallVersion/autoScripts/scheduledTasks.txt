@@ -1,2 +1,1 @@
 05:45, winSmallCoordinator, run_daily_check_up
-23:45, winSmall3, run_overnight_tasks

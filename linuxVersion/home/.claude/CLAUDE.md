@@ -141,7 +141,7 @@ This is ok when asked but:
 # Overnight tasks
 
 linux3 takes care of overnight tasks.
-When woken up with run_overnight_tasks:
+When the user asks to run the overnight tasks:
 - The user is asleep, asking anything to the user blocks the whole night.
 - read https://github.com/MarcoServetto/ZeroToHero/blob/main/tasksLinux/LongHorizonTasks.txt
 - if that file does not exist or lists no tasks, do no tasks and stop.
