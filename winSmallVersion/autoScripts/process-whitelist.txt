@@ -112,6 +112,7 @@ ms-teams
 IntelAudioService
 IntelDisplayUMService
 IntelGraphicsSoftware.Service
+IntelGraphicsSoftware.Service.Graphics
 PresentMonService
 ipf_helper
 ipf_uf
