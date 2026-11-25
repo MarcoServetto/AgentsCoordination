@@ -27,7 +27,7 @@ $parents = [ordered]@{
   ZeroToHero = "MarcoServetto"; FearlessTour = "MarcoServetto"
 }
 $branches = 'fearlessBranch1', 'fearlessBranch2', 'fearlessBranch3'
-$keep = @('AgentsCoordination', 'winCoordinator', 'tools', 'fearlessPaper', 'accounts.txt') + $branches
+$keep = @('AgentsCoordination', 'winCoordinator', 'tools', 'fearlessPaper', 'funnelling', 'accounts.txt') + $branches
 
 foreach ($item in Get-ChildItem $data -Force) { if ($keep -notcontains $item.Name) { Nuke $item.FullName } }
 New-Item -ItemType Directory -Force -Path "$data\winCoordinator" | Out-Null

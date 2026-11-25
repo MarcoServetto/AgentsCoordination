@@ -22,6 +22,10 @@ Needed Tools, each at its default install path; only install if not present.
   winget install StrawberryPerl.StrawberryPerl (latexmk needs perl)
   winget install oschwartz10612.Poppler (pdftoppm: lets the Read tool render PDF pages)
   JDK 26 unpacked by hand at C:\Program Files\Java\jdk-26.0.2 (never installed: no winget, no installer), no JAVA_HOME
+  winget install Microsoft.VisualStudio.2022.BuildTools (with the C++ build tools: the linker of the msvc toolchain of Rust)
+  elan at %USERPROFILE%\.elan, from elan-init.exe of https://github.com/leanprover/elan/releases
+  rustup at %USERPROFILE%\.cargo: rustup-init.exe -y --profile minimal --no-modify-path, from https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe
+  lean4export, lean4lean and nanoda_lib cloned and built in C:\data\tools, as the skill lean-kernel-check says
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false
@@ -48,5 +52,9 @@ Actions:
   Once:
     git clone https://github.com/MarcoServetto/AgentsCoordination C:\data\AgentsCoordination
     git -C C:\data\AgentsCoordination remote add fork https://github.com/marcoautomation2/AgentsCoordination
+    git clone https://github.com/marcoautomation2/fearless-paper C:\data\fearlessPaper
+    git -C C:\data\fearlessPaper remote add upstream https://github.com/swlogiclab/fearless-paper
+    git clone https://github.com/marcoautomation2/funnelling C:\data\funnelling
+    git -C C:\data\funnelling remote add upstream https://github.com/csgordon/funnelling
   Every reset:
     & C:\data\AgentsCoordination\windowsVersion\reset.ps1

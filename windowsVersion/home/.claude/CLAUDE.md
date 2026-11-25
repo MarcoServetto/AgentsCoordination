@@ -50,7 +50,7 @@ Fearless guide and game to teach fearless.
 
 # Fearless paper
 
-`C:\data\fearlessPaper\Fearless_TOPLAS\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
+`C:\data\fearlessPaper\` is the paper formalizing Fearless, a git repository; build it with `latexmk -pdf --shell-escape -interaction=nonstopmode main.tex`.
 Its type system and `Frontend\FearlessFrontend\src\typeSystem` describe the same language: a bug found in one is checked in the other.
 
 # Scripts
@@ -184,6 +184,7 @@ Then align the folders Claude reads with the last version of AgentsCoordination 
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\hooks\auto-approve-permission-request.ps1` with `%USERPROFILE%\.claude\hooks\auto-approve-permission-request.ps1`;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
+  `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\lean-kernel-check\` with `%USERPROFILE%\.claude\skills\lean-kernel-check\`, file by file;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md`;
