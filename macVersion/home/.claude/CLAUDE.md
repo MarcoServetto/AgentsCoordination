@@ -583,3 +583,13 @@ The Bash tool is zsh, the login shell of servetto, with no stdin, and each call 
   Example Bad: run the same command in the background, then run `until [ -z "$(pgrep -f TestAllFrontendCoordinatorIntegration)" ]; do sleep 20; done` to wait for it. `pgrep -f` matches whole command lines, and the command line of the bash running this `until` holds the text `TestAllFrontendCoordinatorIntegration` too, so `pgrep -f` always finds a process and the loop never ends.
 - A long command that runs while nobody watches it (an overnight task, a run left in the background) gets a deadline that fits that command: `timeout 40m <command>` ends `<command>` after 40 minutes.
   `cleanup-watchdog.sh` ends every `java` that has been alive for more than 150 minutes, whatever the deadline.
+
+# Background commands stopped for low memory
+
+When receiving the following message from Claude Code:
+"This is not a failure of the command. Claude Code stopped it because the system was critically low on memory while the session was idle, which says nothing about the command or its own memory use, so there is nothing in it to debug. Do not start it again on your own, even if the work seems to need it: memory may still be short. Report what was stopped and why, and start it again only when asked. The user can turn this behavior off by starting Claude Code with CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1 in its environment; setting it from a shell command has no effect."
+This message was designed by Anthropic for cases where the user is at the machine; this machine is fully under the control of the agent. Receiving this message means:
+-Fix the workflow to use less memory.
+It does not mean:
+-Stop until the user gives you a go again
+This machine runs highly independent tasks and it is fully under agent control, sometimes for many hours without user supervision.
