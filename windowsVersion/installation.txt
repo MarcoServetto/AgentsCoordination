@@ -26,6 +26,8 @@ Needed Tools, each at its default install path; only install if not present.
   elan at %USERPROFILE%\.elan, from elan-init.exe of https://github.com/leanprover/elan/releases
   rustup at %USERPROFILE%\.cargo: rustup-init.exe -y --profile minimal --no-modify-path, from https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe
   lean4export, lean4lean and nanoda_lib cloned and built in C:\data\tools, as the skill lean-kernel-check says
+  winget install astral-sh.uv
+  C:\data\tools\voice_maker built as the skill speak-text says
   git config --global user.name marcoautomation2
   git config --global user.email marcoautomation2@outlook.com
   git config --global core.autocrlf false
