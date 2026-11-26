@@ -1,6 +1,6 @@
 ---
 name: speak-text
-description: Generate a spoken audio clip from a text, with one of the voices of this skill (ExplanationBase).
+description: Generate a spoken audio clip from a text, with one of the voices of this skill (Explanation1).
 ---
 
 # Generating a clip
@@ -8,11 +8,13 @@ description: Generate a spoken audio clip from a text, with one of the voices of
 Write the text to a file, UTF-8, one paragraph per line. Then run:
 
 ```powershell
-& C:\data\tools\voice_maker\env\Scripts\python.exe "$HOME\.claude\skills\speak-text\speak.py" explanation_base <text_file> <out_wav>
+& C:\data\tools\voice_maker\env\Scripts\python.exe "$HOME\.claude\skills\speak-text\speak.py" explanation1 <text_file> <out_wav>
 ```
 
 The first argument is the name of a voice: a file `voices\<name>.wav` next to `speak.py`.
-The voice ExplanationBase is `explanation_base`.
+The voice Explanation1 is `explanation1`.
+
+`qwen_voices\` holds the voices that `speak.py` can not speak: each is a clip for the Qwen3 Base model, with the text spoken in the clip. The voice Explanation2 is `explanation2`.
 
 A run needs 4 of the 6 GB of GPU memory: one run at a time.
 A run takes about 40 seconds to load the models, then about 2 seconds for each second of speech.
