@@ -64,6 +64,7 @@ Whitelisted scripts:
 - `C:\data\AgentsCoordination\windowsVersion\autoScripts\cleanup-watchdog.ps1` (called hourly by the above)
 - `C:\data\AgentsCoordination\windowsVersion\reset.ps1` and the `reset-body.ps1` it downloads and runs (run it only when asked to reset the machine, see installation.txt)
 - `C:\data\AgentsCoordination\windowsVersion\home\.claude\hooks\auto-approve-permission-request.ps1` (Claude Code itself spawns it as the `hooks.PermissionRequest`)
+- `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\speak-text\speak.py` (you can run it as part of the skill)
 
 Never add a long lived `.ps1`/`.py`/`.cmd` without permission, and if/when added, add to this white list.
 Of course you can make short lived scripts to run them during your normal tasks, just make sure to clean them up later and leave no trace they ever existed. 
@@ -185,6 +186,7 @@ Then align the folders Claude reads with the last version of AgentsCoordination 
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\align-branches\` with `%USERPROFILE%\.claude\skills\align-branches\`, file by file;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\check-drift\` with `%USERPROFILE%\.claude\skills\check-drift\`, file by file;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\lean-kernel-check\` with `%USERPROFILE%\.claude\skills\lean-kernel-check\`, file by file;
+  `C:\data\AgentsCoordination\windowsVersion\home\.claude\skills\speak-text\` with `%USERPROFILE%\.claude\skills\speak-text\`, file by file;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch1\memory\MEMORY.md`;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch2\memory\MEMORY.md`;
   `C:\data\AgentsCoordination\windowsVersion\home\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md` with `%USERPROFILE%\.claude\projects\C--data-fearlessBranch3\memory\MEMORY.md`;
